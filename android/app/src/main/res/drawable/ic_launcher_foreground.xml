@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 런처 아이콘의 앞 층: 콩이 (안전 영역 안, 지름 66dp 원 안에 들어감) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#33000000" android:pathData="M39.00,82.50a15.00,2.20 0 1,0 30.00,0a15.00,2.20 0 1,0 -30.00,0Z" />
+    <path android:strokeColor="#54B866" android:strokeWidth="3.9" android:strokeLineCap="round" android:pathData="M54,46.00L54,37.00" />
+    <path android:fillColor="#54B866" android:pathData="M54,38.00Q52.5,29.50 39,29.50Q39,38.00 54,38.00Z" />
+    <path android:fillColor="#E654B866" android:pathData="M54,39.00Q55.3,31.80 66.7,31.80Q66.7,39.00 54,39.00Z" />
+    <path android:pathData="M32.00,62.00a22.00,18.00 0 1,0 44.00,0a22.00,18.00 0 1,0 -44.00,0Z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="54" android:startY="44.00" android:endX="54" android:endY="80.00">
+                <item android:offset="0" android:color="#FFB4ECC0" />
+                <item android:offset="1" android:color="#FF7FC690" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <group android:rotation="-25" android:pivotX="43" android:pivotY="52.00">
+        <path android:fillColor="#8CFFFFFF" android:pathData="M38.20,52.00a4.80,2.60 0 1,0 9.60,0a4.80,2.60 0 1,0 -9.60,0Z" />
+    </group>
+    <path android:fillColor="#BFFF9EA8" android:pathData="M37.30,67.30a3.30,2.00 0 1,0 6.60,0a3.30,2.00 0 1,0 -6.60,0Z" />
+    <path android:fillColor="#BFFF9EA8" android:pathData="M64.10,67.30a3.30,2.00 0 1,0 6.60,0a3.30,2.00 0 1,0 -6.60,0Z" />
+    <path android:fillColor="#1F2B24" android:pathData="M44.30,61.10a2.20,2.65 0 1,0 4.40,0a2.20,2.65 0 1,0 -4.40,0ZM59.30,61.10a2.20,2.65 0 1,0 4.40,0a2.20,2.65 0 1,0 -4.40,0Z" />
+    <path android:strokeColor="#CC1F2B24" android:strokeWidth="1.3" android:strokeLineCap="round" android:pathData="M52.3,67.00Q54,69.00 55.7,67.00" />
+</vector>

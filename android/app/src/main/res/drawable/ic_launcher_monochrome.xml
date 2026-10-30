@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 테마 아이콘(안드로이드 13+)용 한 가지 색 모양: 눈은 뚫어 둡니다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:strokeColor="#FFFFFFFF" android:strokeWidth="3.9" android:strokeLineCap="round" android:pathData="M54,46.00L54,37.00" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M54,38.00Q52.5,29.50 39,29.50Q39,38.00 54,38.00Z" />
+    <path android:fillColor="#FFFFFFFF" android:pathData="M54,39.00Q55.3,31.80 66.7,31.80Q66.7,39.00 54,39.00Z" />
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd" android:pathData="M32.00,62.00a22.00,18.00 0 1,0 44.00,0a22.00,18.00 0 1,0 -44.00,0ZM44.30,61.10a2.20,2.65 0 1,0 4.40,0a2.20,2.65 0 1,0 -4.40,0ZM59.30,61.10a2.20,2.65 0 1,0 4.40,0a2.20,2.65 0 1,0 -4.40,0Z" />
+</vector>

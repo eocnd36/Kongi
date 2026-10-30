@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 알림 표시줄용 새싹 (한 가지 색) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,22c-0.55,0 -1,-0.45 -1,-1v-6.1C7.6,14.4 5,11.5 5,8V6h1c3,0 5.4,1.8 6,4.4C12.6,7.8 15,6 18,6h1v2c0,3.5 -2.6,6.4 -6,6.9V21c0,0.55 -0.45,1 -1,1z" />
+</vector>

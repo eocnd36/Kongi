@@ -1,0 +1,441 @@
+/* Keys are the English strings in code. Run scripts/check-localizations.py after editing. */
+
+/* Popover */
+"Claude Usage" = "Claude-Nutzung";
+"Claude usage" = "Claude-Nutzung";
+"Refresh" = "Aktualisieren";
+"Settings" = "Einstellungen";
+"Quit" = "Beenden";
+"Extra usage" = "Zusätzliche Nutzung";
+"Time elapsed in this window" = "Verstrichene Zeit in diesem Zeitraum";
+"This week by product" = "Diese Woche nach Produkt";
+
+/* Limits */
+"Current session" = "Aktuelle Sitzung";
+"Weekly · All models" = "Wöchentlich · Alle Modelle";
+"Weekly · Opus" = "Wöchentlich · Opus";
+"Weekly · Sonnet" = "Wöchentlich · Sonnet";
+"Weekly · Cowork" = "Wöchentlich · Cowork";
+"5-hour window" = "5-Stunden-Zeitraum";
+"7-day window" = "7-Tage-Zeitraum";
+
+/* Time */
+"Resetting now" = "Wird gleich zurückgesetzt";
+"Resets in %@" = "Zurücksetzung in %@";
+"Resets %@ (in %@)" = "Zurücksetzung %1$@ (in %2$@)";
+"Updated just now" = "Gerade aktualisiert";
+"Updated %@ ago" = "Vor %@ aktualisiert";
+
+/* Notifications */
+"%@ reached %@" = "%1$@ hat %2$@ erreicht";
+
+/* Connect */
+"Connect your Claude account" = "Claude-Konto verbinden";
+"See the usage of the Claude account you're signed in to with Claude Code. Your login stays on this Mac and is only sent to Anthropic." = "Zeigt die Nutzung des Claude-Kontos, mit dem du in Claude Code angemeldet bist. Deine Anmeldung bleibt auf diesem Mac und wird nur an Anthropic gesendet.";
+"Claude Code login found" = "Claude Code-Anmeldung gefunden";
+"No Claude Code login found" = "Keine Claude Code-Anmeldung gefunden";
+"Install Claude Code and run `claude` in Terminal to sign in, then check again." = "Installiere Claude Code und führe `claude` im Terminal aus, um dich anzumelden. Prüfe dann erneut.";
+"Check again" = "Erneut prüfen";
+"Connect" = "Verbinden";
+
+/* Account */
+"Account" = "Konto";
+"Connected" = "Verbunden";
+"Not connected" = "Nicht verbunden";
+"Disconnect" = "Trennen (abmelden)";
+"Removes this account's data from the app. Your Claude Code login is not affected." = "Entfernt die Daten dieses Kontos aus der App. Deine Claude Code-Anmeldung bleibt bestehen.";
+
+/* Settings */
+"Menu bar" = "Menüleiste";
+"Refresh every" = "Aktualisieren alle";
+"%lld min" = "%lld Min.";
+"Language" = "Sprache";
+"System default" = "Systemstandard";
+"Usage alerts" = "Nutzungswarnungen";
+"Launch at login" = "Bei Anmeldung öffnen";
+"Version %@" = "Version %@";
+"Unofficial app. Not affiliated with Anthropic." = "Inoffizielle App. Nicht mit Anthropic verbunden.";
+"Session + weekly" = "Sitzung + wöchentlich";
+"Session only" = "Nur Sitzung";
+"Session + reset time" = "Sitzung + Zeit bis Zurücksetzung";
+"Icon only" = "Nur Symbol";
+
+/* Errors */
+"Claude Code login not found" = "Keine Claude Code-Anmeldung gefunden";
+"Login expired" = "Anmeldung abgelaufen";
+"Too many requests" = "Zu viele Anfragen";
+"Can't reach Claude" = "Claude nicht erreichbar";
+"Server error (%lld)" = "Serverfehler (%lld)";
+"Unexpected response" = "Unerwartete Antwort";
+"This app uses the login saved by Claude Code. Install Claude Code and run `claude` in Terminal to sign in." = "Diese App verwendet die von Claude Code gespeicherte Anmeldung. Installiere Claude Code und führe `claude` im Terminal aus, um dich anzumelden.";
+"Run `claude` in Terminal once — Claude Code will refresh the login automatically." = "Führe `claude` einmal im Terminal aus – Claude Code erneuert die Anmeldung automatisch.";
+"Will retry automatically in a few minutes." = "Neuer Versuch in wenigen Minuten.";
+"Will retry automatically." = "Neuer Versuch erfolgt automatisch.";
+"The usage format may have changed. Check for an app update." = "Das Format der Nutzungsdaten hat sich möglicherweise geändert. Suche nach einem App-Update.";
+"Claude Code setup guide" = "Claude Code-Installationsanleitung";
+
+/* Reset reminders */
+"%@ resets in %@" = "%1$@ wird in %2$@ zurückgesetzt";
+"Currently at %@. Your usage will be available again soon." = "Aktuell bei %@. Deine Nutzung ist bald wieder verfügbar.";
+
+/* Notification settings and status */
+"%@ has reset" = "%@ wurde zurückgesetzt";
+"Your usage is available again." = "Du kannst Claude wieder nutzen.";
+"Notifications" = "Mitteilungen";
+"Remind before a limit resets" = "Vor dem Zurücksetzen erinnern";
+"Notify when a limit resets" = "Beim Zurücksetzen benachrichtigen";
+"Only for limits used at least" = "Nur für Limits ab";
+"Alert me when Claude has an outage" = "Bei Claude-Störungen benachrichtigen";
+"Send test notification" = "Testmitteilung senden";
+"Sent" = "Gesendet";
+"Test notification" = "Testmitteilung";
+"Notifications from Kongi are working." = "Mitteilungen von Kongi funktionieren.";
+"Notifications are turned off for this app." = "Mitteilungen für diese App sind deaktiviert.";
+"Open Notification Settings" = "Mitteilungseinstellungen öffnen";
+"Claude is having issues" = "Claude hat Probleme";
+"View status" = "Status ansehen";
+"At this pace, you'll hit the limit at %@" = "In diesem Tempo erreichst du das Limit um %@";
+"Estimated from how fast you've used this limit so far." = "Geschätzt aus deinem bisherigen Nutzungstempo für dieses Limit.";
+"Open usage on claude.ai" = "Nutzung auf claude.ai öffnen";
+"Play a sound with notifications" = "Ton bei Mitteilungen abspielen";
+"Claude is back to normal" = "Claude läuft wieder normal";
+
+/* Claude Code island and scheduled prompts */
+"%@ (in %@)" = "%1$@ (in %2$@)";
+"%@ limit reached" = "%@: Limit erreicht";
+"%@: %@" = "%@: %@";
+"%@: done" = "%@: fertig";
+"%@: needs you" = "%@: braucht dich";
+"%@: scheduled prompt failed" = "%@: geplanter Prompt fehlgeschlagen";
+"%@: scheduled prompt finished" = "%@: geplanter Prompt fertig";
+"%lld sessions" = "%lld Sitzungen";
+"1 session" = "1 Sitzung";
+"After every session reset" = "Nach jeder Sitzungs-Zurücksetzung";
+"After every weekly reset" = "Nach jeder wöchentlichen Zurücksetzung";
+"After the next session reset" = "Nach der nächsten Sitzungs-Zurücksetzung";
+"After the next weekly reset" = "Nach der nächsten wöchentlichen Zurücksetzung";
+"Allow" = "Erlauben";
+"Allow %@?" = "%@ erlauben?";
+"Allow everything (careful)" = "Alles erlauben (Vorsicht)";
+"Allow file edits" = "Dateiänderungen erlauben";
+"Allow, and don't ask again for this kind of request." = "Erlauben und bei dieser Art von Anfrage nicht mehr fragen.";
+"Always" = "Immer";
+"Answer approvals and questions in the island" = "Freigaben und Fragen in der Insel beantworten";
+"Answer in terminal" = "Im Terminal antworten";
+"Asking" = "Fragt";
+"At a specific time" = "Zu einer bestimmten Zeit";
+"Back" = "Zurück";
+"Backup: %@" = "Backup: %@";
+"Browsing" = "Surft";
+"Cancel" = "Abbrechen";
+"Changes %lld" = "Änderungen %lld";
+"Choose" = "Auswählen";
+"Choose a folder" = "Ordner auswählen";
+"Choose folder…" = "Ordner auswählen …";
+"Claude Code is connected" = "Claude Code ist verbunden";
+"Claude Code sessions appear here" = "Claude Code-Sitzungen erscheinen hier";
+"Kongi will add hooks to ~/.claude/settings.json so Claude Code can show its work, ask for approvals and send questions here. Your current file is backed up first, and your own settings are kept. Everything stays on this Mac. If Kongi isn't running, Claude Code works as usual." = "Kongi fügt ~/.claude/settings.json Hooks hinzu, damit Claude Code hier seine Arbeit zeigen, Freigaben anfordern und Fragen stellen kann. Deine aktuelle Datei wird vorher gesichert, deine eigenen Einstellungen bleiben erhalten. Alles bleibt auf diesem Mac. Läuft Kongi nicht, funktioniert Claude Code wie gewohnt.";
+"Claude finished working." = "Claude ist fertig.";
+"Claude wants to use %@." = "Claude möchte %@ verwenden.";
+"Close" = "Schließen";
+"Connect Claude Code" = "Claude Code verbinden";
+"Connect Claude Code to see sessions, approve requests and answer questions here." = "Verbinde Claude Code, um hier Sitzungen zu sehen, Anfragen freizugeben und Fragen zu beantworten.";
+"Connect Claude Code?" = "Claude Code verbinden?";
+"Connected to Claude Code" = "Mit Claude Code verbunden";
+"Continue after reset" = "Nach Zurücksetzung fortsetzen";
+"Continue the last conversation in this folder" = "Letzte Unterhaltung in diesem Ordner fortsetzen";
+"Continue where you left off." = "Mach dort weiter, wo du aufgehört hast.";
+"Continues chat" = "Setzt Chat fort";
+"Couldn't find the claude command. Install Claude Code first." = "Der Befehl claude wurde nicht gefunden. Installiere zuerst Claude Code.";
+"Delegating" = "Delegiert";
+"Delete" = "Löschen";
+"Denied from Kongi." = "In Kongi abgelehnt.";
+"Deny" = "Ablehnen";
+"Disconnect Claude Code?" = "Claude Code trennen?";
+"Done" = "Fertig";
+"Edit" = "Bearbeiten";
+"Edit schedule" = "Zeitplan bearbeiten";
+"Editing" = "Bearbeitet";
+"Ended" = "Beendet";
+"Every day at %@" = "Täglich um %@";
+"Failed: %@" = "Fehlgeschlagen: %@";
+"Finished" = "Fertig";
+"Finished: %@" = "Fertig: %@";
+"Has a question" = "Hat eine Frage";
+"Hide it when no sessions are running" = "Ausblenden, wenn keine Sitzung läuft";
+"If unanswered, ask in terminal after" = "Ohne Antwort im Terminal fragen nach";
+"Keep open" = "Geöffnet lassen";
+"Missed (the Mac was asleep or offline)" = "Verpasst (der Mac war im Ruhezustand oder offline)";
+"Needs approval" = "Freigabe nötig";
+"Never" = "Nie";
+"New Claude Code sessions will show up in the island. Sessions that are already running need to be restarted." = "Neue Claude Code-Sitzungen erscheinen in der Insel. Bereits laufende Sitzungen müssen neu gestartet werden.";
+"New schedule" = "Neuer Zeitplan";
+"Next reset: %@" = "Nächste Zurücksetzung: %@";
+"Next run: %@" = "Nächste Ausführung: %@";
+"No activity yet" = "Noch keine Aktivität";
+"No file changes yet" = "Noch keine Dateiänderungen";
+"No scheduled prompts yet" = "Noch keine geplanten Prompts";
+"No sessions" = "Keine Sitzungen";
+"Nobody is there to approve requests during a scheduled run, so choose what Claude may do on its own." = "Bei einer geplanten Ausführung kann niemand Anfragen freigeben. Wähle also, was Claude selbstständig tun darf.";
+"Not connected to Claude Code" = "Nicht mit Claude Code verbunden";
+"Notify when Claude finishes or needs you" = "Benachrichtigen, wenn Claude fertig ist oder dich braucht";
+"Only the hooks added by Kongi are removed from ~/.claude/settings.json. A backup is made first." = "Es werden nur die von Kongi hinzugefügten Hooks aus ~/.claude/settings.json entfernt. Vorher wird ein Backup erstellt.";
+"Open terminal" = "Terminal öffnen";
+"Other…" = "Andere …";
+"Paused" = "Pausiert";
+"Permissions" = "Berechtigungen";
+"Planning" = "Plant";
+"Project" = "Projekt";
+"Prompt" = "Prompt";
+"Reading" = "Liest";
+"Remove" = "Entfernen";
+"Repeat after every reset" = "Nach jeder Zurücksetzung wiederholen";
+"Repeat every day" = "Täglich wiederholen";
+"Right after the session limit resets" = "Direkt nach Zurücksetzung des Sitzungslimits";
+"Right after the weekly limit resets" = "Direkt nach Zurücksetzung des Wochenlimits";
+"Run now" = "Jetzt ausführen";
+"Running" = "Läuft";
+"Running…" = "Läuft …";
+"Save" = "Sichern";
+"Schedule" = "Planen";
+"Schedule a prompt for the reset" = "Prompt für die Zurücksetzung planen";
+"Scheduled prompt started" = "Geplanter Prompt gestartet";
+"Scheduled prompts" = "Geplante Prompts";
+"Searching" = "Sucht";
+"Send a prompt to Claude Code in a project when your usage limit resets, or at a time you choose." = "Sende in einem Projekt einen Prompt an Claude Code, wenn dein Nutzungslimit zurückgesetzt wird oder zu einer Zeit deiner Wahl.";
+"Send answer" = "Antwort senden";
+"Show output" = "Ausgabe anzeigen";
+"Show the island" = "Insel anzeigen";
+"Shows what Claude Code is doing in the island at the top of the screen, and lets you approve requests and answer questions there." = "Zeigt in der Insel oben auf dem Bildschirm, was Claude Code tut, und lässt dich dort Anfragen freigeben und Fragen beantworten.";
+"Skip anything that needs approval" = "Alles überspringen, was eine Freigabe braucht";
+"Start Claude Code in a terminal and its work shows up here." = "Starte Claude Code in einem Terminal, dann erscheint seine Arbeit hier.";
+"Starting" = "Startet";
+"Stop" = "Stoppen";
+"Stopped." = "Gestoppt.";
+"The hook helper is missing from the app. Reinstall Kongi." = "Der Hook-Helfer fehlt in der App. Installiere Kongi neu.";
+"The reset time isn't known yet. It appears once you've used Claude in this window." = "Die Zurücksetzungszeit ist noch nicht bekannt. Sie erscheint, sobald du Claude in diesem Zeitraum nutzt.";
+"Thinking" = "Denkt nach";
+"This file is too large to show line by line." = "Diese Datei ist zu groß, um sie Zeile für Zeile anzuzeigen.";
+"Time" = "Zeit";
+"Tip: when you hit the session limit, the island offers to continue automatically after the reset." = "Tipp: Wenn du das Sitzungslimit erreichst, bietet die Insel an, nach der Zurücksetzung automatisch weiterzumachen.";
+"Type your answer" = "Antwort eingeben";
+"Waiting for a reset time (use Claude first, or check that the app is connected)" = "Wartet auf eine Zurücksetzungszeit (nutze zuerst Claude oder prüfe, ob die App verbunden ist)";
+"Waiting for you" = "Wartet auf dich";
+"Waiting in terminal" = "Wartet im Terminal";
+"When" = "Wann";
+"Will continue after reset" = "Wird nach der Zurücksetzung fortgesetzt";
+"Writing" = "Schreibt";
+"now" = "jetzt";
+"~/.claude/settings.json isn't valid JSON, so it was left unchanged. Fix it and try again." = "~/.claude/settings.json ist kein gültiges JSON und wurde daher nicht geändert. Korrigiere die Datei und versuche es erneut.";
+
+/* Activity word order */
+"%@ %@" = "%1$@ %2$@";
+
+/* Scheduled prompt safety */
+"Allow everything without asking?" = "Alles ohne Nachfrage erlauben?";
+"During this scheduled run, Claude can run any command and change or delete any file in this folder without asking. Only use this for projects you trust and have backed up." = "Während dieser geplanten Ausführung kann Claude ohne Nachfrage jeden Befehl ausführen und jede Datei in diesem Ordner ändern oder löschen. Nutze das nur für vertrauenswürdige Projekte mit Backup.";
+"Allow everything" = "Alles erlauben";
+
+/* Approval safety */
+"Always allows:" = "Erlaubt immer:";
+"Multi-line command — check every line" = "Mehrzeiliger Befehl – prüfe jede Zeile";
+"this project" = "dieses Projekt";
+"this session only" = "nur diese Sitzung";
+
+/* History, Dynamic Island mode, system stats */
+"%@ free" = "%@ frei";
+"%lld days" = "%lld Tage";
+"A new run in a folder" = "Neue Ausführung in einem Ordner";
+"Claude Code (with Kongi)" = "Claude Code (mit Kongi)";
+"Clear all" = "Alles löschen";
+"Conversation in %@" = "Unterhaltung in %@";
+"Delete session history" = "Sitzungsverlauf löschen";
+"Don't keep" = "Nicht behalten";
+"Dynamic Island (music and more)" = "Dynamic Island (Musik und mehr)";
+"Keep session history" = "Sitzungsverlauf behalten";
+"Line %lld" = "Zeile %lld";
+"Memory" = "Arbeitsspeicher";
+"Next" = "Weiter";
+"Open large" = "Groß anzeigen";
+"Past sessions %lld" = "Frühere Sitzungen %lld";
+"Pause" = "Pause";
+"Play" = "Wiedergabe";
+"Previous" = "Zurück";
+"Send to" = "Senden an";
+"Sent to the conversation in the terminal." = "An die Unterhaltung im Terminal gesendet.";
+"Show CPU, GPU, memory and storage in the island" = "CPU, GPU, Arbeitsspeicher und Speicherplatz in der Insel zeigen";
+"Storage" = "Speicherplatz";
+"The prompt is typed into that conversation's terminal (Terminal, iTerm). If the terminal is closed, the same conversation is resumed with claude --resume." = "Der Prompt wird im Terminal dieser Unterhaltung eingegeben (Terminal, iTerm). Ist das Terminal geschlossen, wird dieselbe Unterhaltung mit claude --resume fortgesetzt.";
+"This conversation" = "Diese Unterhaltung";
+
+/* Phone */
+"Makes a new code. Phones that were connected need to scan again." = "Erstellt einen neuen Code. Verbundene Telefone müssen ihn erneut scannen.";
+"Phone" = "Telefon";
+"Reset phone access" = "Telefonzugriff zurücksetzen";
+"Send notifications to the phone too" = "Mitteilungen auch ans Telefon senden";
+"Smaller" = "Kleiner";
+
+/* Continue in the same conversation */
+"Sent to the conversation." = "An die Unterhaltung gesendet.";
+"Update" = "Aktualisieren";
+"Update the connection so “Continue after reset” and prompts from your phone go into the same conversation, including in VS Code." = "Aktualisiere die Verbindung, damit „Nach dem Zurücksetzen fortsetzen“ und Prompts vom iPhone in derselben Unterhaltung landen – auch in VS Code.";
+
+/* Settings app, island conversation, device events */
+"%lld more lines" = "%lld weitere Zeilen";
+"About" = "Über";
+"AirPods and other audio devices connecting" = "AirPods und andere Audiogeräte verbinden sich";
+"Also show on the island" = "Auch auf der Insel zeigen";
+"Charging" = "Lädt";
+"Charging and low battery" = "Laden und niedriger Akku";
+"Claude is still working, so it's sent when the conversation pauses." = "Claude arbeitet noch, daher wird es gesendet, sobald die Unterhaltung pausiert.";
+"Claude is working — sends when it pauses" = "Claude arbeitet – wird gesendet, sobald es pausiert";
+"Continue this conversation…" = "Diese Unterhaltung fortsetzen …";
+"Continues after reset" = "Wird nach dem Zurücksetzen fortgesetzt";
+"Conversation" = "Unterhaltung";
+"Couldn't send" = "Senden fehlgeschlagen";
+"General" = "Allgemein";
+"Island" = "Insel";
+"Like the iPhone, the island briefly widens for these and then goes back to what it was showing." = "Wie beim iPhone wird die Insel kurz breiter und zeigt dann wieder das Vorherige.";
+"Low Battery" = "Akku schwach";
+"Message Claude…" = "Nachricht an Claude …";
+"Microphone or camera in use" = "Mikrofon oder Kamera in Verwendung";
+"Muted" = "Stumm";
+"Open in %@" = "In %@ öffnen";
+"Running in the background · %@" = "Läuft im Hintergrund · %@";
+"Send" = "Senden";
+"Sends when Claude pauses" = "Wird gesendet, sobald Claude pausiert";
+"The conversation had ended, so it continues in the background" = "Die Unterhaltung war beendet, daher läuft sie im Hintergrund weiter";
+"Update the Claude Code connection in Kongi's settings so it can continue this conversation." = "Aktualisiere die Claude-Code-Verbindung in den Kongi-Einstellungen, um diese Unterhaltung fortzusetzen.";
+"Update the Claude Code connection to send from here" = "Aktualisiere die Claude-Code-Verbindung, um von hier zu senden";
+"Volume" = "Lautstärke";
+"Volume changes" = "Lautstärkeänderungen";
+"Alert at" = "Warnen bei";
+"Claude" = "Claude";
+"Minutes before" = "Minuten vorher";
+"Usage" = "Nutzung";
+
+/* Kongi window */
+"%lld sessions working" = "%lld Sitzungen arbeiten";
+"All quiet" = "Alles ruhig";
+"Answer in the island" = "Auf der Insel antworten";
+"App" = "App";
+"Approvals" = "Freigaben";
+"Claude needs you" = "Claude braucht dich";
+"History" = "Verlauf";
+"Home" = "Start";
+"Live" = "Live";
+"Needs you" = "Braucht dich";
+"Open conversation" = "Unterhaltung öffnen";
+"Past sessions" = "Frühere Sitzungen";
+"Quick controls" = "Schnellsteuerung";
+"Sessions" = "Sitzungen";
+"Sound" = "Ton";
+"The island lives where the notch is and widens when something needs you." = "Die Insel sitzt an der Notch und wird breiter, wenn etwas deine Aufmerksamkeit braucht.";
+"Update the Claude Code connection" = "Claude-Code-Verbindung aktualisieren";
+"Working now" = "Arbeitet gerade";
+
+/* Sidebars */
+"Show sidebar" = "Seitenleiste einblenden";
+"Hide sidebar" = "Seitenleiste ausblenden";
+"Show sessions" = "Sitzungen einblenden";
+"Hide sessions" = "Sitzungen ausblenden";
+
+/* Tools */
+"%@ runs out in about %@" = "%1$@ ist in etwa %2$@ aufgebraucht";
+"%lld files" = "%lld Dateien";
+"%lld h" = "%lld Std.";
+"%lld steps" = "%lld Schritte";
+"%llds" = "%lld s";
+"Clipboard · %lld" = "Zwischenablage · %lld";
+"Focus %lld min" = "Fokus %lld Min.";
+"GitHub · %lld" = "GitHub · %lld";
+"In %lld min" = "In %lld Min.";
+"Most active: %@" = "Am aktivsten: %@";
+"exit %lld · %@" = "Exit %lld · %@";
+"3000, 5173" = "3000, 5173";
+"Adds a small block to ~/.zshrc (backed up first). Works in any terminal, also outside Claude Code." = "Fügt einen kleinen Block zu ~/.zshrc hinzu (vorher gesichert). Funktioniert in jedem Terminal, auch außerhalb von Claude Code.";
+"Assigned to you" = "Dir zugewiesen";
+"Break" = "Pause";
+"Break is over" = "Pause vorbei";
+"CI" = "CI";
+"Calendar access was denied. Allow it in System Settings → Privacy & Security → Calendars." = "Kalenderzugriff wurde verweigert. Erlaube ihn unter Systemeinstellungen → Datenschutz & Sicherheit → Kalender.";
+"Clipboard history" = "Verlauf der Zwischenablage";
+"Command finished" = "Befehl fertig";
+"Copied" = "Kopiert";
+"Dictate" = "Diktieren";
+"Drop files on the island to attach them to the conversation, and use the mic button in the message box to dictate." = "Lege Dateien auf der Insel ab, um sie an die Unterhaltung anzuhängen, und diktiere mit dem Mikrofon im Eingabefeld.";
+"Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on." = "Zusätzliches, was die Insel kann. Alles, was eine Berechtigung braucht oder Dateien anfasst, bleibt aus, bis du es einschaltest.";
+"Files, lines and time of the last request. Click it to open the conversation." = "Dateien, Zeilen und Dauer der letzten Anfrage. Klick öffnet die Unterhaltung.";
+"Focus" = "Fokus";
+"Focus done" = "Fokus fertig";
+"Focus timer" = "Fokus-Timer";
+"GitHub notifications" = "GitHub-Mitteilungen";
+"Install" = "Installieren";
+"Join" = "Teilnehmen";
+"Keeps the last 8 copied texts in memory only, to copy again from the island. Password managers' items are skipped." = "Merkt sich die letzten 8 kopierten Texte nur im Speicher, um sie von der Insel erneut zu kopieren. Einträge von Passwortmanagern werden übersprungen.";
+"Meeting" = "Meeting";
+"Mentioned you" = "Hat dich erwähnt";
+"Needs the GitHub CLI (gh) signed in." = "Benötigt die angemeldete GitHub CLI (gh).";
+"New comment" = "Neuer Kommentar";
+"Next meeting" = "Nächstes Meeting";
+"Only for commands longer than" = "Nur für Befehle länger als";
+"Open" = "Öffnen";
+"Open a new terminal window for it to take effect." = "Gilt ab dem nächsten neuen Terminalfenster.";
+"Ports to check, like 3000, 5173. You'll see when a dev server goes down or comes back." = "Zu prüfende Ports, z. B. 3000, 5173. Du siehst, wenn ein Dev-Server ausfällt oder wieder läuft.";
+"Ready for the next one?" = "Bereit für den nächsten?";
+"Review requested" = "Review angefragt";
+"Review requests, CI and mentions, through the GitHub CLI you're signed in to." = "Review-Anfragen, CI und Erwähnungen über die angemeldete GitHub CLI.";
+"Save as image" = "Als Bild sichern";
+"Server is up" = "Server läuft";
+"Server stopped" = "Server gestoppt";
+"Shows meetings from your calendars 10 and 1 minutes before, with a Join button for Zoom, Meet and Teams links." = "Zeigt Termine aus deinen Kalendern 10 und 1 Minute vorher, mit Teilnehmen-Taste für Zoom-, Meet- und Teams-Links.";
+"Start" = "Starten";
+"Starting now" = "Beginnt jetzt";
+"Summary when Claude finishes" = "Zusammenfassung, wenn Claude fertig ist";
+"Take a short break" = "Mach eine kurze Pause";
+"Tell me when a long command finishes" = "Melden, wenn ein langer Befehl fertig ist";
+"Terminal" = "Terminal";
+"This week" = "Diese Woche";
+"This week with Claude" = "Diese Woche mit Claude";
+"Tools" = "Werkzeuge";
+"Warn when usage runs out fast" = "Warnen, wenn die Nutzung schnell sinkt";
+"Watch local servers" = "Lokale Server überwachen";
+"When the current pace would hit a limit before it resets." = "Wenn das aktuelle Tempo ein Limit vor dem Zurücksetzen erreichen würde.";
+"at this pace" = "bei diesem Tempo";
+"files" = "Dateien";
+"hours" = "Stunden";
+"lines" = "Zeilen";
+"sessions" = "Sitzungen";
+
+/* Android phone */
+"Use Kongi on your Android phone" = "Kongi auf deinem Android-Handy verwenden";
+"See sessions, approve requests and send prompts from the Kongi app while your phone is on the same Wi-Fi as this Mac. Everything is encrypted with a key only your phone and Mac know." = "Sieh Sitzungen, genehmige Anfragen und sende Nachrichten aus der Kongi-App, während dein Handy im selben WLAN wie dieser Mac ist. Alles wird mit einem Schlüssel verschlüsselt, den nur dein Handy und dein Mac kennen.";
+"Kongi couldn't open its connection. Another app may be using port 47815." = "Kongi konnte die Verbindung nicht öffnen. Möglicherweise verwendet eine andere App Port 47815.";
+"Install the Kongi app (APK) on your Android phone." = "Installiere die Kongi-App (APK) auf deinem Android-Handy.";
+"Connect the phone to the same Wi-Fi as this Mac." = "Verbinde das Handy mit demselben WLAN wie diesen Mac.";
+"Scan this code with the phone's camera, or with “Scan QR code” in the app." = "Scanne diesen Code mit der Handykamera oder mit „QR-Code scannen“ in der App.";
+"This Mac isn't on a Wi-Fi or wired network." = "Dieser Mac ist mit keinem WLAN oder kabelgebundenen Netzwerk verbunden.";
+"Connected phones" = "Verbundene Handys";
+"The phone stays connected while the Kongi app is open, or in the background if you allow it in the app." = "Das Handy bleibt verbunden, solange die Kongi-App geöffnet ist, oder im Hintergrund, wenn du es in der App erlaubst.";
+"Reset" = "Zurücksetzen";
+
+/* Hidden menu bar */
+"Hidden" = "Ausgeblendet";
+"To open Settings later, use the gear in the island or open Kongi again from Applications." = "Um die Einstellungen später zu öffnen, nutze das Zahnrad in der Insel oder öffne Kongi erneut aus dem Ordner „Programme“.";
+
+/* Updates */
+"Check for updates" = "Nach Updates suchen";
+"Check for updates automatically" = "Automatisch nach Updates suchen";
+"Checking…" = "Wird gesucht …";
+"Click to update" = "Zum Aktualisieren klicken";
+"Couldn't check for updates." = "Es konnte nicht nach Updates gesucht werden.";
+"Couldn't update. You can download the new version from GitHub." = "Aktualisierung fehlgeschlagen. Du kannst die neue Version von GitHub laden.";
+"Kongi %@ is available" = "Kongi %@ ist verfügbar";
+"Kongi can't replace itself in this folder. Download the new version from GitHub." = "Kongi kann sich in diesem Ordner nicht ersetzen. Lade die neue Version von GitHub.";
+"Kongi is up to date" = "Kongi ist auf dem neuesten Stand";
+"Open Kongi Settings → About to update." = "Aktualisiere in den Kongi-Einstellungen → Über.";
+"Release notes" = "Versionshinweise";
+"The download couldn't be verified, so nothing was changed." = "Der Download konnte nicht überprüft werden, daher wurde nichts geändert.";
+"The download wasn't the expected version, so nothing was changed." = "Der Download war nicht die erwartete Version, daher wurde nichts geändert.";
+"Update now" = "Jetzt aktualisieren";
+"Updating… Kongi will reopen when it's done." = "Wird aktualisiert … Kongi öffnet sich danach wieder.";

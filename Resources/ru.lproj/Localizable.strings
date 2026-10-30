@@ -1,0 +1,441 @@
+/* Keys are the English strings in code. Run scripts/check-localizations.py after editing. */
+
+/* Popover */
+"Claude Usage" = "Использование Claude";
+"Claude usage" = "Использование Claude";
+"Refresh" = "Обновить";
+"Settings" = "Настройки";
+"Quit" = "Выйти";
+"Extra usage" = "Дополнительное использование";
+"Time elapsed in this window" = "Прошедшее время в этом периоде";
+"This week by product" = "На этой неделе по продуктам";
+
+/* Limits */
+"Current session" = "Текущая сессия";
+"Weekly · All models" = "За неделю · Все модели";
+"Weekly · Opus" = "За неделю · Opus";
+"Weekly · Sonnet" = "За неделю · Sonnet";
+"Weekly · Cowork" = "За неделю · Cowork";
+"5-hour window" = "Окно 5 часов";
+"7-day window" = "Окно 7 дней";
+
+/* Time */
+"Resetting now" = "Скоро сброс";
+"Resets in %@" = "Сброс через %@";
+"Resets %@ (in %@)" = "Сброс %1$@ (через %2$@)";
+"Updated just now" = "Только что обновлено";
+"Updated %@ ago" = "Обновлено %@ назад";
+
+/* Notifications */
+"%@ reached %@" = "%1$@: достигнуто %2$@";
+
+/* Connect */
+"Connect your Claude account" = "Подключите аккаунт Claude";
+"See the usage of the Claude account you're signed in to with Claude Code. Your login stays on this Mac and is only sent to Anthropic." = "Показывает использование аккаунта Claude, в который вы вошли в Claude Code. Данные входа остаются на этом Mac и отправляются только в Anthropic.";
+"Claude Code login found" = "Вход в Claude Code найден";
+"No Claude Code login found" = "Вход в Claude Code не найден";
+"Install Claude Code and run `claude` in Terminal to sign in, then check again." = "Установите Claude Code и выполните `claude` в Терминале, чтобы войти, затем проверьте снова.";
+"Check again" = "Проверить снова";
+"Connect" = "Подключить";
+
+/* Account */
+"Account" = "Аккаунт";
+"Connected" = "Подключено";
+"Not connected" = "Не подключено";
+"Disconnect" = "Отключить (выйти)";
+"Removes this account's data from the app. Your Claude Code login is not affected." = "Удаляет данные этого аккаунта из приложения. Вход в Claude Code не затрагивается.";
+
+/* Settings */
+"Menu bar" = "Строка меню";
+"Refresh every" = "Обновлять каждые";
+"%lld min" = "%lld мин";
+"Language" = "Язык";
+"System default" = "Как в системе";
+"Usage alerts" = "Уведомления об использовании";
+"Launch at login" = "Открывать при входе";
+"Version %@" = "Версия %@";
+"Unofficial app. Not affiliated with Anthropic." = "Неофициальное приложение. Не связано с Anthropic.";
+"Session + weekly" = "Сессия + неделя";
+"Session only" = "Только сессия";
+"Session + reset time" = "Сессия + время до сброса";
+"Icon only" = "Только значок";
+
+/* Errors */
+"Claude Code login not found" = "Вход в Claude Code не найден";
+"Login expired" = "Срок входа истёк";
+"Too many requests" = "Слишком много запросов";
+"Can't reach Claude" = "Не удаётся подключиться к Claude";
+"Server error (%lld)" = "Ошибка сервера (%lld)";
+"Unexpected response" = "Неожиданный ответ";
+"This app uses the login saved by Claude Code. Install Claude Code and run `claude` in Terminal to sign in." = "Это приложение использует вход, сохранённый Claude Code. Установите Claude Code и выполните `claude` в Терминале, чтобы войти.";
+"Run `claude` in Terminal once — Claude Code will refresh the login automatically." = "Выполните `claude` в Терминале один раз — Claude Code автоматически обновит вход.";
+"Will retry automatically in a few minutes." = "Повторная попытка через несколько минут.";
+"Will retry automatically." = "Повторная попытка будет выполнена автоматически.";
+"The usage format may have changed. Check for an app update." = "Возможно, формат данных изменился. Проверьте обновления приложения.";
+"Claude Code setup guide" = "Руководство по установке Claude Code";
+
+/* Reset reminders */
+"%@ resets in %@" = "%1$@: сброс через %2$@";
+"Currently at %@. Your usage will be available again soon." = "Сейчас использовано %@. Скоро лимит восстановится.";
+
+/* Notification settings and status */
+"%@ has reset" = "%@: лимит сброшен";
+"Your usage is available again." = "Можно снова пользоваться Claude.";
+"Notifications" = "Уведомления";
+"Remind before a limit resets" = "Напоминать перед сбросом";
+"Notify when a limit resets" = "Уведомлять о сбросе лимита";
+"Only for limits used at least" = "Только для лимитов от";
+"Alert me when Claude has an outage" = "Уведомлять о сбоях Claude";
+"Send test notification" = "Отправить тестовое уведомление";
+"Sent" = "Отправлено";
+"Test notification" = "Тестовое уведомление";
+"Notifications from Kongi are working." = "Уведомления Kongi работают.";
+"Notifications are turned off for this app." = "Уведомления для этого приложения отключены.";
+"Open Notification Settings" = "Открыть настройки уведомлений";
+"Claude is having issues" = "У Claude неполадки";
+"View status" = "Статус";
+"At this pace, you'll hit the limit at %@" = "В таком темпе лимит закончится в %@";
+"Estimated from how fast you've used this limit so far." = "Оценка по тому, как быстро вы расходовали этот лимит.";
+"Open usage on claude.ai" = "Открыть использование на claude.ai";
+"Play a sound with notifications" = "Звук уведомлений";
+"Claude is back to normal" = "Claude снова работает нормально";
+
+/* Claude Code island and scheduled prompts */
+"%@ (in %@)" = "%1$@ (через %2$@)";
+"%@ limit reached" = "%@: лимит исчерпан";
+"%@: %@" = "%@: %@";
+"%@: done" = "%@: готово";
+"%@: needs you" = "%@: нужно ваше участие";
+"%@: scheduled prompt failed" = "%@: запланированный промпт не выполнен";
+"%@: scheduled prompt finished" = "%@: запланированный промпт выполнен";
+"%lld sessions" = "Сеансов: %lld";
+"1 session" = "1 сеанс";
+"After every session reset" = "После каждого сброса сессии";
+"After every weekly reset" = "После каждого недельного сброса";
+"After the next session reset" = "После следующего сброса сессии";
+"After the next weekly reset" = "После следующего недельного сброса";
+"Allow" = "Разрешить";
+"Allow %@?" = "Разрешить %@?";
+"Allow everything (careful)" = "Разрешить всё (осторожно)";
+"Allow file edits" = "Разрешить правку файлов";
+"Allow, and don't ask again for this kind of request." = "Разрешить и больше не спрашивать для таких запросов.";
+"Always" = "Всегда";
+"Answer approvals and questions in the island" = "Отвечать на запросы и вопросы в острове";
+"Answer in terminal" = "Ответить в Терминале";
+"Asking" = "Задаёт вопрос";
+"At a specific time" = "В заданное время";
+"Back" = "Назад";
+"Backup: %@" = "Резервная копия: %@";
+"Browsing" = "Просматривает веб";
+"Cancel" = "Отменить";
+"Changes %lld" = "Изменения %lld";
+"Choose" = "Выбрать";
+"Choose a folder" = "Выберите папку";
+"Choose folder…" = "Выбрать папку…";
+"Claude Code is connected" = "Claude Code подключён";
+"Claude Code sessions appear here" = "Здесь появятся сеансы Claude Code";
+"Kongi will add hooks to ~/.claude/settings.json so Claude Code can show its work, ask for approvals and send questions here. Your current file is backed up first, and your own settings are kept. Everything stays on this Mac. If Kongi isn't running, Claude Code works as usual." = "Kongi добавит хуки в ~/.claude/settings.json, чтобы Claude Code показывал здесь свою работу, запрашивал разрешения и задавал вопросы. Текущий файл сначала копируется, ваши настройки сохраняются. Всё остаётся на этом Mac. Если Kongi не запущен, Claude Code работает как обычно.";
+"Claude finished working." = "Claude закончил работу.";
+"Claude wants to use %@." = "Claude хочет использовать %@.";
+"Close" = "Закрыть";
+"Connect Claude Code" = "Подключить Claude Code";
+"Connect Claude Code to see sessions, approve requests and answer questions here." = "Подключите Claude Code, чтобы видеть сеансы, разрешать запросы и отвечать на вопросы здесь.";
+"Connect Claude Code?" = "Подключить Claude Code?";
+"Connected to Claude Code" = "Подключено к Claude Code";
+"Continue after reset" = "Продолжить после сброса";
+"Continue the last conversation in this folder" = "Продолжить последний разговор в этой папке";
+"Continue where you left off." = "Продолжи с того места, где остановился.";
+"Continues chat" = "Продолжает чат";
+"Couldn't find the claude command. Install Claude Code first." = "Команда claude не найдена. Сначала установите Claude Code.";
+"Delegating" = "Делегирует";
+"Delete" = "Удалить";
+"Denied from Kongi." = "Отклонено в Kongi.";
+"Deny" = "Отклонить";
+"Disconnect Claude Code?" = "Отключить Claude Code?";
+"Done" = "Готово";
+"Edit" = "Изменить";
+"Edit schedule" = "Изменить расписание";
+"Editing" = "Редактирует";
+"Ended" = "Завершён";
+"Every day at %@" = "Каждый день в %@";
+"Failed: %@" = "Ошибка: %@";
+"Finished" = "Выполнено";
+"Finished: %@" = "Выполнено: %@";
+"Has a question" = "Есть вопрос";
+"Hide it when no sessions are running" = "Скрывать, если нет сеансов";
+"If unanswered, ask in terminal after" = "Без ответа спросить в Терминале через";
+"Keep open" = "Не закрывать";
+"Missed (the Mac was asleep or offline)" = "Пропущено (Mac был в режиме сна или без сети)";
+"Needs approval" = "Нужно разрешение";
+"Never" = "Никогда";
+"New Claude Code sessions will show up in the island. Sessions that are already running need to be restarted." = "Новые сеансы Claude Code появятся в острове. Уже запущенные сеансы нужно перезапустить.";
+"New schedule" = "Новое расписание";
+"Next reset: %@" = "Следующий сброс: %@";
+"Next run: %@" = "Следующий запуск: %@";
+"No activity yet" = "Пока нет действий";
+"No file changes yet" = "Пока нет изменённых файлов";
+"No scheduled prompts yet" = "Запланированных промптов пока нет";
+"No sessions" = "Нет сеансов";
+"Nobody is there to approve requests during a scheduled run, so choose what Claude may do on its own." = "Во время запланированного запуска некому подтверждать запросы, поэтому выберите, что Claude может делать сам.";
+"Not connected to Claude Code" = "Не подключено к Claude Code";
+"Notify when Claude finishes or needs you" = "Уведомлять, когда Claude закончит или понадобитесь вы";
+"Only the hooks added by Kongi are removed from ~/.claude/settings.json. A backup is made first." = "Из ~/.claude/settings.json удаляются только хуки, добавленные Kongi. Перед этим создаётся резервная копия.";
+"Open terminal" = "Открыть терминал";
+"Other…" = "Другое…";
+"Paused" = "Приостановлено";
+"Permissions" = "Разрешения";
+"Planning" = "Планирует";
+"Project" = "Проект";
+"Prompt" = "Промпт";
+"Reading" = "Читает";
+"Remove" = "Удалить";
+"Repeat after every reset" = "Повторять после каждого сброса";
+"Repeat every day" = "Повторять каждый день";
+"Right after the session limit resets" = "Сразу после сброса лимита сессии";
+"Right after the weekly limit resets" = "Сразу после сброса недельного лимита";
+"Run now" = "Запустить сейчас";
+"Running" = "Выполняется";
+"Running…" = "Выполняется…";
+"Save" = "Сохранить";
+"Schedule" = "Запланировать";
+"Schedule a prompt for the reset" = "Запланировать промпт на сброс";
+"Scheduled prompt started" = "Запланированный промпт запущен";
+"Scheduled prompts" = "Запланированные промпты";
+"Searching" = "Ищет";
+"Send a prompt to Claude Code in a project when your usage limit resets, or at a time you choose." = "Отправляйте промпт в Claude Code в проекте, когда лимит использования сбрасывается, или в выбранное время.";
+"Send answer" = "Отправить ответ";
+"Show output" = "Показать вывод";
+"Show the island" = "Показывать остров";
+"Shows what Claude Code is doing in the island at the top of the screen, and lets you approve requests and answer questions there." = "Показывает в острове вверху экрана, чем занят Claude Code, и позволяет там же разрешать запросы и отвечать на вопросы.";
+"Skip anything that needs approval" = "Пропускать то, что требует разрешения";
+"Start Claude Code in a terminal and its work shows up here." = "Запустите Claude Code в терминале, и его работа появится здесь.";
+"Starting" = "Запускается";
+"Stop" = "Остановить";
+"Stopped." = "Остановлено.";
+"The hook helper is missing from the app. Reinstall Kongi." = "В приложении нет помощника хуков. Переустановите Kongi.";
+"The reset time isn't known yet. It appears once you've used Claude in this window." = "Время сброса пока неизвестно. Оно появится, когда вы воспользуетесь Claude в этом периоде.";
+"Thinking" = "Думает";
+"This file is too large to show line by line." = "Файл слишком большой, чтобы показать его построчно.";
+"Time" = "Время";
+"Tip: when you hit the session limit, the island offers to continue automatically after the reset." = "Совет: когда лимит сессии исчерпан, остров предложит автоматически продолжить после сброса.";
+"Type your answer" = "Введите ответ";
+"Waiting for a reset time (use Claude first, or check that the app is connected)" = "Ожидание времени сброса (сначала воспользуйтесь Claude или проверьте подключение приложения)";
+"Waiting for you" = "Ждёт вас";
+"Waiting in terminal" = "Ждёт в Терминале";
+"When" = "Когда";
+"Will continue after reset" = "Продолжит после сброса";
+"Writing" = "Пишет";
+"now" = "только что";
+"~/.claude/settings.json isn't valid JSON, so it was left unchanged. Fix it and try again." = "Файл ~/.claude/settings.json не является корректным JSON, поэтому он не изменён. Исправьте его и повторите попытку.";
+
+/* Activity word order */
+"%@ %@" = "%1$@ %2$@";
+
+/* Scheduled prompt safety */
+"Allow everything without asking?" = "Разрешить всё без вопросов?";
+"During this scheduled run, Claude can run any command and change or delete any file in this folder without asking. Only use this for projects you trust and have backed up." = "Во время этого запланированного запуска Claude может без вопросов выполнять любые команды и изменять или удалять любые файлы в этой папке. Используйте это только для надёжных проектов с резервной копией.";
+"Allow everything" = "Разрешить всё";
+
+/* Approval safety */
+"Always allows:" = "Всегда разрешает:";
+"Multi-line command — check every line" = "Многострочная команда — проверьте каждую строку";
+"this project" = "этот проект";
+"this session only" = "только этот сеанс";
+
+/* History, Dynamic Island mode, system stats */
+"%@ free" = "Свободно %@";
+"%lld days" = "%lld дн.";
+"A new run in a folder" = "Новый запуск в папке";
+"Claude Code (with Kongi)" = "Claude Code (с Конги)";
+"Clear all" = "Очистить всё";
+"Conversation in %@" = "Разговор в %@";
+"Delete session history" = "Удалить историю сеансов";
+"Don't keep" = "Не хранить";
+"Dynamic Island (music and more)" = "Динамический остров (музыка и др.)";
+"Keep session history" = "Хранить историю сеансов";
+"Line %lld" = "Строка %lld";
+"Memory" = "Память";
+"Next" = "Далее";
+"Open large" = "Открыть крупно";
+"Past sessions %lld" = "Прошлые сеансы: %lld";
+"Pause" = "Пауза";
+"Play" = "Воспроизвести";
+"Previous" = "Назад";
+"Send to" = "Куда отправить";
+"Sent to the conversation in the terminal." = "Отправлено в разговор в терминале.";
+"Show CPU, GPU, memory and storage in the island" = "Показывать CPU, GPU, память и диск в острове";
+"Storage" = "Диск";
+"The prompt is typed into that conversation's terminal (Terminal, iTerm). If the terminal is closed, the same conversation is resumed with claude --resume." = "Промпт вводится в терминал этого разговора (Terminal, iTerm). Если терминал закрыт, тот же разговор продолжается через claude --resume.";
+"This conversation" = "Этот разговор";
+
+/* Phone */
+"Makes a new code. Phones that were connected need to scan again." = "Создаёт новый код. Подключённым телефонам нужно отсканировать его снова.";
+"Phone" = "Телефон";
+"Reset phone access" = "Сбросить доступ телефона";
+"Send notifications to the phone too" = "Отправлять уведомления и на телефон";
+"Smaller" = "Меньше";
+
+/* Continue in the same conversation */
+"Sent to the conversation." = "Отправлено в разговор.";
+"Update" = "Обновить";
+"Update the connection so “Continue after reset” and prompts from your phone go into the same conversation, including in VS Code." = "Обновите подключение, чтобы «Продолжить после сброса» и запросы с iPhone попадали в тот же разговор, в том числе в VS Code.";
+
+/* Settings app, island conversation, device events */
+"%lld more lines" = "Ещё %lld строк";
+"About" = "О программе";
+"AirPods and other audio devices connecting" = "Подключение AirPods и других аудиоустройств";
+"Also show on the island" = "Также показывать на острове";
+"Charging" = "Зарядка";
+"Charging and low battery" = "Зарядка и низкий заряд";
+"Claude is still working, so it's sent when the conversation pauses." = "Claude ещё работает, поэтому сообщение отправится, когда разговор остановится.";
+"Claude is working — sends when it pauses" = "Claude работает — отправится при паузе";
+"Continue this conversation…" = "Продолжить этот разговор…";
+"Continues after reset" = "Продолжится после сброса";
+"Conversation" = "Разговор";
+"Couldn't send" = "Не удалось отправить";
+"General" = "Основные";
+"Island" = "Остров";
+"Like the iPhone, the island briefly widens for these and then goes back to what it was showing." = "Как на iPhone, остров ненадолго расширяется, а затем возвращается к прежнему.";
+"Low Battery" = "Низкий заряд";
+"Message Claude…" = "Сообщение для Claude…";
+"Microphone or camera in use" = "Используется микрофон или камера";
+"Muted" = "Без звука";
+"Open in %@" = "Открыть в %@";
+"Running in the background · %@" = "Работает в фоне · %@";
+"Send" = "Отправить";
+"Sends when Claude pauses" = "Отправится, когда Claude остановится";
+"The conversation had ended, so it continues in the background" = "Разговор был завершён, поэтому он продолжается в фоне";
+"Update the Claude Code connection in Kongi's settings so it can continue this conversation." = "Обновите подключение Claude Code в настройках Kongi, чтобы продолжить этот разговор.";
+"Update the Claude Code connection to send from here" = "Обновите подключение Claude Code, чтобы отправлять отсюда";
+"Volume" = "Громкость";
+"Volume changes" = "Изменение громкости";
+"Alert at" = "Предупреждать при";
+"Claude" = "Claude";
+"Minutes before" = "Минут до";
+"Usage" = "Использование";
+
+/* Kongi window */
+"%lld sessions working" = "Работает сессий: %lld";
+"All quiet" = "Всё спокойно";
+"Answer in the island" = "Ответить на острове";
+"App" = "Приложение";
+"Approvals" = "Разрешения";
+"Claude needs you" = "Claude ждёт вас";
+"History" = "История";
+"Home" = "Главная";
+"Live" = "Сейчас";
+"Needs you" = "Нужно ваше внимание";
+"Open conversation" = "Открыть разговор";
+"Past sessions" = "Прошлые сессии";
+"Quick controls" = "Быстрые действия";
+"Sessions" = "Сессии";
+"Sound" = "Звук";
+"The island lives where the notch is and widens when something needs you." = "Остров находится на месте выреза и расширяется, когда что-то требует внимания.";
+"Update the Claude Code connection" = "Обновите подключение Claude Code";
+"Working now" = "Работает сейчас";
+
+/* Sidebars */
+"Show sidebar" = "Показать боковую панель";
+"Hide sidebar" = "Скрыть боковую панель";
+"Show sessions" = "Показать сессии";
+"Hide sessions" = "Скрыть сессии";
+
+/* Tools */
+"%@ runs out in about %@" = "%1$@ закончится примерно через %2$@";
+"%lld files" = "Файлов: %lld";
+"%lld h" = "%lld ч";
+"%lld steps" = "Шагов: %lld";
+"%llds" = "%lld с";
+"Clipboard · %lld" = "Буфер обмена · %lld";
+"Focus %lld min" = "Фокус %lld мин";
+"GitHub · %lld" = "GitHub · %lld";
+"In %lld min" = "Через %lld мин";
+"Most active: %@" = "Больше всего: %@";
+"exit %lld · %@" = "код %lld · %@";
+"3000, 5173" = "3000, 5173";
+"Adds a small block to ~/.zshrc (backed up first). Works in any terminal, also outside Claude Code." = "Добавляет небольшой блок в ~/.zshrc (сначала с копией). Работает в любом терминале, и вне Claude Code.";
+"Assigned to you" = "Назначено вам";
+"Break" = "Перерыв";
+"Break is over" = "Перерыв окончен";
+"CI" = "CI";
+"Calendar access was denied. Allow it in System Settings → Privacy & Security → Calendars." = "Доступ к календарю запрещён. Разрешите в Системных настройках → Конфиденциальность и безопасность → Календари.";
+"Clipboard history" = "История буфера обмена";
+"Command finished" = "Команда завершена";
+"Copied" = "Скопировано";
+"Dictate" = "Диктовка";
+"Drop files on the island to attach them to the conversation, and use the mic button in the message box to dictate." = "Перетащите файлы на остров, чтобы прикрепить их к разговору, а кнопкой микрофона в поле сообщения можно диктовать.";
+"Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on." = "Дополнительные возможности острова. Всё, что требует разрешений или трогает файлы, выключено, пока вы не включите.";
+"Files, lines and time of the last request. Click it to open the conversation." = "Файлы, строки и время последнего запроса. Нажмите, чтобы открыть разговор.";
+"Focus" = "Фокус";
+"Focus done" = "Фокус завершён";
+"Focus timer" = "Таймер фокуса";
+"GitHub notifications" = "Уведомления GitHub";
+"Install" = "Установить";
+"Join" = "Войти";
+"Keeps the last 8 copied texts in memory only, to copy again from the island. Password managers' items are skipped." = "Хранит последние 8 скопированных текстов только в памяти, чтобы снова скопировать их с острова. Записи менеджеров паролей пропускаются.";
+"Meeting" = "Встреча";
+"Mentioned you" = "Упомянул вас";
+"Needs the GitHub CLI (gh) signed in." = "Нужен GitHub CLI (gh) с входом.";
+"New comment" = "Новый комментарий";
+"Next meeting" = "Следующая встреча";
+"Only for commands longer than" = "Только для команд дольше";
+"Open" = "Открыть";
+"Open a new terminal window for it to take effect." = "Действует с нового окна терминала.";
+"Ports to check, like 3000, 5173. You'll see when a dev server goes down or comes back." = "Порты для проверки, например 3000, 5173. Вы увидите, когда сервер разработки упадёт или поднимется.";
+"Ready for the next one?" = "Готовы к следующему?";
+"Review requested" = "Запрошен ревью";
+"Review requests, CI and mentions, through the GitHub CLI you're signed in to." = "Запросы ревью, CI и упоминания через ваш GitHub CLI.";
+"Save as image" = "Сохранить как изображение";
+"Server is up" = "Сервер запущен";
+"Server stopped" = "Сервер остановлен";
+"Shows meetings from your calendars 10 and 1 minutes before, with a Join button for Zoom, Meet and Teams links." = "Показывает встречи из календарей за 10 и 1 минуту, с кнопкой входа для Zoom, Meet и Teams.";
+"Start" = "Начать";
+"Starting now" = "Начинается";
+"Summary when Claude finishes" = "Сводка, когда Claude закончит";
+"Take a short break" = "Сделайте короткий перерыв";
+"Tell me when a long command finishes" = "Сообщать, когда долгая команда завершится";
+"Terminal" = "Терминал";
+"This week" = "Эта неделя";
+"This week with Claude" = "Эта неделя с Claude";
+"Tools" = "Инструменты";
+"Warn when usage runs out fast" = "Предупреждать о быстром расходе";
+"Watch local servers" = "Следить за локальными серверами";
+"When the current pace would hit a limit before it resets." = "Когда при текущем темпе лимит закончится до сброса.";
+"at this pace" = "при этом темпе";
+"files" = "файлов";
+"hours" = "часов";
+"lines" = "строк";
+"sessions" = "сессий";
+
+/* Android phone */
+"Use Kongi on your Android phone" = "Использовать Kongi на телефоне Android";
+"See sessions, approve requests and send prompts from the Kongi app while your phone is on the same Wi-Fi as this Mac. Everything is encrypted with a key only your phone and Mac know." = "Смотрите сеансы, одобряйте запросы и отправляйте сообщения из приложения Kongi, когда телефон в той же сети Wi-Fi, что и этот Mac. Всё шифруется ключом, который знают только телефон и Mac.";
+"Kongi couldn't open its connection. Another app may be using port 47815." = "Kongi не удалось открыть соединение. Возможно, порт 47815 занят другим приложением.";
+"Install the Kongi app (APK) on your Android phone." = "Установите приложение Kongi (APK) на телефон Android.";
+"Connect the phone to the same Wi-Fi as this Mac." = "Подключите телефон к той же сети Wi-Fi, что и этот Mac.";
+"Scan this code with the phone's camera, or with “Scan QR code” in the app." = "Отсканируйте этот код камерой телефона или кнопкой «Сканировать QR-код» в приложении.";
+"This Mac isn't on a Wi-Fi or wired network." = "Этот Mac не подключён к Wi-Fi или проводной сети.";
+"Connected phones" = "Подключённые телефоны";
+"The phone stays connected while the Kongi app is open, or in the background if you allow it in the app." = "Телефон остаётся подключённым, пока открыто приложение Kongi, или в фоне, если разрешить это в приложении.";
+"Reset" = "Сбросить";
+
+/* Hidden menu bar */
+"Hidden" = "Скрыто";
+"To open Settings later, use the gear in the island or open Kongi again from Applications." = "Чтобы открыть настройки позже, нажмите шестерёнку на острове или снова откройте Kongi из папки «Программы».";
+
+/* Updates */
+"Check for updates" = "Проверить обновления";
+"Check for updates automatically" = "Проверять обновления автоматически";
+"Checking…" = "Проверка…";
+"Click to update" = "Нажмите, чтобы обновить";
+"Couldn't check for updates." = "Не удалось проверить обновления.";
+"Couldn't update. You can download the new version from GitHub." = "Не удалось обновить. Новую версию можно скачать на GitHub.";
+"Kongi %@ is available" = "Доступен Kongi %@";
+"Kongi can't replace itself in this folder. Download the new version from GitHub." = "Kongi не может заменить себя в этой папке. Скачайте новую версию на GitHub.";
+"Kongi is up to date" = "У вас последняя версия Kongi";
+"Open Kongi Settings → About to update." = "Обновите в настройках Kongi → О программе.";
+"Release notes" = "Что нового";
+"The download couldn't be verified, so nothing was changed." = "Не удалось проверить загрузку, поэтому ничего не изменено.";
+"The download wasn't the expected version, so nothing was changed." = "Загружена не та версия, поэтому ничего не изменено.";
+"Update now" = "Обновить сейчас";
+"Updating… Kongi will reopen when it's done." = "Обновление… Kongi откроется снова, когда закончит.";

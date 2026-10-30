@@ -1,0 +1,50 @@
+name: Release
+
+# `git tag v1.0.0 && git push origin v1.0.0` 하면 유니버설 앱을 빌드해서 GitHub Release에 올립니다.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check localizations
+        run: python3 scripts/check-localizations.py
+
+      - name: Test
+        run: swift test
+
+      - name: Build universal app
+        run: |
+          UNIVERSAL=1 \
+          VERSION="${GITHUB_REF_NAME#v}" \
+          REPO_URL="https://github.com/${GITHUB_REPOSITORY}" \
+          ./scripts/build-app.sh
+
+      - name: Checksum and update signature
+        env:
+          KONGI_UPDATE_KEY: ${{ secrets.KONGI_UPDATE_KEY }}
+        run: |
+          cd dist
+          # 웹사이트 다운로드 버튼이 쓰는 고정 이름 (releases/latest/download/Kongi.zip)
+          cp "Kongi-${GITHUB_REF_NAME#v}.zip" Kongi.zip
+          # 앱 안의 업데이트 기능은 이 서명이 맞을 때만 설치합니다 (개인 키는 Secrets에만).
+          KONGI_UPDATE_KEY="$KONGI_UPDATE_KEY" swift ../scripts/sign-update.swift Kongi.zip > Kongi.zip.sig
+          shasum -a 256 *.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/Kongi.zip.sig dist/SHA256SUMS.txt \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes

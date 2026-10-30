@@ -1,0 +1,441 @@
+/* Keys are the English strings in code. Run scripts/check-localizations.py after editing. */
+
+/* Popover */
+"Claude Usage" = "Claude 用量";
+"Claude usage" = "Claude 用量";
+"Refresh" = "重新整理";
+"Settings" = "設定";
+"Quit" = "結束";
+"Extra usage" = "額外用量";
+"Time elapsed in this window" = "本週期已經過的時間";
+"This week by product" = "本週用量分布";
+
+/* Limits */
+"Current session" = "目前工作階段";
+"Weekly · All models" = "每週 · 所有模型";
+"Weekly · Opus" = "每週 · Opus";
+"Weekly · Sonnet" = "每週 · Sonnet";
+"Weekly · Cowork" = "每週 · Cowork";
+"5-hour window" = "5 小時週期";
+"7-day window" = "7 天週期";
+
+/* Time */
+"Resetting now" = "即將重設";
+"Resets in %@" = "%@後重設";
+"Resets %@ (in %@)" = "%1$@重設（%2$@後）";
+"Updated just now" = "剛剛更新";
+"Updated %@ ago" = "%@前更新";
+
+/* Notifications */
+"%@ reached %@" = "%1$@已達 %2$@";
+
+/* Connect */
+"Connect your Claude account" = "連結你的 Claude 帳號";
+"See the usage of the Claude account you're signed in to with Claude Code. Your login stays on this Mac and is only sent to Anthropic." = "顯示你在 Claude Code 中登入的 Claude 帳號用量。登入資訊保留在這台 Mac 上，只會傳送給 Anthropic。";
+"Claude Code login found" = "已找到 Claude Code 登入資訊";
+"No Claude Code login found" = "找不到 Claude Code 登入資訊";
+"Install Claude Code and run `claude` in Terminal to sign in, then check again." = "請安裝 Claude Code，在終端機中執行 `claude` 登入，然後再檢查一次。";
+"Check again" = "再檢查一次";
+"Connect" = "連結";
+
+/* Account */
+"Account" = "帳號";
+"Connected" = "已連結";
+"Not connected" = "未連結";
+"Disconnect" = "解除連結（登出）";
+"Removes this account's data from the app. Your Claude Code login is not affected." = "從 App 中移除此帳號的資料。不會影響你的 Claude Code 登入。";
+
+/* Settings */
+"Menu bar" = "選單列";
+"Refresh every" = "重新整理間隔";
+"%lld min" = "%lld 分鐘";
+"Language" = "語言";
+"System default" = "依照系統";
+"Usage alerts" = "用量提醒";
+"Launch at login" = "登入時開啟";
+"Version %@" = "版本 %@";
+"Unofficial app. Not affiliated with Anthropic." = "非官方 App，與 Anthropic 無關。";
+"Session + weekly" = "工作階段 + 每週";
+"Session only" = "僅工作階段";
+"Session + reset time" = "工作階段 + 距重設時間";
+"Icon only" = "僅圖像";
+
+/* Errors */
+"Claude Code login not found" = "找不到 Claude Code 登入資訊";
+"Login expired" = "登入已過期";
+"Too many requests" = "要求過多";
+"Can't reach Claude" = "無法連線至 Claude";
+"Server error (%lld)" = "伺服器錯誤 (%lld)";
+"Unexpected response" = "非預期的回應";
+"This app uses the login saved by Claude Code. Install Claude Code and run `claude` in Terminal to sign in." = "此 App 使用 Claude Code 儲存的登入資訊。請安裝 Claude Code 並在終端機中執行 `claude` 登入。";
+"Run `claude` in Terminal once — Claude Code will refresh the login automatically." = "在終端機中執行一次 `claude`，Claude Code 會自動更新登入。";
+"Will retry automatically in a few minutes." = "將在幾分鐘後自動重試。";
+"Will retry automatically." = "將自動重試。";
+"The usage format may have changed. Check for an app update." = "用量資料格式可能已變更。請檢查 App 更新。";
+"Claude Code setup guide" = "Claude Code 安裝指南";
+
+/* Reset reminders */
+"%@ resets in %@" = "%1$@將在%2$@後重設";
+"Currently at %@. Your usage will be available again soon." = "目前已用 %@。用量即將恢復。";
+
+/* Notification settings and status */
+"%@ has reset" = "%@已重設";
+"Your usage is available again." = "用量已恢復。";
+"Notifications" = "通知";
+"Remind before a limit resets" = "重設前提醒";
+"Notify when a limit resets" = "重設時通知";
+"Only for limits used at least" = "最低用量";
+"Alert me when Claude has an outage" = "Claude 故障提醒";
+"Send test notification" = "傳送測試通知";
+"Sent" = "已傳送";
+"Test notification" = "測試通知";
+"Notifications from Kongi are working." = "Kongi 的通知運作正常。";
+"Notifications are turned off for this app." = "此 App 的通知已關閉。";
+"Open Notification Settings" = "打開通知設定";
+"Claude is having issues" = "Claude 發生故障";
+"View status" = "查看狀態";
+"At this pace, you'll hit the limit at %@" = "照目前速度，將在 %@ 達到上限";
+"Estimated from how fast you've used this limit so far." = "根據你目前使用此限額的速度估算。";
+"Open usage on claude.ai" = "在 claude.ai 查看用量";
+"Play a sound with notifications" = "通知時播放聲音";
+"Claude is back to normal" = "Claude 已恢復正常";
+
+/* Claude Code island and scheduled prompts */
+"%@ (in %@)" = "%1$@（%2$@後）";
+"%@ limit reached" = "%@已達上限";
+"%@: %@" = "%@: %@";
+"%@: done" = "%@：已完成";
+"%@: needs you" = "%@：需要你處理";
+"%@: scheduled prompt failed" = "%@：排程提示失敗";
+"%@: scheduled prompt finished" = "%@：排程提示已完成";
+"%lld sessions" = "%lld 個工作階段";
+"1 session" = "1 個工作階段";
+"After every session reset" = "每次工作階段重設後";
+"After every weekly reset" = "每次每週重設後";
+"After the next session reset" = "下次工作階段重設後";
+"After the next weekly reset" = "下次每週重設後";
+"Allow" = "允許";
+"Allow %@?" = "允許 %@？";
+"Allow everything (careful)" = "允許所有操作（請小心）";
+"Allow file edits" = "允許編輯檔案";
+"Allow, and don't ask again for this kind of request." = "允許，並且不再詢問此類要求。";
+"Always" = "一律允許";
+"Answer approvals and questions in the island" = "在動態島中處理核准和問題";
+"Answer in terminal" = "在終端機中回答";
+"Asking" = "提問中";
+"At a specific time" = "指定時間";
+"Back" = "返回";
+"Backup: %@" = "備份：%@";
+"Browsing" = "瀏覽中";
+"Cancel" = "取消";
+"Changes %lld" = "變更 %lld";
+"Choose" = "選擇";
+"Choose a folder" = "選擇檔案夾";
+"Choose folder…" = "選擇檔案夾…";
+"Claude Code is connected" = "已連結 Claude Code";
+"Claude Code sessions appear here" = "Claude Code 工作階段會顯示在這裡";
+"Kongi will add hooks to ~/.claude/settings.json so Claude Code can show its work, ask for approvals and send questions here. Your current file is backed up first, and your own settings are kept. Everything stays on this Mac. If Kongi isn't running, Claude Code works as usual." = "Kongi 會在 ~/.claude/settings.json 中加入掛鉤，讓這裡能顯示 Claude Code 的工作內容、處理核准要求和問題。現有檔案會先備份，你自己的設定會保留。所有內容只在這台 Mac 上處理。Kongi 沒有執行時，Claude Code 照常運作。";
+"Claude finished working." = "Claude 已完成工作。";
+"Claude wants to use %@." = "Claude 想使用 %@。";
+"Close" = "關閉";
+"Connect Claude Code" = "連結 Claude Code";
+"Connect Claude Code to see sessions, approve requests and answer questions here." = "連結 Claude Code 後，就能在這裡查看工作階段、核准要求並回答問題。";
+"Connect Claude Code?" = "要連結 Claude Code 嗎？";
+"Connected to Claude Code" = "已連結 Claude Code";
+"Continue after reset" = "重設後繼續";
+"Continue the last conversation in this folder" = "繼續此檔案夾中的上一段對話";
+"Continue where you left off." = "從中斷的地方繼續。";
+"Continues chat" = "繼續對話";
+"Couldn't find the claude command. Install Claude Code first." = "找不到 claude 指令。請先安裝 Claude Code。";
+"Delegating" = "委派中";
+"Delete" = "刪除";
+"Denied from Kongi." = "已在 Kongi 中拒絕。";
+"Deny" = "拒絕";
+"Disconnect Claude Code?" = "要解除 Claude Code 連結嗎？";
+"Done" = "完成";
+"Edit" = "編輯";
+"Edit schedule" = "編輯排程";
+"Editing" = "編輯中";
+"Ended" = "已結束";
+"Every day at %@" = "每天 %@";
+"Failed: %@" = "失敗：%@";
+"Finished" = "已完成";
+"Finished: %@" = "已完成：%@";
+"Has a question" = "有問題";
+"Hide it when no sessions are running" = "沒有工作階段時隱藏";
+"If unanswered, ask in terminal after" = "無人回應時轉到終端機";
+"Keep open" = "保持開啟";
+"Missed (the Mac was asleep or offline)" = "已錯過（Mac 處於睡眠或離線狀態）";
+"Needs approval" = "需要核准";
+"Never" = "永不";
+"New Claude Code sessions will show up in the island. Sessions that are already running need to be restarted." = "新開始的 Claude Code 工作階段會顯示在動態島中。正在執行的工作階段需要重新啟動。";
+"New schedule" = "新增排程";
+"Next reset: %@" = "下次重設：%@";
+"Next run: %@" = "下次執行：%@";
+"No activity yet" = "尚無活動";
+"No file changes yet" = "尚無檔案變更";
+"No scheduled prompts yet" = "尚未有排程提示";
+"No sessions" = "沒有工作階段";
+"Nobody is there to approve requests during a scheduled run, so choose what Claude may do on its own." = "排程執行時沒有人能核准要求，請選擇 Claude 可以自行完成的操作範圍。";
+"Not connected to Claude Code" = "未連結 Claude Code";
+"Notify when Claude finishes or needs you" = "Claude 完成工作或需要你時通知";
+"Only the hooks added by Kongi are removed from ~/.claude/settings.json. A backup is made first." = "只會從 ~/.claude/settings.json 移除 Kongi 加入的掛鉤，並會先備份。";
+"Open terminal" = "打開終端機";
+"Other…" = "其他…";
+"Paused" = "已暫停";
+"Permissions" = "權限";
+"Planning" = "規劃中";
+"Project" = "專案";
+"Prompt" = "提示";
+"Reading" = "讀取中";
+"Remove" = "移除";
+"Repeat after every reset" = "每次重設後重複";
+"Repeat every day" = "每天重複";
+"Right after the session limit resets" = "工作階段額度重設後立即";
+"Right after the weekly limit resets" = "每週額度重設後立即";
+"Run now" = "立即執行";
+"Running" = "執行中";
+"Running…" = "執行中…";
+"Save" = "儲存";
+"Schedule" = "排程";
+"Schedule a prompt for the reset" = "為重設時間排程提示";
+"Scheduled prompt started" = "排程提示已開始";
+"Scheduled prompts" = "排程提示";
+"Searching" = "搜尋中";
+"Send a prompt to Claude Code in a project when your usage limit resets, or at a time you choose." = "在用量額度重設時或你指定的時間，向專案中的 Claude Code 傳送提示。";
+"Send answer" = "傳送回答";
+"Show output" = "顯示輸出";
+"Show the island" = "顯示動態島";
+"Shows what Claude Code is doing in the island at the top of the screen, and lets you approve requests and answer questions there." = "在螢幕頂端的動態島中顯示 Claude Code 的工作，並可直接處理核准和問題。";
+"Skip anything that needs approval" = "略過需要核准的操作";
+"Start Claude Code in a terminal and its work shows up here." = "在終端機中啟動 Claude Code 後，其工作內容會顯示在這裡。";
+"Starting" = "啟動中";
+"Stop" = "停止";
+"Stopped." = "已停止。";
+"The hook helper is missing from the app. Reinstall Kongi." = "App 中缺少掛鉤輔助程式。請重新安裝 Kongi。";
+"The reset time isn't known yet. It appears once you've used Claude in this window." = "還不知道重設時間。在此週期內使用 Claude 後就會顯示。";
+"Thinking" = "思考中";
+"This file is too large to show line by line." = "檔案太大，無法逐行顯示。";
+"Time" = "時間";
+"Tip: when you hit the session limit, the island offers to continue automatically after the reset." = "提示：達到工作階段額度時，動態島會建議在重設後自動繼續。";
+"Type your answer" = "輸入回答";
+"Waiting for a reset time (use Claude first, or check that the app is connected)" = "正在等待重設時間（請先使用 Claude，或確認 App 已連結）";
+"Waiting for you" = "等待你的輸入";
+"Waiting in terminal" = "在終端機中等待";
+"When" = "執行時機";
+"Will continue after reset" = "將在重設後繼續";
+"Writing" = "寫入中";
+"now" = "剛剛";
+"~/.claude/settings.json isn't valid JSON, so it was left unchanged. Fix it and try again." = "~/.claude/settings.json 不是有效的 JSON，因此未做變更。請修正後再試一次。";
+
+/* Activity word order */
+"%@ %@" = "%1$@ %2$@";
+
+/* Scheduled prompt safety */
+"Allow everything without asking?" = "不經詢問允許所有操作？";
+"During this scheduled run, Claude can run any command and change or delete any file in this folder without asking. Only use this for projects you trust and have backed up." = "在這次排程執行中，Claude 可以不經詢問執行任何指令，並變更或刪除此檔案夾中的任何檔案。請只在你信任且已備份的專案中使用。";
+"Allow everything" = "全部允許";
+
+/* Approval safety */
+"Always allows:" = "一律允許的規則：";
+"Multi-line command — check every line" = "多行指令，請檢查每一行";
+"this project" = "此專案";
+"this session only" = "僅限這次工作階段";
+
+/* History, Dynamic Island mode, system stats */
+"%@ free" = "剩餘 %@";
+"%lld days" = "%lld 天";
+"A new run in a folder" = "在檔案夾中新執行";
+"Claude Code (with Kongi)" = "Claude Code（豆豆）";
+"Clear all" = "全部清除";
+"Conversation in %@" = "%@ 中的對話";
+"Delete session history" = "刪除工作階段紀錄";
+"Don't keep" = "不保留";
+"Dynamic Island (music and more)" = "動態島（音樂等）";
+"Keep session history" = "保留工作階段紀錄";
+"Line %lld" = "第 %lld 行";
+"Memory" = "記憶體";
+"Next" = "下一首";
+"Open large" = "放大檢視";
+"Past sessions %lld" = "過去的工作階段 %lld 個";
+"Pause" = "暫停";
+"Play" = "播放";
+"Previous" = "上一首";
+"Send to" = "傳送到";
+"Sent to the conversation in the terminal." = "已傳送到終端機中的對話。";
+"Show CPU, GPU, memory and storage in the island" = "在動態島中顯示 CPU、GPU、記憶體和儲存空間";
+"Storage" = "儲存空間";
+"The prompt is typed into that conversation's terminal (Terminal, iTerm). If the terminal is closed, the same conversation is resumed with claude --resume." = "提示會輸入到該對話所在的終端機（Terminal、iTerm）。若終端機已關閉，則以 claude --resume 繼續同一段對話。";
+"This conversation" = "此對話";
+
+/* Phone */
+"Makes a new code. Phones that were connected need to scan again." = "產生新的 QR 碼。已連結的手機需要重新掃描。";
+"Phone" = "手機";
+"Reset phone access" = "重設手機存取";
+"Send notifications to the phone too" = "也傳送通知到手機";
+"Smaller" = "縮小";
+
+/* Continue in the same conversation */
+"Sent to the conversation." = "已傳送到對話。";
+"Update" = "更新";
+"Update the connection so “Continue after reset” and prompts from your phone go into the same conversation, including in VS Code." = "更新連線後，「重設後繼續」和從 iPhone 傳送的提示會進入同一個對話，包括在 VS Code 中。";
+
+/* Settings app, island conversation, device events */
+"%lld more lines" = "還有 %lld 行";
+"About" = "關於";
+"AirPods and other audio devices connecting" = "AirPods 等音訊裝置連線";
+"Also show on the island" = "也在島上顯示";
+"Charging" = "正在充電";
+"Charging and low battery" = "充電與電量不足";
+"Claude is still working, so it's sent when the conversation pauses." = "Claude 仍在工作，對話暫停時再傳送。";
+"Claude is working — sends when it pauses" = "Claude 正在工作 — 暫停時傳送";
+"Continue this conversation…" = "繼續此對話…";
+"Continues after reset" = "重設後繼續";
+"Conversation" = "對話";
+"Couldn't send" = "無法傳送";
+"General" = "一般";
+"Island" = "島";
+"Like the iPhone, the island briefly widens for these and then goes back to what it was showing." = "像 iPhone 一樣，島會短暫變寬，然後回到原本的顯示。";
+"Low Battery" = "電量不足";
+"Message Claude…" = "傳訊息給 Claude…";
+"Microphone or camera in use" = "麥克風或相機正在使用";
+"Muted" = "靜音";
+"Open in %@" = "在 %@ 中打開";
+"Running in the background · %@" = "正在背景執行 · %@";
+"Send" = "傳送";
+"Sends when Claude pauses" = "Claude 暫停時傳送";
+"The conversation had ended, so it continues in the background" = "對話已結束，因此在背景繼續";
+"Update the Claude Code connection in Kongi's settings so it can continue this conversation." = "請在 Kongi 設定中更新 Claude Code 連線以繼續此對話。";
+"Update the Claude Code connection to send from here" = "更新 Claude Code 連線後才能從這裡傳送";
+"Volume" = "音量";
+"Volume changes" = "音量變化";
+"Alert at" = "提醒門檻";
+"Claude" = "Claude";
+"Minutes before" = "提前分鐘數";
+"Usage" = "用量";
+
+/* Kongi window */
+"%lld sessions working" = "%lld 個工作階段正在工作";
+"All quiet" = "一切安靜";
+"Answer in the island" = "在島上回答";
+"App" = "App";
+"Approvals" = "核准";
+"Claude needs you" = "Claude 在等你";
+"History" = "記錄";
+"Home" = "主頁";
+"Live" = "即時";
+"Needs you" = "需要你處理";
+"Open conversation" = "打開對話";
+"Past sessions" = "過去的工作階段";
+"Quick controls" = "快速控制";
+"Sessions" = "工作階段";
+"Sound" = "聲音";
+"The island lives where the notch is and widens when something needs you." = "島位於瀏海處，有事需要你時會變寬。";
+"Update the Claude Code connection" = "更新 Claude Code 連線";
+"Working now" = "正在工作";
+
+/* Sidebars */
+"Show sidebar" = "顯示側邊欄";
+"Hide sidebar" = "隱藏側邊欄";
+"Show sessions" = "顯示工作階段";
+"Hide sessions" = "隱藏工作階段";
+
+/* Tools */
+"%@ runs out in about %@" = "照目前速度，%1$@約%2$@後用完";
+"%lld files" = "%lld 個檔案";
+"%lld h" = "%lld 小時";
+"%lld steps" = "%lld 步";
+"%llds" = "%lld 秒";
+"Clipboard · %lld" = "剪貼簿 · %lld";
+"Focus %lld min" = "專注 %lld 分鐘";
+"GitHub · %lld" = "GitHub · %lld";
+"In %lld min" = "%lld 分鐘後";
+"Most active: %@" = "最活躍：%@";
+"exit %lld · %@" = "結束碼 %lld · %@";
+"3000, 5173" = "3000, 5173";
+"Adds a small block to ~/.zshrc (backed up first). Works in any terminal, also outside Claude Code." = "在 ~/.zshrc 加入一小段程式碼（先備份）。在任何終端機都可用，也包括 Claude Code 之外。";
+"Assigned to you" = "指派給你";
+"Break" = "休息";
+"Break is over" = "休息結束";
+"CI" = "CI";
+"Calendar access was denied. Allow it in System Settings → Privacy & Security → Calendars." = "行事曆存取被拒絕。請在系統設定 → 隱私權與安全性 → 行事曆中允許。";
+"Clipboard history" = "剪貼簿記錄";
+"Command finished" = "指令完成";
+"Copied" = "已拷貝";
+"Dictate" = "聽寫";
+"Drop files on the island to attach them to the conversation, and use the mic button in the message box to dictate." = "把檔案拖到島上即可附加到對話，用輸入框的麥克風按鈕聽寫。";
+"Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on." = "島的額外功能。需要權限或會動到檔案的功能在你開啟前保持關閉。";
+"Files, lines and time of the last request. Click it to open the conversation." = "上次要求修改的檔案、行數和時間。按一下打開對話。";
+"Focus" = "專注";
+"Focus done" = "專注結束";
+"Focus timer" = "專注計時器";
+"GitHub notifications" = "GitHub 通知";
+"Install" = "安裝";
+"Join" = "加入";
+"Keeps the last 8 copied texts in memory only, to copy again from the island. Password managers' items are skipped." = "只在記憶體中保留最近拷貝的 8 筆文字，可在島上再次拷貝。會略過密碼管理器的項目。";
+"Meeting" = "會議";
+"Mentioned you" = "提到了你";
+"Needs the GitHub CLI (gh) signed in." = "需要已登入的 GitHub CLI (gh)。";
+"New comment" = "新留言";
+"Next meeting" = "下一場會議";
+"Only for commands longer than" = "只針對花費超過";
+"Open" = "打開";
+"Open a new terminal window for it to take effect." = "從新的終端機視窗開始生效。";
+"Ports to check, like 3000, 5173. You'll see when a dev server goes down or comes back." = "要檢查的連接埠，如 3000, 5173。開發伺服器停止或恢復時會提示你。";
+"Ready for the next one?" = "準備好下一輪了嗎？";
+"Review requested" = "要求審查";
+"Review requests, CI and mentions, through the GitHub CLI you're signed in to." = "透過已登入的 GitHub CLI 接收審查要求、CI 和提及。";
+"Save as image" = "存成圖片";
+"Server is up" = "伺服器已啟動";
+"Server stopped" = "伺服器已停止";
+"Shows meetings from your calendars 10 and 1 minutes before, with a Join button for Zoom, Meet and Teams links." = "提前 10 分鐘和 1 分鐘顯示行事曆會議，Zoom、Meet、Teams 連結可一鍵加入。";
+"Start" = "開始";
+"Starting now" = "即將開始";
+"Summary when Claude finishes" = "Claude 完成時顯示摘要";
+"Take a short break" = "休息一下";
+"Tell me when a long command finishes" = "長指令結束時提醒我";
+"Terminal" = "終端機";
+"This week" = "本週";
+"This week with Claude" = "本週與 Claude";
+"Tools" = "工具";
+"Warn when usage runs out fast" = "用量消耗過快時提醒";
+"Watch local servers" = "監看本機伺服器";
+"When the current pace would hit a limit before it resets." = "當照目前速度會在重設前用完限額時。";
+"at this pace" = "照目前速度";
+"files" = "檔案";
+"hours" = "小時";
+"lines" = "行";
+"sessions" = "工作階段";
+
+/* Android phone */
+"Use Kongi on your Android phone" = "在 Android 手機上使用 Kongi";
+"See sessions, approve requests and send prompts from the Kongi app while your phone is on the same Wi-Fi as this Mac. Everything is encrypted with a key only your phone and Mac know." = "手機與這台 Mac 連接同一個 Wi-Fi 時，可以在 Kongi App 中查看工作階段、核准請求和傳送訊息。所有內容都以只有手機和 Mac 知道的金鑰加密。";
+"Kongi couldn't open its connection. Another app may be using port 47815." = "Kongi 無法開啟連線。可能有其他 App 正在使用連接埠 47815。";
+"Install the Kongi app (APK) on your Android phone." = "在 Android 手機上安裝 Kongi App（APK）。";
+"Connect the phone to the same Wi-Fi as this Mac." = "將手機連接到與這台 Mac 相同的 Wi-Fi。";
+"Scan this code with the phone's camera, or with “Scan QR code” in the app." = "用手機相機或 App 中的「掃描 QR 碼」掃描此碼。";
+"This Mac isn't on a Wi-Fi or wired network." = "這台 Mac 沒有連接 Wi-Fi 或有線網路。";
+"Connected phones" = "已連接的手機";
+"The phone stays connected while the Kongi app is open, or in the background if you allow it in the app." = "Kongi App 開啟時保持連線；在 App 中允許後，背景也會保持連線。";
+"Reset" = "重設";
+
+/* Hidden menu bar */
+"Hidden" = "隱藏";
+"To open Settings later, use the gear in the island or open Kongi again from Applications." = "之後要打開設定，請按一下島中的齒輪，或從「應用程式」再次打開 Kongi。";
+
+/* Updates */
+"Check for updates" = "檢查更新";
+"Check for updates automatically" = "自動檢查更新";
+"Checking…" = "正在檢查…";
+"Click to update" = "按一下以更新";
+"Couldn't check for updates." = "無法檢查更新。";
+"Couldn't update. You can download the new version from GitHub." = "無法更新。你可以從 GitHub 下載新版本。";
+"Kongi %@ is available" = "Kongi %@ 已推出";
+"Kongi can't replace itself in this folder. Download the new version from GitHub." = "Kongi 無法在此檔案夾中取代自身。請從 GitHub 下載新版本。";
+"Kongi is up to date" = "Kongi 已是最新版本";
+"Open Kongi Settings → About to update." = "請在 Kongi 設定 → 關於 中更新。";
+"Release notes" = "版本說明";
+"The download couldn't be verified, so nothing was changed." = "無法驗證下載的檔案，因此未做任何變更。";
+"The download wasn't the expected version, so nothing was changed." = "下載的不是預期的版本，因此未做任何變更。";
+"Update now" = "立即更新";
+"Updating… Kongi will reopen when it's done." = "正在更新… 完成後 Kongi 會重新打開。";

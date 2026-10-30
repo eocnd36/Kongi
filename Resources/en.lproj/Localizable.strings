@@ -1,0 +1,166 @@
+/* English is the development language: keys are the English strings in code. */
+
+/* Continue in the same conversation */
+"Sent to the conversation." = "Sent to the conversation.";
+"Update" = "Update";
+"Update the connection so “Continue after reset” and prompts from your phone go into the same conversation, including in VS Code." = "Update the connection so “Continue after reset” and prompts from your phone go into the same conversation, including in VS Code.";
+
+/* Settings app, island conversation, device events */
+"%lld more lines" = "%lld more lines";
+"About" = "About";
+"AirPods and other audio devices connecting" = "AirPods and other audio devices connecting";
+"Also show on the island" = "Also show on the island";
+"Charging" = "Charging";
+"Charging and low battery" = "Charging and low battery";
+"Claude is still working, so it's sent when the conversation pauses." = "Claude is still working, so it's sent when the conversation pauses.";
+"Claude is working — sends when it pauses" = "Claude is working — sends when it pauses";
+"Continue this conversation…" = "Continue this conversation…";
+"Continues after reset" = "Continues after reset";
+"Conversation" = "Conversation";
+"Couldn't send" = "Couldn't send";
+"General" = "General";
+"Island" = "Island";
+"Like the iPhone, the island briefly widens for these and then goes back to what it was showing." = "Like the iPhone, the island briefly widens for these and then goes back to what it was showing.";
+"Low Battery" = "Low Battery";
+"Message Claude…" = "Message Claude…";
+"Microphone or camera in use" = "Microphone or camera in use";
+"Muted" = "Muted";
+"Open in %@" = "Open in %@";
+"Running in the background · %@" = "Running in the background · %@";
+"Send" = "Send";
+"Sends when Claude pauses" = "Sends when Claude pauses";
+"The conversation had ended, so it continues in the background" = "The conversation had ended, so it continues in the background";
+"Update the Claude Code connection in Kongi's settings so it can continue this conversation." = "Update the Claude Code connection in Kongi's settings so it can continue this conversation.";
+"Update the Claude Code connection to send from here" = "Update the Claude Code connection to send from here";
+"Volume" = "Volume";
+"Volume changes" = "Volume changes";
+"Alert at" = "Alert at";
+"Claude" = "Claude";
+"Minutes before" = "Minutes before";
+"Usage" = "Usage";
+
+/* Kongi window */
+"%lld sessions working" = "%lld sessions working";
+"All quiet" = "All quiet";
+"Answer in the island" = "Answer in the island";
+"App" = "App";
+"Approvals" = "Approvals";
+"Claude needs you" = "Claude needs you";
+"History" = "History";
+"Home" = "Home";
+"Live" = "Live";
+"Needs you" = "Needs you";
+"Open conversation" = "Open conversation";
+"Past sessions" = "Past sessions";
+"Quick controls" = "Quick controls";
+"Sessions" = "Sessions";
+"Sound" = "Sound";
+"The island lives where the notch is and widens when something needs you." = "The island lives where the notch is and widens when something needs you.";
+"Update the Claude Code connection" = "Update the Claude Code connection";
+"Working now" = "Working now";
+
+/* Sidebars */
+"Show sidebar" = "Show sidebar";
+"Hide sidebar" = "Hide sidebar";
+"Show sessions" = "Show sessions";
+"Hide sessions" = "Hide sessions";
+
+/* Tools */
+"%@ runs out in about %@" = "%@ runs out in about %@";
+"%lld files" = "%lld files";
+"%lld h" = "%lld h";
+"%lld steps" = "%lld steps";
+"%llds" = "%llds";
+"Clipboard · %lld" = "Clipboard · %lld";
+"Focus %lld min" = "Focus %lld min";
+"GitHub · %lld" = "GitHub · %lld";
+"In %lld min" = "In %lld min";
+"Most active: %@" = "Most active: %@";
+"exit %lld · %@" = "exit %lld · %@";
+"3000, 5173" = "3000, 5173";
+"Adds a small block to ~/.zshrc (backed up first). Works in any terminal, also outside Claude Code." = "Adds a small block to ~/.zshrc (backed up first). Works in any terminal, also outside Claude Code.";
+"Assigned to you" = "Assigned to you";
+"Break" = "Break";
+"Break is over" = "Break is over";
+"CI" = "CI";
+"Calendar access was denied. Allow it in System Settings → Privacy & Security → Calendars." = "Calendar access was denied. Allow it in System Settings → Privacy & Security → Calendars.";
+"Clipboard history" = "Clipboard history";
+"Command finished" = "Command finished";
+"Copied" = "Copied";
+"Dictate" = "Dictate";
+"Drop files on the island to attach them to the conversation, and use the mic button in the message box to dictate." = "Drop files on the island to attach them to the conversation, and use the mic button in the message box to dictate.";
+"Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on." = "Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on.";
+"Files, lines and time of the last request. Click it to open the conversation." = "Files, lines and time of the last request. Click it to open the conversation.";
+"Focus" = "Focus";
+"Focus done" = "Focus done";
+"Focus timer" = "Focus timer";
+"GitHub notifications" = "GitHub notifications";
+"Install" = "Install";
+"Join" = "Join";
+"Keeps the last 8 copied texts in memory only, to copy again from the island. Password managers' items are skipped." = "Keeps the last 8 copied texts in memory only, to copy again from the island. Password managers' items are skipped.";
+"Meeting" = "Meeting";
+"Mentioned you" = "Mentioned you";
+"Needs the GitHub CLI (gh) signed in." = "Needs the GitHub CLI (gh) signed in.";
+"New comment" = "New comment";
+"Next meeting" = "Next meeting";
+"Only for commands longer than" = "Only for commands longer than";
+"Open" = "Open";
+"Open a new terminal window for it to take effect." = "Open a new terminal window for it to take effect.";
+"Ports to check, like 3000, 5173. You'll see when a dev server goes down or comes back." = "Ports to check, like 3000, 5173. You'll see when a dev server goes down or comes back.";
+"Ready for the next one?" = "Ready for the next one?";
+"Review requested" = "Review requested";
+"Review requests, CI and mentions, through the GitHub CLI you're signed in to." = "Review requests, CI and mentions, through the GitHub CLI you're signed in to.";
+"Save as image" = "Save as image";
+"Server is up" = "Server is up";
+"Server stopped" = "Server stopped";
+"Shows meetings from your calendars 10 and 1 minutes before, with a Join button for Zoom, Meet and Teams links." = "Shows meetings from your calendars 10 and 1 minutes before, with a Join button for Zoom, Meet and Teams links.";
+"Start" = "Start";
+"Starting now" = "Starting now";
+"Summary when Claude finishes" = "Summary when Claude finishes";
+"Take a short break" = "Take a short break";
+"Tell me when a long command finishes" = "Tell me when a long command finishes";
+"Terminal" = "Terminal";
+"This week" = "This week";
+"This week with Claude" = "This week with Claude";
+"Tools" = "Tools";
+"Warn when usage runs out fast" = "Warn when usage runs out fast";
+"Watch local servers" = "Watch local servers";
+"When the current pace would hit a limit before it resets." = "When the current pace would hit a limit before it resets.";
+"at this pace" = "at this pace";
+"files" = "files";
+"hours" = "hours";
+"lines" = "lines";
+"sessions" = "sessions";
+
+/* Android phone */
+"Use Kongi on your Android phone" = "Use Kongi on your Android phone";
+"See sessions, approve requests and send prompts from the Kongi app while your phone is on the same Wi-Fi as this Mac. Everything is encrypted with a key only your phone and Mac know." = "See sessions, approve requests and send prompts from the Kongi app while your phone is on the same Wi-Fi as this Mac. Everything is encrypted with a key only your phone and Mac know.";
+"Kongi couldn't open its connection. Another app may be using port 47815." = "Kongi couldn't open its connection. Another app may be using port 47815.";
+"Install the Kongi app (APK) on your Android phone." = "Install the Kongi app (APK) on your Android phone.";
+"Connect the phone to the same Wi-Fi as this Mac." = "Connect the phone to the same Wi-Fi as this Mac.";
+"Scan this code with the phone's camera, or with “Scan QR code” in the app." = "Scan this code with the phone's camera, or with “Scan QR code” in the app.";
+"This Mac isn't on a Wi-Fi or wired network." = "This Mac isn't on a Wi-Fi or wired network.";
+"Connected phones" = "Connected phones";
+"The phone stays connected while the Kongi app is open, or in the background if you allow it in the app." = "The phone stays connected while the Kongi app is open, or in the background if you allow it in the app.";
+"Reset" = "Reset";
+
+/* Hidden menu bar */
+"Hidden" = "Hidden";
+"To open Settings later, use the gear in the island or open Kongi again from Applications." = "To open Settings later, use the gear in the island or open Kongi again from Applications.";
+
+/* Updates */
+"Check for updates" = "Check for updates";
+"Check for updates automatically" = "Check for updates automatically";
+"Checking…" = "Checking…";
+"Click to update" = "Click to update";
+"Couldn't check for updates." = "Couldn't check for updates.";
+"Couldn't update. You can download the new version from GitHub." = "Couldn't update. You can download the new version from GitHub.";
+"Kongi %@ is available" = "Kongi %@ is available";
+"Kongi can't replace itself in this folder. Download the new version from GitHub." = "Kongi can't replace itself in this folder. Download the new version from GitHub.";
+"Kongi is up to date" = "Kongi is up to date";
+"Open Kongi Settings → About to update." = "Open Kongi Settings → About to update.";
+"Release notes" = "Release notes";
+"The download couldn't be verified, so nothing was changed." = "The download couldn't be verified, so nothing was changed.";
+"The download wasn't the expected version, so nothing was changed." = "The download wasn't the expected version, so nothing was changed.";
+"Update now" = "Update now";
+"Updating… Kongi will reopen when it's done." = "Updating… Kongi will reopen when it's done.";

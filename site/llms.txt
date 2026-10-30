@@ -1,0 +1,42 @@
+# Kongi
+
+> Kongi is a free, open-source Dynamic Island made for Macs without a notch (such as Mac mini, Mac Studio and iMac) and external displays; it also runs on MacBooks, with a notch-tuned MacBook update and an iPhone app planned. The island shows what Claude Code is doing live (code being edited, files being read, commands and their output), lets you approve permission requests, answer Claude's questions and reply to sessions, and also shows music, AirPods and battery, volume and notices. The menu bar shows your Claude subscription usage: the 5-hour session limit and weekly limits with reset times and alerts. An Android companion app connects over the same Wi-Fi with end-to-end encryption. It works with Claude Pro, Max and Team plans and runs on macOS 13 or later (Apple silicon and Intel).
+
+Korean: Kongi(콩이)는 노치 없는 Mac(맥 미니, 맥 스튜디오, 아이맥)을 기준으로 만든 무료 오픈소스 Mac 앱으로, Claude Code 작업을 화면 맨 위 다이나믹 아일랜드에, Claude 5시간·주간 한도를 메뉴 막대에 보여 줍니다. 안드로이드 앱도 있습니다. 권한 승인, 질문 응답, 코드 변경 diff, 터미널 이동, 한도 초기화 시 예약 프롬프트를 지원합니다. 초기화 시간, 한도 도달 예측, 원하는 사용률에서 알림, 초기화 전·초기화 시 알림, Claude 장애 알림을 제공합니다.
+
+## What it does
+
+- Built for Macs without a notch: the island floats at the top center of any display. It also shows music (Apple Music, Spotify), AirPods with battery, volume, charging and notices, side by side with Claude Code.
+- Kongi for Android: approve requests from notifications, follow sessions live, read conversations (with Markdown tables) and send messages, over the same Wi-Fi as the Mac. Paired with a QR code, encrypted with AES-256-GCM, no server. Download: https://github.com/eocnd36/Kongi/releases/latest/download/Kongi.apk
+
+- Island for Claude Code (via Claude Code hooks, all local): see each session's activity (files read and edited, commands run), changed files with +N/−N and diffs, approve/deny/always-allow permission requests, answer AskUserQuestion prompts (single/multi-select or free text), jump to the session's terminal (Terminal, iTerm, Warp, Ghostty, VS Code…), and get alerted when a task finishes or Claude needs input. The character is Kongi, a bean sprout.
+- Scheduled prompts: run `claude -p` in a chosen project right after the 5-hour session or weekly limit resets, or at a set time, once or repeating, optionally with `--continue`. When a limit is reached, the island offers "Continue after reset".
+- Running the app uses no Claude usage; only scheduled prompts do.
+
+- Shows a ring gauge and session/weekly percentages (for example "42% · 63%") in the macOS menu bar, next to the clock. The gauge turns red above 90%.
+- Clicking it opens a popover with the current 5-hour session, weekly limits (all models, plus Opus or Sonnet limits when the plan has them), time until each limit resets, a pace marker showing how much of the window has passed, and this week's usage split by product (Claude Code, chat, Cowork).
+- Sends notifications at usage percentages the user chooses (80% and 95% by default), a reminder a chosen number of minutes before a limit resets, and optionally a notification the moment a limit resets. Reset notifications only fire for limits used at least a chosen percentage (50% by default).
+- Estimates when you'll hit a limit at your current pace ("At this pace, you'll hit the limit at 3:20 PM").
+- Checks the official Claude status page (status.claude.com) and shows a banner and notification when Claude has an outage.
+- Available in English, Korean, Japanese, Simplified Chinese, Traditional Chinese, Spanish, French, German, Italian, Brazilian Portuguese and Russian.
+
+## How it works
+
+- It needs Claude Code signed in with a Claude subscription. There is no separate sign-in: after the user presses Connect, the app reads the OAuth login that Claude Code stores in the macOS Keychain. It reads that login but never changes it.
+- It requests the same usage data that Claude Code's `/usage` command shows, from api.anthropic.com. The login is never sent anywhere else. The only other request is to the public status page (status.claude.com), which includes no account data. There are no analytics.
+- Usage limits are shared across claude.ai, the Claude desktop app and Claude Code, so the numbers show total usage.
+- Disconnect in Settings stops all requests and clears the app's data.
+
+## Common questions
+
+- How do I check my Claude usage? Run `/usage` in Claude Code, open the usage page in claude.ai settings, or install Kongi to see it in the menu bar at all times.
+- When does the 5-hour limit reset? Session limits reset in 5-hour windows. Kongi shows the exact reset time.
+- Is it official? No. It is an unofficial open-source project, not affiliated with Anthropic.
+
+## Links
+
+- [Website and download](https://eocnd36.github.io/Kongi/)
+- [Download the latest version (zip)](https://github.com/eocnd36/Kongi/releases/latest/download/Kongi.zip)
+- [Source code on GitHub](https://github.com/eocnd36/Kongi)
+- [Releases](https://github.com/eocnd36/Kongi/releases)
+- License: MIT
