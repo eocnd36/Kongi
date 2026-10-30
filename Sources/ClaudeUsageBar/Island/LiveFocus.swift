@@ -24,12 +24,21 @@ extension View {
     /// macOS 26부터는 Liquid Glass, 그 전에는 같은 모양의 어두운 카드
     @ViewBuilder
     func kongiGlass<S: Shape>(_ shape: S, tint: Color? = nil, interactive: Bool = false) -> some View {
+        // macOS 26 SDK(Swift 6.2 이상)로 빌드할 때만 Liquid Glass를 넣습니다. 이전 SDK에서도 빌드되게.
+        #if compiler(>=6.2)
         if #available(macOS 26.0, *) {
             glassEffect(Glass.regular.tint(tint).interactive(interactive), in: shape)
         } else {
-            background(shape.fill(tint.map { $0.opacity(0.35) } ?? KongiTheme.field))
-                .overlay(shape.stroke(Color.white.opacity(0.08), lineWidth: 1))
+            fallbackGlass(shape, tint: tint)
         }
+        #else
+        fallbackGlass(shape, tint: tint)
+        #endif
+    }
+
+    private func fallbackGlass<S: Shape>(_ shape: S, tint: Color?) -> some View {
+        background(shape.fill(tint.map { $0.opacity(0.35) } ?? KongiTheme.field))
+            .overlay(shape.stroke(Color.white.opacity(0.08), lineWidth: 1))
     }
 }
 
