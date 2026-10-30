@@ -195,7 +195,7 @@ private struct Sidebar: View {
         }
         .buttonStyle(SidebarItemStyle())
         .keyboardShortcut("s", modifiers: [.control, .command])
-        .help(Text(collapsed ? "Show sidebar" : "Hide sidebar"))
+        .help(collapsed ? Text("Show sidebar") : Text("Hide sidebar"))
     }
 
     @ViewBuilder
@@ -625,7 +625,7 @@ private struct SessionPanel: View {
                         .kongiGlass(Circle(), interactive: true)
                 }
                 .buttonStyle(IslandPressStyle())
-                .help(Text(listHidden ? "Show sessions" : "Hide sessions"))
+                .help(listHidden ? Text("Show sessions") : Text("Hide sessions"))
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 8) {
                         Text(verbatim: session.projectName).font(.system(size: 20, weight: .bold))
