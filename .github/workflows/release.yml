@@ -36,8 +36,12 @@ jobs:
           cd dist
           # 웹사이트 다운로드 버튼이 쓰는 고정 이름 (releases/latest/download/Kongi.zip)
           cp "Kongi-${GITHUB_REF_NAME#v}.zip" Kongi.zip
-          # 앱 안의 업데이트 기능은 이 서명이 맞을 때만 설치합니다 (개인 키는 Secrets에만).
-          KONGI_UPDATE_KEY="$KONGI_UPDATE_KEY" swift ../scripts/sign-update.swift Kongi.zip > Kongi.zip.sig
+          # 앱 안의 업데이트 기능은 이 서명이 맞을 때만 설치합니다.
+          # Secrets에 KONGI_UPDATE_KEY가 있으면 여기서 서명하고, 없으면 관리자가 자기 Mac에서 서명해 올립니다
+          # (KONGI_UPDATE_KEY=... swift scripts/sign-update.swift Kongi.zip > Kongi.zip.sig → gh release upload).
+          if [ -n "$KONGI_UPDATE_KEY" ]; then
+            swift ../scripts/sign-update.swift Kongi.zip > Kongi.zip.sig
+          fi
           shasum -a 256 *.zip > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
@@ -45,6 +49,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/Kongi.zip.sig dist/SHA256SUMS.txt \
+          gh release create "$GITHUB_REF_NAME" dist/*.zip $(ls dist/Kongi.zip.sig 2>/dev/null) dist/SHA256SUMS.txt \
             --title "$GITHUB_REF_NAME" \
             --generate-notes
