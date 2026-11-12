@@ -1,14 +1,9 @@
 [
   {
-    "name": "Codex",
-    "description": "Tells you in the island when Codex finishes.",
-    "source": "eocnd36/Kongi/extensions/codex",
-    "author": "Kongi"
-  },
-  {
     "name": "Stretch reminder",
     "description": "Every 50 minutes the island reminds you to get up and stretch.",
     "source": "eocnd36/Kongi/extensions/stretch",
-    "author": "Kongi"
+    "author": "Kongi",
+    "version": "1.0"
   }
 ]

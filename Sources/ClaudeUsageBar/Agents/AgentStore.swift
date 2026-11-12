@@ -72,7 +72,6 @@ struct FileChange: Codable, Identifiable, Equatable {
     var path: String
     var original: String?
     var existedBefore: Bool
-    var current: String?
     var diff: LineDiff
 
     var id: String { path }
@@ -219,6 +218,10 @@ final class AgentStore: ObservableObject {
         pruneTask = Task { [weak self] in
             while !Task.isCancelled {
                 self?.pruneDeadSessions()
+                if let self {
+                    let listening = self.server.ensureListening()
+                    if listening != self.serverRunning { self.serverRunning = listening }
+                }
                 try? await Task.sleep(nanoseconds: 30 * NSEC_PER_SEC)
             }
         }
@@ -269,12 +272,13 @@ final class AgentStore: ObservableObject {
         applyRetention()
     }
 
-    /// 변경이 생기면 잠시 모았다가 저장합니다. 일하는 동안 이벤트가 계속 와도 2초마다는 저장되게,
+    /// 변경이 생기면 잠시 모았다가 저장합니다. 일하는 동안 이벤트가 계속 와도 5초마다는 저장되게,
     /// 이미 잡힌 저장을 미루지 않습니다.
     private func scheduleSave() {
         guard saveTask == nil else { return }
         saveTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: 2 * NSEC_PER_SEC)
+            // 기록이 몇 MB라 매번 통째로 다시 쓰므로 너무 자주 쓰지 않습니다 (꺼질 때는 flushHistory가 마저 저장).
+            try? await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
             guard let self, !Task.isCancelled else { return }
             self.saveTask = nil
             self.saveHistory()
@@ -486,8 +490,8 @@ final class AgentStore: ObservableObject {
         if session.launchDirectory == nil, session.agent == nil, let cwd = event.cwd, let transcript = event.transcriptPath {
             session.launchDirectory = LaunchDirectory.find(cwd: cwd, transcriptPath: transcript)
         }
-        // 대화 기록 파일은 Claude Code 형식만 읽습니다 (다른 에이전트는 훅으로 온 말만 보여 줌).
-        if session.agent == nil, let transcript = event.transcriptPath, !transcript.isEmpty, session.transcriptPath != transcript {
+        // 대화 기록 파일: Claude Code와 Codex 형식을 읽습니다 (그 밖의 에이전트는 줄을 못 알아봐 훅으로 온 말만 보임).
+        if let transcript = event.transcriptPath, !transcript.isEmpty, session.transcriptPath != transcript {
             session.transcriptPath = transcript
             session.transcriptOffset = nil
         }
@@ -540,7 +544,6 @@ final class AgentStore: ObservableObject {
                 path: original.path,
                 original: original.content,
                 existedBefore: original.existed,
-                current: original.content,
                 diff: .empty
             ))
         }
@@ -560,12 +563,11 @@ final class AgentStore: ObservableObject {
         guard let file = context.currentFile, file.path == path else { return }
         let current = file.existed ? file.content : nil
         if let index = session.changes.firstIndex(where: { $0.path == path }) {
-            session.changes[index].current = current
             session.changes[index].diff = LineDiff.compute(old: session.changes[index].original, new: current)
         } else {
             // PreToolUse를 놓친 경우: 비교할 원본이 없으므로 새 파일처럼 셉니다.
             session.changes.append(FileChange(
-                path: path, original: nil, existedBefore: false, current: current,
+                path: path, original: nil, existedBefore: false,
                 diff: LineDiff.compute(old: nil, new: current)
             ))
         }

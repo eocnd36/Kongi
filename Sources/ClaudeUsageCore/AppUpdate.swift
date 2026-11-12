@@ -53,11 +53,20 @@ public enum AppUpdate {
         return Release(version: version, pageURL: page, notes: json["body"] as? String ?? "", archiveURL: archive, signatureURL: signature)
     }
 
+    /// 심각한 버그 수정 표시 (릴리스 노트와 highlights 결과 모두 맨 앞)
+    public static let criticalMark = "🚨"
+
     /// 릴리스 노트에서 바뀐 것 몇 줄: "What's new" 아래 목록의 굵은 제목 (없으면 목록 문장).
     /// `- **Automatic updates on the Mac** — …` → "Automatic updates on the Mac"
-    public static func highlights(_ notes: String, limit: Int = 6) -> [String] {
+    ///
+    /// 언어별 목록은 영어 "What's new" 뒤에 `### [ko] 새로운 점`처럼 언어 코드를 붙인 제목 아래에 둡니다
+    /// (예전 앱은 첫 "new" 제목만 읽으므로 영어가 맨 앞이어야 함). 해당 언어가 없으면 영어를 씁니다.
+    /// 심각한 버그 수정은 `- 🚨 **제목** — …`처럼 표시하면 결과도 `criticalMark`로 시작합니다.
+    public static func highlights(_ notes: String, limit: Int = 6, language: String? = nil) -> [String] {
         var lines = notes.components(separatedBy: .newlines)
-        if let start = lines.firstIndex(where: { $0.hasPrefix("#") && $0.lowercased().contains("new") }) {
+        let tag = language.map { "[\($0.lowercased())]" }
+        let localized = tag.flatMap { tag in lines.firstIndex { $0.hasPrefix("#") && $0.lowercased().contains(tag) } }
+        if let start = localized ?? lines.firstIndex(where: { $0.hasPrefix("#") && $0.lowercased().contains("new") }) {
             lines = Array(lines[(start + 1)...])
             if let end = lines.firstIndex(where: { $0.hasPrefix("#") }) { lines = Array(lines[..<end]) }
         }
@@ -67,6 +76,8 @@ public enum AppUpdate {
             // 맨 앞 단계의 목록만
             guard trimmed.hasPrefix("- ") || trimmed.hasPrefix("* "), line.first == "-" || line.first == "*" else { continue }
             var text = String(trimmed.dropFirst(2))
+            let critical = text.hasPrefix(criticalMark)
+            if critical { text = text.dropFirst().trimmingCharacters(in: .whitespaces) }
             if text.hasPrefix("**"), let end = text.range(of: "**", range: text.index(text.startIndex, offsetBy: 2)..<text.endIndex) {
                 text = String(text[text.index(text.startIndex, offsetBy: 2)..<end.lowerBound])
             } else {
@@ -74,7 +85,10 @@ public enum AppUpdate {
                 if let dash = text.range(of: " — ") { text = String(text[..<dash.lowerBound]) }
             }
             text = text.trimmingCharacters(in: .whitespaces)
-            if !text.isEmpty { result.append(text.count > 80 ? String(text.prefix(79)) + "…" : text) }
+            if !text.isEmpty {
+                let short = text.count > 80 ? String(text.prefix(79)) + "…" : text
+                result.append(critical ? criticalMark + " " + short : short)
+            }
             if result.count == limit { break }
         }
         return result

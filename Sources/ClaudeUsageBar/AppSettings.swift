@@ -5,6 +5,8 @@ import ServiceManagement
 
 enum AppSettings {
     static let menuBarStyle = "menuBarStyle"
+    /// Codex 확장이 있으면 메뉴 막대에 Codex 5시간 사용량도
+    static let menuBarCodex = "menuBarCodex"
     /// GitHub 릴리스에서 새 버전을 자동으로 확인 (켤 때와 12시간마다)
     /// 새 버전 알림 (아일랜드·알림). 예전 "자동으로 업데이트 확인"과 같은 키.
     static let checkForUpdates = "checkForUpdates"
@@ -75,6 +77,7 @@ enum AppSettings {
         let defaults = UserDefaults.standard
         defaults.register(defaults: [
             menuBarStyle: MenuBarStyle.sessionAndWeekly.rawValue,
+            menuBarCodex: true,
             checkForUpdates: true,
             autoInstallUpdates: false,
             refreshMinutes: 5,

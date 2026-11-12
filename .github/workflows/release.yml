@@ -23,7 +23,15 @@ jobs:
         run: swift test
 
       - name: Build universal app
+        env:
+          # 있으면 늘 같은 인증서로 서명 (업데이트해도 손쉬운 사용 권한 유지). 없으면 ad-hoc.
+          KONGI_CODESIGN_P12: ${{ secrets.KONGI_CODESIGN_P12 }}
+          CODESIGN_P12_PASSWORD: ${{ secrets.KONGI_CODESIGN_PASSWORD }}
         run: |
+          if [ -n "$KONGI_CODESIGN_P12" ]; then
+            echo "$KONGI_CODESIGN_P12" | base64 --decode > "$RUNNER_TEMP/kongi-codesign.p12"
+            export CODESIGN_P12="$RUNNER_TEMP/kongi-codesign.p12"
+          fi
           UNIVERSAL=1 \
           VERSION="${GITHUB_REF_NAME#v}" \
           REPO_URL="https://github.com/${GITHUB_REPOSITORY}" \

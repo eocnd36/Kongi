@@ -9,6 +9,9 @@
 #   BUNDLE_ID          번들 ID (기본: io.github.claudeusagebar)
 #   REPO_URL           설정 화면의 GitHub 링크 (CI에서는 자동 설정)
 #   CODESIGN_IDENTITY  서명 인증서 이름 (기본: "-" = ad-hoc 서명)
+#   CODESIGN_P12       자체 서명 인증서 (.p12). 기본: ~/.kongi/kongi-codesign.p12가 있으면 그것.
+#                      늘 같은 인증서로 서명해야 업데이트해도 손쉬운 사용 권한이 유지됩니다 (scripts/make-signing-cert.sh).
+#   CODESIGN_P12_PASSWORD  그 암호 (기본: ~/.kongi/kongi-codesign.pass)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -101,10 +104,31 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 plutil -lint "$APP/Contents/Info.plist" >/dev/null
 
-# 4) 서명 (기본은 ad-hoc. Developer ID가 있으면 CODESIGN_IDENTITY로 지정)
+# 4) 서명 (Developer ID가 있으면 CODESIGN_IDENTITY로, 자체 서명 인증서가 있으면 그것으로, 없으면 ad-hoc)
+# ad-hoc 서명은 빌드마다 앱을 알아보는 값(cdhash)이 바뀌어 macOS가 손쉬운 사용 권한을 잊습니다.
+# 같은 인증서로 서명하면 그 값이 "번들 ID + 인증서"로 고정되어 권한이 유지됩니다.
+CODESIGN_P12="${CODESIGN_P12:-$HOME/.kongi/kongi-codesign.p12}"
 SIGN_ARGS=(--force --sign "$CODESIGN_IDENTITY")
 if [[ "$CODESIGN_IDENTITY" != "-" ]]; then
   SIGN_ARGS+=(--options runtime --timestamp)
+elif [[ -f "$CODESIGN_P12" ]]; then
+  P12_PASSWORD="${CODESIGN_P12_PASSWORD:-$(cat "$HOME/.kongi/kongi-codesign.pass" 2>/dev/null || true)}"
+  SIGN_DIR="$(mktemp -d)"
+  KEYCHAIN="$SIGN_DIR/kongi-sign.keychain-db"
+  SEARCH_LIST=()
+  while IFS= read -r line; do SEARCH_LIST+=("$(echo "$line" | tr -d ' "')"); done < <(security list-keychains -d user)
+  # 끝나면(실패해도) 임시 키체인을 지우고 키체인 검색 목록을 원래대로 돌립니다.
+  trap 'security list-keychains -d user -s "${SEARCH_LIST[@]}"; security delete-keychain "$KEYCHAIN" 2>/dev/null || true; rm -rf "$SIGN_DIR"' EXIT
+  security create-keychain -p kongi "$KEYCHAIN"
+  security set-keychain-settings "$KEYCHAIN"
+  security unlock-keychain -p kongi "$KEYCHAIN"
+  security import "$CODESIGN_P12" -k "$KEYCHAIN" -P "$P12_PASSWORD" -T /usr/bin/codesign >/dev/null
+  security set-key-partition-list -S apple-tool:,apple: -s -k kongi "$KEYCHAIN" >/dev/null
+  security list-keychains -d user -s "$KEYCHAIN" "${SEARCH_LIST[@]}"
+  # 자체 서명 인증서는 "신뢰됨"이 아니라 이름으로는 못 찾으므로 지문(SHA-1)으로 고릅니다.
+  SIGN_HASH="$(security find-identity "$KEYCHAIN" | awk '/\)/ {print $2; exit}')"
+  [[ -n "$SIGN_HASH" ]] || { echo "No signing identity in $CODESIGN_P12" >&2; exit 1; }
+  SIGN_ARGS=(--force --keychain "$KEYCHAIN" --sign "$SIGN_HASH")
 fi
 # 안쪽 실행 파일(훅 도우미)부터 서명한 뒤 앱 전체를 서명합니다.
 codesign "${SIGN_ARGS[@]}" "$APP/Contents/MacOS/$HOOK_HELPER"

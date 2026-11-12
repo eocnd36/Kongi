@@ -137,6 +137,14 @@ public enum TranscriptReader {
               json["isSidechain"]?.boolValue != true else { return nil }
         let date = json["timestamp"]?.stringValue.flatMap { dateFormatter.date(from: $0) } ?? Date()
         switch json["type"]?.stringValue {
+        case "event_msg":
+            // Codex: 차례 시작·끝·중단
+            switch json["payload"]?["type"]?.stringValue {
+            case "task_complete": return .ended(date)
+            case "turn_aborted": return .interrupted(date)
+            case "task_started", "user_message": return .continuing
+            default: return nil
+            }
         case "assistant":
             switch json["message"]?["stop_reason"]?.stringValue {
             case "end_turn", "stop_sequence", "max_tokens": return .ended(date)
@@ -165,6 +173,7 @@ public enum TranscriptReader {
     static func parse(_ line: Data) -> Message? {
         guard let json = try? JSONDecoder().decode(JSONValue.self, from: line),
               json["isSidechain"]?.boolValue != true, json["isMeta"]?.boolValue != true else { return nil }
+        if json["type"]?.stringValue == "event_msg" { return parseCodex(json) }
         let role: Message.Role
         switch json["type"]?.stringValue {
         case "assistant": role = .assistant
@@ -196,6 +205,23 @@ public enum TranscriptReader {
             role: role,
             text: text.count > maxText ? String(text.prefix(maxText)) + "…" : text
         )
+    }
+
+    /// Codex 대화 기록 (~/.codex/sessions/…/rollout-*.jsonl): 입력한 말(user_message)과 대답(agent_message)
+    static func parseCodex(_ json: JSONValue) -> Message? {
+        let role: Message.Role
+        switch json["payload"]?["type"]?.stringValue {
+        case "user_message": role = .user
+        case "agent_message": role = .assistant
+        default: return nil
+        }
+        guard let stamp = json["timestamp"]?.stringValue,
+              let text = json["payload"]?["message"]?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !text.isEmpty else { return nil }
+        let date = dateFormatter.date(from: stamp) ?? Date()
+        // Codex 줄에는 id가 없어, 시각과 역할로 만듭니다 (다시 읽어도 같은 id).
+        return Message(id: "codex-\(stamp)-\(role.rawValue)", date: date, role: role,
+                       text: text.count > maxText ? String(text.prefix(maxText)) + "…" : text)
     }
 
     /// <system-reminder>…</system-reminder> 같은 덧붙은 블록을 지웁니다.

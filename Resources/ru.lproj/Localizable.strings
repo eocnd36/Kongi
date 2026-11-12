@@ -513,3 +513,13 @@
 
 /* Island timing */
 "about %@ left" = "осталось около %@";
+
+/* Updates and Codex */
+"Important fixes" = "Важные исправления";
+"Show Codex usage" = "Показывать использование Codex";
+"Adds your Codex 5-hour limit from the Codex extension." = "Добавляет 5-часовой лимит Codex из расширения Codex.";
+
+/* Feedback and extension updates */
+"Send feedback" = "Отправить отзыв";
+"Updated." = "Обновлено.";
+"Update to %@" = "Обновить до %@";

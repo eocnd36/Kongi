@@ -513,3 +513,13 @@
 
 /* Island timing */
 "about %@ left" = "约剩 %@";
+
+/* Updates and Codex */
+"Important fixes" = "重要修复";
+"Show Codex usage" = "显示 Codex 用量";
+"Adds your Codex 5-hour limit from the Codex extension." = "同时显示 Codex 扩展提供的 5 小时限额。";
+
+/* Feedback and extension updates */
+"Send feedback" = "发送反馈";
+"Updated." = "已更新。";
+"Update to %@" = "更新到 %@";

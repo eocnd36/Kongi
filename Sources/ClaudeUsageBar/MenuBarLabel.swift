@@ -5,6 +5,8 @@ import SwiftUI
 struct MenuBarLabel: View {
     @ObservedObject var store: UsageStore
     @AppStorage(AppSettings.menuBarStyle) private var styleRaw = MenuBarStyle.sessionAndWeekly.rawValue
+    @AppStorage(AppSettings.menuBarCodex) private var showCodex = true
+    @ObservedObject private var tasks = AppServices.shared.tasks
 
     private var style: MenuBarStyle { MenuBarStyle(rawValue: styleRaw) ?? .sessionAndWeekly }
 
@@ -19,6 +21,10 @@ struct MenuBarLabel: View {
                 style: style, snapshot: store.snapshot, now: store.now, countdown: Formatters.countdown
             ) {
                 Text(text).monospacedDigit()
+            }
+            // Codex 확장이 올린 5시간 한도 위젯 (확장을 끄면 위젯도 사라짐)
+            if showCodex, style != .iconOnly, let codex = tasks.widgets.first(where: { $0.id == "codex-5h" }) {
+                Text(verbatim: "Codex \(codex.value)").monospacedDigit()
             }
         }
         .accessibilityLabel(Text("Claude usage"))

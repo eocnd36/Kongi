@@ -12,6 +12,7 @@ final class HookServer: @unchecked Sendable {
     private let watchQueue = DispatchQueue(label: "io.github.claudeusagebar.hooks.watch", attributes: .concurrent)
     private var listenFD: Int32 = -1
     private var source: DispatchSourceRead?
+    private var socketInode: UInt64?
 
     /// 메인 스레드에서 불립니다. 답을 기다리는 이벤트면 connection이 함께 옵니다.
     var onEnvelope: (@MainActor (HookEnvelope, HookConnection?) -> Void)?
@@ -24,6 +25,7 @@ final class HookServer: @unchecked Sendable {
             return false
         }
         listenFD = fd
+        socketInode = UnixSocket.inode(HookPaths.socketPath)
         let source = DispatchSource.makeReadSource(fileDescriptor: fd, queue: queue)
         source.setEventHandler { [weak self] in self?.acceptClient() }
         source.setCancelHandler { close(fd) }
@@ -36,6 +38,16 @@ final class HookServer: @unchecked Sendable {
         source?.cancel()
         source = nil
         unlink(HookPaths.socketPath)
+    }
+
+    /// 다른 Kongi가 소켓 파일을 바꿔 놓고 꺼지면 이 앱은 지워진 파일에서 듣게 되어 훅이 하나도 닿지 않습니다.
+    /// 파일이 바뀌었거나 아직 못 열었으면 다시 엽니다.
+    @discardableResult
+    func ensureListening() -> Bool {
+        guard source == nil || UnixSocket.inode(HookPaths.socketPath) != socketInode else { return true }
+        source?.cancel()
+        source = nil
+        return start()
     }
 
     private func acceptClient() {

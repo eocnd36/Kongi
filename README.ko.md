@@ -57,7 +57,6 @@
 
 - **`kongi run -- npm run build`** (`cargo test`, `pytest` 등) 를 쓰면 메뉴 막대 창에 진행률과 성공/실패 링이 보이고, 끝나면 아일랜드로 알려 줘요.
 - **`kongi notify "배포 완료" "api · 42초"`** 로 내 앱과 스크립트에서 아일랜드로 무엇이든 보낼 수 있어요. 따로 설치할 건 없어요.
-- **Claude Code처럼 Codex:** 설정 → 확장에서 Codex 확장을 설치하세요. Codex 세션과 승인 요청이 아일랜드에 보이고, Codex의 5시간·주간 한도가 메뉴 막대 창에 보여요. Codex가 Kongi 훅을 아직 가져오지 않았다면 `~/.codex/hooks.json`에 넣고(먼저 백업), Codex에서 `/hooks`로 한 번 신뢰해 주면 돼요.
 - **확장:** Kongi가 만든 확장은 한 번에 설치하고, 다른 사람이 GitHub에 공유한 확장도 설정 → 확장에서 설치해요. 확장은 알림, 실시간 진행률, 메뉴 막대 위젯을 띄우고, Kongi 상태를 읽고, 이벤트(세션 시작·승인 요청·완료, 빌드 종료)에 반응할 수 있어요. 만드는 법은 [extensions/README.md](extensions/README.md)를 보세요.
 - **프롬프트 예약**에서 모델과 effort를 고를 수 있어요.
 

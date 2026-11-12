@@ -29,6 +29,11 @@ final class Updater: ObservableObject {
     }
     @Published private(set) var card: Card?
 
+    /// 릴리스 노트의 바뀐 것: 앱 언어 목록이 있으면 그것, 없으면 영어
+    static func changes(_ notes: String, limit: Int = 6) -> [String] {
+        AppUpdate.highlights(notes, limit: limit, language: AppLanguage.override ?? Bundle.main.preferredLocalizations.first)
+    }
+
     /// "나중에": 이 버전 카드는 다시 띄우지 않습니다 (새 버전이 나오면 다시).
     func dismissCard() {
         if let card, !card.installed { UserDefaults.standard.set(card.version, forKey: "dismissedUpdateCard") }
@@ -81,7 +86,7 @@ final class Updater: ObservableObject {
                 state = .available(release)
                 if (userInitiated || UserDefaults.standard.bool(forKey: AppSettings.checkForUpdates)),
                    UserDefaults.standard.string(forKey: "dismissedUpdateCard") != release.version {
-                    card = Card(version: release.version, changes: AppUpdate.highlights(release.notes), installed: false)
+                    card = Card(version: release.version, changes: Updater.changes(release.notes), installed: false)
                 }
                 if !userInitiated, UserDefaults.standard.bool(forKey: AppSettings.autoInstallUpdates) {
                     await installWhenIdle()
@@ -104,7 +109,7 @@ final class Updater: ObservableObject {
         UserDefaults.standard.set(release.version, forKey: key)
         let title = String(localized: "Kongi \(release.version) is available")
         // 무엇이 바뀌었는지 (릴리스 노트의 제목들)
-        let changes = AppUpdate.highlights(release.notes, limit: 3).joined(separator: " · ")
+        let changes = Updater.changes(release.notes, limit: 3).joined(separator: " · ")
         AppServices.shared.devices.post(.init(
             key: "update-\(release.version)", symbol: "arrow.down.circle.fill", tint: .green,
             title: title, detail: changes.isEmpty ? String(localized: "Click to update") : changes, action: .openAbout
@@ -122,8 +127,8 @@ final class Updater: ObservableObject {
         defaults.removeObject(forKey: "installedUpdateVersion")
         defaults.removeObject(forKey: "installedUpdateNotes")
         guard version == AppInfo.version else { return }
-        card = Card(version: version, changes: AppUpdate.highlights(notes), installed: true)
-        let changes = AppUpdate.highlights(notes, limit: 3).joined(separator: " · ")
+        card = Card(version: version, changes: Updater.changes(notes), installed: true)
+        let changes = Updater.changes(notes, limit: 3).joined(separator: " · ")
         let title = String(localized: "Kongi was updated to \(version)")
         Task { @MainActor in
             // 아일랜드가 준비될 때까지 잠깐 기다렸다가
@@ -245,12 +250,16 @@ struct UpdateSection: View {
                 Text("Checking…").foregroundStyle(KongiTheme.secondary)
             case let .available(release):
                 Text("Kongi \(release.version) is available").font(.system(size: 14, weight: .semibold))
-                let changes = AppUpdate.highlights(release.notes)
+                let changes = Updater.changes(release.notes)
                 if !changes.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("What's new").font(.system(size: 12, weight: .semibold)).foregroundStyle(KongiTheme.secondary)
                         ForEach(changes, id: \.self) { change in
-                            Label { Text(verbatim: change) } icon: { Image(systemName: "sparkle").foregroundStyle(KongiTheme.green) }
+                            let critical = change.hasPrefix(AppUpdate.criticalMark)
+                            Label { Text(verbatim: critical ? String(change.dropFirst(2)) : change).fontWeight(critical ? .semibold : nil) } icon: {
+                                Image(systemName: critical ? "exclamationmark.triangle.fill" : "sparkle")
+                                    .foregroundStyle(critical ? KongiTheme.orange : KongiTheme.green)
+                            }
                         }
                     }
                     .frame(maxWidth: 360, alignment: .leading)

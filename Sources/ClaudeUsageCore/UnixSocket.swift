@@ -36,6 +36,11 @@ public enum UnixSocket {
     }
 
     public static func listen(path: String) -> Int32? {
+        // 다른 Kongi(데모·개발 빌드 등)가 이미 듣고 있으면 뺏지 않습니다. 뺏으면 그쪽이 꺼질 때 훅이 모두 끊깁니다.
+        if let live = connect(path: path) {
+            close(live)
+            return nil
+        }
         unlink(path)
         guard var address = address(path) else { return nil }
         let fd = socket(AF_UNIX, SOCK_STREAM, 0)
@@ -51,6 +56,12 @@ public enum UnixSocket {
         }
         chmod(path, 0o600)
         return fd
+    }
+
+    /// 소켓 파일의 inode. 누가 파일을 지우거나 바꿔 놓았는지 알아볼 때 씁니다.
+    public static func inode(_ path: String) -> UInt64? {
+        var info = stat()
+        return stat(path, &info) == 0 ? UInt64(info.st_ino) : nil
     }
 
     @discardableResult

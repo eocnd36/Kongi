@@ -238,3 +238,13 @@
 
 /* Island timing */
 "about %@ left" = "about %@ left";
+
+/* Updates and Codex */
+"Important fixes" = "Important fixes";
+"Show Codex usage" = "Show Codex usage";
+"Adds your Codex 5-hour limit from the Codex extension." = "Adds your Codex 5-hour limit from the Codex extension.";
+
+/* Feedback and extension updates */
+"Send feedback" = "Send feedback";
+"Updated." = "Updated.";
+"Update to %@" = "Update to %@";

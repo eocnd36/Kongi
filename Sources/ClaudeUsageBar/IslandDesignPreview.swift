@@ -281,12 +281,12 @@ enum IslandDesignPreview {
         newView.replaceSubrange(10..<14, with: (1...18).map { "    new row \($0)" })
         let viewChange = FileChange(
             path: "/Users/demo/my-app/Sources/IslandViews.swift",
-            original: oldView, existedBefore: true, current: newView.joined(separator: "\n"),
+            original: oldView, existedBefore: true,
             diff: LineDiff.compute(old: oldView, new: newView.joined(separator: "\n"))
         )
         let storeChange = FileChange(
             path: "/Users/demo/my-app/Sources/AgentStore.swift",
-            original: nil, existedBefore: false, current: lines(12, "store"),
+            original: nil, existedBefore: false,
             diff: LineDiff.compute(old: nil, new: lines(12, "store"))
         )
         let edit = ToolActivity(kind: .edit, toolName: "Edit", target: "IslandViews.swift")

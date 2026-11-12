@@ -63,7 +63,6 @@ Notched MacBooks have a natural home for a Dynamic Island. **Macs without a notc
 
 - **`kongi run -- npm run build`** (or `cargo test`, `pytest`, …) shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends.
 - **`kongi notify "Deploy done" "api · 42s"`** sends anything to the island from your own apps and scripts. Nothing to install.
-- **Codex like Claude Code:** install the Codex extension from Settings → Extensions. Codex sessions and approvals show up in the island, and your Codex 5-hour and weekly limits appear in the menu bar window. If Codex hasn't already imported Kongi's hooks, it adds them to `~/.codex/hooks.json` (backed up first); run `/hooks` in Codex once to trust them.
 - **Extensions:** Kongi's own extensions install with one click, and you can install extensions people share on GitHub from Settings → Extensions. Extensions can post notices, live progress and menu bar widgets, read Kongi's status, and react to events (a session starts, asks for approval, finishes; a build ends). Making one is a folder with a `kongi-extension.json` — see [extensions/README.md](extensions/README.md).
 - **Scheduled prompts** can pick a model and effort level.
 

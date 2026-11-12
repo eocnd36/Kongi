@@ -513,3 +513,13 @@
 
 /* Island timing */
 "about %@ left" = "残り約 %@";
+
+/* Updates and Codex */
+"Important fixes" = "重要な修正";
+"Show Codex usage" = "Codexの使用量を表示";
+"Adds your Codex 5-hour limit from the Codex extension." = "Codex拡張機能から取得した5時間の上限も表示します。";
+
+/* Feedback and extension updates */
+"Send feedback" = "フィードバックを送る";
+"Updated." = "アップデートしました。";
+"Update to %@" = "%@にアップデート";

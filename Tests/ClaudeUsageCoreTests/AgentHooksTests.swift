@@ -286,3 +286,19 @@ private func json(_ text: String) throws -> JSONValue {
         #expect(OriginalFile.read(path).content == nil)
     }
 }
+
+@Suite struct UnixSocketOwnershipTests {
+    @Test func doesNotStealALiveSocketButReplacesADeadOne() throws {
+        // sun_path는 104바이트까지라 짧은 경로를 씁니다.
+        let path = "/tmp/kongi-test-\(getpid()).sock"
+        defer { unlink(path) }
+        let first = try #require(UnixSocket.listen(path: path))
+        let inode = UnixSocket.inode(path)
+        #expect(UnixSocket.listen(path: path) == nil)
+        #expect(UnixSocket.inode(path) == inode)
+        close(first)
+        // 주인이 없어진 파일은 새로 엽니다.
+        let second = try #require(UnixSocket.listen(path: path))
+        close(second)
+    }
+}

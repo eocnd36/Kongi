@@ -71,7 +71,7 @@ Symbols are [SF Symbols](https://developer.apple.com/sf-symbols/) names. Widgets
 
 ## Other agents
 
-Any agent whose hooks send Claude Code–style JSON can show up in the island like Claude Code: point its hooks at `kongi --agent <name>` (stdin is the hook JSON). The [Codex extension](codex) does this for Codex.
+Any agent whose hooks send Claude Code–style JSON can show up in the island like Claude Code: point its hooks at `kongi --agent <name>` (stdin is the hook JSON).
 
 ## Publishing
 

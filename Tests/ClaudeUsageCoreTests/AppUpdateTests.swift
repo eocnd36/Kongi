@@ -53,3 +53,25 @@ import Testing
         #expect(!AppUpdate.verify(archive, signature: Data("not base64".utf8), publicKey: publicKey))
     }
 }
+
+@Suite struct ReleaseNoteLanguageTests {
+    let notes = """
+    ### What's new in 2.2.3
+    - 🚨 **New tasks reach the island again** — fixed
+    - **Smaller thing** — detail
+
+    ### [ko] 새로운 점
+    - 🚨 **새 작업이 다시 아일랜드에 보여요** — 고침
+    - **작은 것** — 설명
+
+    ### [zh-Hans] 新功能
+    - **小改动** — 说明
+    """
+
+    @Test func picksTheAppLanguageAndFallsBackToEnglish() {
+        #expect(AppUpdate.highlights(notes, language: "ko") == ["🚨 새 작업이 다시 아일랜드에 보여요", "작은 것"])
+        #expect(AppUpdate.highlights(notes, language: "zh-Hans") == ["小改动"])
+        #expect(AppUpdate.highlights(notes, language: "fr") == ["🚨 New tasks reach the island again", "Smaller thing"])
+        #expect(AppUpdate.highlights(notes) == AppUpdate.highlights(notes, language: "en"))
+    }
+}

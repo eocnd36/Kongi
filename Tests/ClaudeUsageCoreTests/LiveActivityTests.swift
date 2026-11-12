@@ -109,3 +109,28 @@ import Testing
         #expect(result.offset == 0)
     }
 }
+
+@Suite struct CodexTranscriptTests {
+    @Test func readsCodexMessagesAndTurns() throws {
+        let lines = [
+            #"{"timestamp":"2026-11-11T04:31:11.333Z","type":"event_msg","payload":{"type":"user_message","message":"fix the build"}}"#,
+            #"{"timestamp":"2026-11-11T04:31:12.000Z","type":"response_item","payload":{"type":"reasoning"}}"#,
+            #"{"timestamp":"2026-11-11T04:31:14.588Z","type":"event_msg","payload":{"type":"agent_message","message":"Done.","phase":"final"}}"#,
+            #"{"timestamp":"2026-11-11T04:33:44.153Z","type":"event_msg","payload":{"type":"task_complete"}}"#,
+        ]
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("codex-\(UUID().uuidString).jsonl")
+        try (lines.joined(separator: "\n") + "\n").write(to: url, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let result = TranscriptReader.readWithTurn(url, from: nil)
+        #expect(result.messages.map(\.text) == ["fix the build", "Done."])
+        #expect(result.messages.map(\.role) == [.user, .assistant])
+        if case .ended = result.turn {} else { Issue.record("turn should be ended") }
+        // 다시 읽어도 id가 같아야 중복되지 않습니다.
+        #expect(TranscriptReader.readWithTurn(url, from: nil).messages.map(\.id) == result.messages.map(\.id))
+    }
+
+    @Test func tracksTheFileACodexPatchEdits() {
+        let input: JSONValue = .object(["command": .string("*** Begin Patch\n*** Update File: src/a.swift\n@@\n-x\n+y\n*** End Patch")])
+        #expect(ToolActivity.editedFilePath(toolName: "apply_patch", input: input) == "src/a.swift")
+    }
+}

@@ -513,3 +513,13 @@
 
 /* Island timing */
 "about %@ left" = "faltan unos %@";
+
+/* Updates and Codex */
+"Important fixes" = "Correcciones importantes";
+"Show Codex usage" = "Mostrar uso de Codex";
+"Adds your Codex 5-hour limit from the Codex extension." = "Añade tu límite de 5 horas de Codex desde la extensión de Codex.";
+
+/* Feedback and extension updates */
+"Send feedback" = "Enviar comentarios";
+"Updated." = "Actualizado.";
+"Update to %@" = "Actualizar a %@";

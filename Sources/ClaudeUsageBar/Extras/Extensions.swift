@@ -21,6 +21,8 @@ final class ExtensionStore: ObservableObject {
         let description: String
         let source: String
         var author: String?
+        /// 최신 버전 (kongi-extension.json의 version). 설치한 것보다 높으면 확장 탭에 "업데이트"가 뜹니다.
+        var version: String?
     }
 
     @Published private(set) var installed: [Installed] = []
@@ -50,6 +52,11 @@ final class ExtensionStore: ObservableObject {
         catalog = Self.bundledCatalog
         refreshBundled()
         reload()
+        // 앱이 강제로 끝나면(업데이트 설치, killall 등) 확장은 고아로 남아 계속 돕니다. 새로 띄우기 전에 정리합니다.
+        let cleanup = Process()
+        cleanup.executableURL = URL(fileURLWithPath: "/usr/bin/pkill")
+        cleanup.arguments = ["-P", "1", "-f", NSRegularExpression.escapedPattern(for: Self.directory.path + "/")]
+        if (try? cleanup.run()) != nil { cleanup.waitUntilExit() }
         for item in installed where isEnabled(item) { launch(item) }
     }
 
@@ -80,7 +87,9 @@ final class ExtensionStore: ObservableObject {
                 (try? Data(contentsOf: folder.appendingPathComponent(ExtensionManifest.fileName)))
                     .flatMap { try? JSONDecoder().decode(ExtensionManifest.self, from: $0) }?.version
             }
-            guard FileManager.default.fileExists(atPath: destination.path), version(destination) != version(bundled) else { continue }
+            // 앱에 든 것이 더 새것일 때만 (GitHub에서 받은 더 새 버전을 앱의 옛 버전으로 되돌리지 않게)
+            guard FileManager.default.fileExists(atPath: destination.path), let new = version(bundled),
+                  AppUpdate.isNewer(new, than: version(destination) ?? "0") else { continue }
             _ = try? place(copyOf: bundled, as: source)
         }
     }
@@ -226,14 +235,27 @@ final class ExtensionStore: ObservableObject {
         catalog = bundled + entries.filter { entry in ExtensionSource(entry.source) != nil && !bundled.contains { $0.source == entry.source } }
     }
 
-    func install(_ text: String) async {
+    /// 카탈로그에 설치한 것보다 새 버전이 있으면 그 항목
+    func availableUpdate(for item: Installed) -> CatalogEntry? {
+        catalog.first { entry in
+            entry.source == item.source && entry.version.map { AppUpdate.isNewer($0, than: item.manifest.version ?? "0") } == true
+        }
+    }
+
+    /// 확장만 GitHub에서 새로 받습니다 (앱 업데이트 없이). 이미 믿고 설치한 것이라 다시 묻지 않습니다.
+    func update(_ item: Installed) async {
+        await install(item.source, update: true)
+    }
+
+    func install(_ text: String, update: Bool = false) async {
         guard let source = ExtensionSource(text) else {
             message = String(localized: "Enter a GitHub repository, like owner/repo or owner/repo/folder.")
             return
         }
-        let bundled = Self.bundledFolder(for: text)
+        // 업데이트는 늘 GitHub에서 받습니다 (앱 안의 것은 처음 설치할 때만).
+        let bundled = update ? nil : Self.bundledFolder(for: text)
         // Kongi가 만든 확장은 앱과 함께 온 것이라 묻지 않습니다.
-        guard bundled != nil || confirm(source) else { return }
+        guard bundled != nil || update || confirm(source) else { return }
         busy = true
         defer { busy = false }
         do {
@@ -244,7 +266,7 @@ final class ExtensionStore: ObservableObject {
                 disabled.remove(item)
                 restart(fresh)
             }
-            message = String(localized: "Installed.")
+            message = update ? String(localized: "Updated.") : String(localized: "Installed.")
         } catch let error as InstallError {
             message = error.text
         } catch {
@@ -351,7 +373,12 @@ struct ExtensionsPane: View {
                 }
                 ForEach(store.catalog) { entry in
                     KRow(title: entry.name, detail: entry.description + (entry.author.map { " · \($0)" } ?? "")) {
-                        if store.installed.contains(where: { $0.source == entry.source }) {
+                        if let item = store.installed.first(where: { $0.source == entry.source }), store.availableUpdate(for: item) != nil {
+                            KButton(title: String(localized: "Update"), symbol: "arrow.down.circle", style: .primary) {
+                                Task { await store.update(item) }
+                            }
+                            .disabled(store.busy)
+                        } else if store.installed.contains(where: { $0.source == entry.source }) {
                             Label("Installed", systemImage: "checkmark").font(.system(size: 12)).foregroundStyle(KongiTheme.green)
                         } else {
                             KButton(title: String(localized: "Install"), symbol: "arrow.down.circle") {
@@ -426,6 +453,13 @@ private struct InstalledRow: View {
                     .font(.system(size: 11.5)).foregroundStyle(KongiTheme.secondary).lineLimit(1)
             }
             Spacer(minLength: 8)
+            if let update = store.availableUpdate(for: item) {
+                let version = update.version ?? ""
+                KButton(title: String(localized: "Update to \(version)"), symbol: "arrow.down.circle", style: .primary) {
+                    Task { await store.update(item) }
+                }
+                .disabled(store.busy)
+            }
             Button { NSWorkspace.shared.open(item.folder.appendingPathComponent("extension.log")) } label: { Image(systemName: "doc.text") }
                 .buttonStyle(.borderless).help(Text("Open the log"))
             Button { store.restart(item) } label: { Image(systemName: "arrow.clockwise") }

@@ -233,9 +233,25 @@ private struct UpdateCard: View {
                 Button { updater.dismissCard() } label: { Image(systemName: "xmark").font(.caption.weight(.semibold)) }
                     .buttonStyle(.plain).foregroundStyle(.secondary).help(Text(card.installed ? "Close" : "Later"))
             }
-            if !card.changes.isEmpty {
+            // 심각한 버그 수정은 따로 눈에 띄게 (릴리스 노트에서 🚨로 표시한 것만)
+            let critical = card.changes.filter { $0.hasPrefix(AppUpdate.criticalMark) }
+            if !critical.isEmpty {
                 VStack(alignment: .leading, spacing: 3) {
-                    ForEach(card.changes, id: \.self) { change in
+                    Label(String(localized: "Important fixes"), systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(KongiTheme.orange)
+                    ForEach(critical, id: \.self) { change in
+                        Text(verbatim: String(change.dropFirst(2))).font(.caption.weight(.medium)).fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .padding(8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(RoundedRectangle(cornerRadius: 8).fill(KongiTheme.orange.opacity(0.14)))
+            }
+            let others = card.changes.filter { !$0.hasPrefix(AppUpdate.criticalMark) }
+            if !others.isEmpty {
+                VStack(alignment: .leading, spacing: 3) {
+                    ForEach(others, id: \.self) { change in
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
                             Text(verbatim: "•").foregroundStyle(.secondary)
                             Text(verbatim: change).fixedSize(horizontal: false, vertical: true)

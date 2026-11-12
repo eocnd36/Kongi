@@ -166,6 +166,8 @@ struct GeneralPane: View {
     @EnvironmentObject private var store: UsageStore
     @AppStorage(AppSettings.menuBarStyle) private var styleRaw = MenuBarStyle.sessionAndWeekly.rawValue
     @AppStorage(AppSettings.refreshMinutes) private var refreshMinutes = 5
+    @AppStorage(AppSettings.menuBarCodex) private var showCodex = true
+    @ObservedObject private var tasks = AppServices.shared.tasks
     @AppStorage(AppSettings.checkForUpdates) private var checkForUpdates = true
     @AppStorage(AppSettings.autoInstallUpdates) private var autoInstallUpdates = false
     @State private var launchAtLogin = LoginItem.isEnabled
@@ -188,6 +190,11 @@ struct GeneralPane: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.top, 2)
+                }
+                if tasks.widgets.contains(where: { $0.id == "codex-5h" }) {
+                    KDivider()
+                    KToggleRow(title: String(localized: "Show Codex usage"),
+                               detail: String(localized: "Adds your Codex 5-hour limit from the Codex extension."), isOn: $showCodex)
                 }
                 KDivider()
                 KRow(title: String(localized: "Refresh every")) {
@@ -519,7 +526,12 @@ struct AboutPane: View {
                     .padding(.vertical, 6)
             }
             if let url = AppInfo.repositoryURL {
-                KButton(title: "GitHub", symbol: "arrow.up.right") { NSWorkspace.shared.open(url) }
+                HStack(spacing: 8) {
+                    KButton(title: String(localized: "Send feedback"), symbol: "bubble.left.and.text.bubble.right") {
+                        if let feedback = Self.feedbackURL(repository: url) { NSWorkspace.shared.open(feedback) }
+                    }
+                    KButton(title: "GitHub", symbol: "arrow.up.right") { NSWorkspace.shared.open(url) }
+                }
             }
             Text("Unofficial app. Not affiliated with Anthropic.")
                 .font(.system(size: 12))
@@ -527,6 +539,25 @@ struct AboutPane: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(30)
+    }
+
+    /// GitHub 새 이슈 화면을 버전·macOS·언어만 채워 엽니다 (그 밖의 정보는 보내지 않음, 사용자가 보고 직접 올림).
+    static func feedbackURL(repository: URL) -> URL? {
+        let os = ProcessInfo.processInfo.operatingSystemVersion
+        let language = AppLanguage.override ?? Bundle.main.preferredLocalizations.first ?? "en"
+        let body = """
+        **What happened / what would you like?**
+
+
+        **Steps to reproduce (for bugs)**
+
+
+        ---
+        Kongi \(AppInfo.version) · macOS \(os.majorVersion).\(os.minorVersion).\(os.patchVersion) · \(language)
+        """
+        var components = URLComponents(url: repository.appendingPathComponent("issues/new"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "body", value: body)]
+        return components?.url
     }
 }
 

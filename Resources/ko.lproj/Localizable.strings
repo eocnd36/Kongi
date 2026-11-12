@@ -513,3 +513,13 @@
 
 /* Island timing */
 "about %@ left" = "약 %@ 남음";
+
+/* Updates and Codex */
+"Important fixes" = "중요한 수정";
+"Show Codex usage" = "Codex 사용량 표시";
+"Adds your Codex 5-hour limit from the Codex extension." = "Codex 확장에서 받은 5시간 한도를 함께 보여 줍니다.";
+
+/* Feedback and extension updates */
+"Send feedback" = "피드백 보내기";
+"Updated." = "업데이트했어요.";
+"Update to %@" = "%@(으)로 업데이트";

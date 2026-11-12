@@ -356,6 +356,8 @@ public struct ToolActivity: Codable, Equatable, Sendable {
         switch toolName {
         case "Edit", "MultiEdit", "Write": return input?["file_path"]?.stringValue
         case "NotebookEdit": return input?["notebook_path"]?.stringValue
+        // shortcut: Codex 패치가 여러 파일을 고치면 첫 파일만 변경 내역에 남습니다 (보통 한 파일). 자주 여러 파일이면 OriginalFile을 배열로.
+        case "apply_patch": return patchedFiles(commandText(input)).first
         default: return nil
         }
     }

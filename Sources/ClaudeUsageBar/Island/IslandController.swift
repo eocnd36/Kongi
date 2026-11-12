@@ -270,6 +270,8 @@ final class IslandController {
     private var coveredByFullScreen = false
     private var fullScreenTask: Task<Void, Never>?
     private var pendingWindowSize: CGSize?
+    /// 지난번 확인 때 이미 떠 있던 시스템 확인 창들
+    private var seenDialogs: Set<Int> = []
 
     init(agents: AgentStore, usage: UsageStore, scheduler: PromptScheduler, nowPlaying: NowPlayingMonitor,
          system: SystemMonitor, devices: DeviceEventsMonitor) {
@@ -347,8 +349,12 @@ final class IslandController {
     private func checkFullScreen() {
         guard let screen else { return }
         // 권한 확인 같은 시스템 창이 뜨면 펼친 섬이 가리지 않게 접습니다 (답을 기다리는 동안 앱이 멈춰 보일 수 있음).
-        if model.expanded, let panel, Self.systemDialogOverlaps(panel.frame, screen: screen) {
-            model.collapse()
+        // 펼쳐 둔 사이에 새로 뜬 창일 때만: 이미 떠 있던 창 위로 펼치거나 고정하면 그대로 둡니다
+        // (예전엔 계속 떠 있는 권한 창 때문에 1.5초마다 접혀 마우스를 올려도, 고정해도 꺼졌음).
+        if let panel {
+            let dialogs = Self.systemDialogs(overlapping: panel.frame, screen: screen)
+            if model.expanded, !dialogs.overlapping.isSubset(of: seenDialogs) { model.collapse() }
+            seenDialogs = dialogs.all
         }
         let covered = Self.otherAppCoversScreen(screen)
         guard covered != coveredByFullScreen else { return }
@@ -360,20 +366,25 @@ final class IslandController {
         }
     }
 
-    /// 권한·보안 확인 창(시스템이 띄움)이 섬과 겹치는지
-    static func systemDialogOverlaps(_ frame: NSRect, screen: NSScreen) -> Bool {
+    /// 화면에 뜬 권한·보안 확인 창(시스템이 띄움)들의 창 번호: 전부, 그리고 섬과 겹치는 것
+    static func systemDialogs(overlapping frame: NSRect, screen: NSScreen) -> (all: Set<Int>, overlapping: Set<Int>) {
         let owners: Set<String> = ["UserNotificationCenter", "CoreServicesUIAgent", "SecurityAgent", "universalAccessAuthWarn", "coreautha"]
         guard let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID)
-            as? [[String: Any]] else { return false }
+            as? [[String: Any]] else { return ([], []) }
         let mainHeight = NSScreen.screens.first?.frame.height ?? screen.frame.height
         // AppKit 좌표(왼쪽 아래 원점) → CGWindow 좌표(왼쪽 위 원점)
         let island = CGRect(x: frame.minX, y: mainHeight - frame.maxY, width: frame.width, height: frame.height)
-        return list.contains { window in
+        var all: Set<Int> = [], overlapping: Set<Int> = []
+        for window in list {
             guard let owner = window[kCGWindowOwnerName as String] as? String, owners.contains(owner),
-                  let bounds = window[kCGWindowBounds as String] as? [String: CGFloat] else { return false }
+                  let number = window[kCGWindowNumber as String] as? Int,
+                  let bounds = window[kCGWindowBounds as String] as? [String: CGFloat] else { continue }
             let rect = CGRect(x: bounds["X"] ?? 0, y: bounds["Y"] ?? 0, width: bounds["Width"] ?? 0, height: bounds["Height"] ?? 0)
-            return rect.width > 40 && rect.intersects(island)
+            guard rect.width > 40 else { continue }
+            all.insert(number)
+            if rect.intersects(island) { overlapping.insert(number) }
         }
+        return (all, overlapping)
     }
 
     /// 다른 앱의 일반 창이 메뉴 막대까지 포함해 화면 전체를 덮고 있으면 true
@@ -412,7 +423,8 @@ final class IslandController {
         if count > lastRequestCount {
             // 승인·질문이 오면 저절로 펼칩니다.
             withAnimation(IslandModel.morph) { model.expanded = true }
-        } else if count == 0, lastRequestCount > 0, !model.pinned {
+        } else if count == 0, lastRequestCount > 0, !model.pinned, !model.mouseInside() {
+            // 마우스가 섬 위에 있으면 그대로 두고, 나갈 때 hover가 접습니다.
             model.collapse()
         }
     }
