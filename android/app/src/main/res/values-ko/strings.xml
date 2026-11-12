@@ -82,4 +82,8 @@
     <string name="update_installing">받아서 설치하는 중…</string>
     <string name="update_failed">업데이트하지 못했어요. 나중에 다시 해 보세요.</string>
     <string name="update_idle">GitHub 릴리스에서 받아요</string>
+    <string name="update_title">Kongi %1$s 버전이 나왔어요</string>
+    <string name="updated_title">Kongi를 %1$s(으)로 업데이트했어요</string>
+    <string name="later">나중에</string>
+    <string name="ok">확인</string>
 </resources>

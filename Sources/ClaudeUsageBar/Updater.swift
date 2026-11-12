@@ -21,6 +21,20 @@ final class Updater: ObservableObject {
     @Published private(set) var state: State = .idle
     @Published private(set) var lastChecked: Date?
 
+    /// 메뉴 막대 창 위에 띄우는 카드: 새 버전(업데이트 버튼) 또는 방금 설치한 버전의 바뀐 것
+    struct Card: Equatable {
+        var version: String
+        var changes: [String]
+        var installed: Bool
+    }
+    @Published private(set) var card: Card?
+
+    /// "나중에": 이 버전 카드는 다시 띄우지 않습니다 (새 버전이 나오면 다시).
+    func dismissCard() {
+        if let card, !card.installed { UserDefaults.standard.set(card.version, forKey: "dismissedUpdateCard") }
+        card = nil
+    }
+
     private var loop: Task<Void, Never>?
     private let log = Logger(subsystem: "io.github.claudeusagebar", category: "update")
 
@@ -31,6 +45,7 @@ final class Updater: ObservableObject {
     }
 
     func start() {
+        announceInstalledUpdate()
         loop?.cancel()
         let defaults = UserDefaults.standard
         // 알림이나 자동 설치 중 하나라도 켜져 있으면 확인합니다.
@@ -64,6 +79,10 @@ final class Updater: ObservableObject {
             }
             if AppUpdate.isNewer(release.version, than: AppInfo.version) {
                 state = .available(release)
+                if (userInitiated || UserDefaults.standard.bool(forKey: AppSettings.checkForUpdates)),
+                   UserDefaults.standard.string(forKey: "dismissedUpdateCard") != release.version {
+                    card = Card(version: release.version, changes: AppUpdate.highlights(release.notes), installed: false)
+                }
                 if !userInitiated, UserDefaults.standard.bool(forKey: AppSettings.autoInstallUpdates) {
                     await installWhenIdle()
                 } else if userInitiated || UserDefaults.standard.bool(forKey: AppSettings.checkForUpdates) {
@@ -84,11 +103,37 @@ final class Updater: ObservableObject {
         guard UserDefaults.standard.string(forKey: key) != release.version else { return }
         UserDefaults.standard.set(release.version, forKey: key)
         let title = String(localized: "Kongi \(release.version) is available")
+        // 무엇이 바뀌었는지 (릴리스 노트의 제목들)
+        let changes = AppUpdate.highlights(release.notes, limit: 3).joined(separator: " · ")
         AppServices.shared.devices.post(.init(
             key: "update-\(release.version)", symbol: "arrow.down.circle.fill", tint: .green,
-            title: title, detail: String(localized: "Click to update"), action: .openAbout
-        ), for: 8)
-        Notifier.post(title: title, body: String(localized: "Open Kongi Settings → About to update."), phone: false)
+            title: title, detail: changes.isEmpty ? String(localized: "Click to update") : changes, action: .openAbout
+        ), for: 10)
+        Notifier.post(title: title,
+                      body: changes.isEmpty ? String(localized: "Open Kongi Settings → About to update.") : changes + "\n" + String(localized: "Open Kongi Settings → About to update."),
+                      phone: false)
+    }
+
+    /// 업데이트 뒤 처음 켜졌을 때 한 번: "Kongi 2.2.1로 업데이트했어요" + 바뀐 것
+    private func announceInstalledUpdate() {
+        let defaults = UserDefaults.standard
+        guard let version = defaults.string(forKey: "installedUpdateVersion") else { return }
+        let notes = defaults.string(forKey: "installedUpdateNotes") ?? ""
+        defaults.removeObject(forKey: "installedUpdateVersion")
+        defaults.removeObject(forKey: "installedUpdateNotes")
+        guard version == AppInfo.version else { return }
+        card = Card(version: version, changes: AppUpdate.highlights(notes), installed: true)
+        let changes = AppUpdate.highlights(notes, limit: 3).joined(separator: " · ")
+        let title = String(localized: "Kongi was updated to \(version)")
+        Task { @MainActor in
+            // 아일랜드가 준비될 때까지 잠깐 기다렸다가
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            AppServices.shared.devices.post(.init(
+                key: "updated-\(version)", symbol: "sparkles", tint: .green,
+                title: title, detail: changes.isEmpty ? nil : changes, action: .openAbout
+            ), for: 10)
+            Notifier.post(title: title, body: changes, phone: false)
+        }
     }
 
     // MARK: Installing
@@ -109,6 +154,9 @@ final class Updater: ObservableObject {
     func install() async {
         guard case let .available(release) = state else { return }
         state = .installing
+        // 다시 열린 뒤 무엇이 바뀌었는지 알려 주려고 적어 둡니다 (설치에 실패하면 버전이 달라 무시됨).
+        UserDefaults.standard.set(release.version, forKey: "installedUpdateVersion")
+        UserDefaults.standard.set(release.notes, forKey: "installedUpdateNotes")
         do {
             try await replaceApp(with: release)
         } catch let failure as Failure {
@@ -197,6 +245,16 @@ struct UpdateSection: View {
                 Text("Checking…").foregroundStyle(KongiTheme.secondary)
             case let .available(release):
                 Text("Kongi \(release.version) is available").font(.system(size: 14, weight: .semibold))
+                let changes = AppUpdate.highlights(release.notes)
+                if !changes.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("What's new").font(.system(size: 12, weight: .semibold)).foregroundStyle(KongiTheme.secondary)
+                        ForEach(changes, id: \.self) { change in
+                            Label { Text(verbatim: change) } icon: { Image(systemName: "sparkle").foregroundStyle(KongiTheme.green) }
+                        }
+                    }
+                    .frame(maxWidth: 360, alignment: .leading)
+                }
                 HStack(spacing: 8) {
                     KButton(title: String(localized: "Update now"), symbol: "arrow.down.circle", style: .primary) {
                         Task { await updater.install() }

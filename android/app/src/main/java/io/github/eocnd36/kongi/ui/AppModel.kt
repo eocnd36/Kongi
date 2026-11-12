@@ -51,6 +51,12 @@ object AppModel {
         private set
     /** 앱 업데이트 확인 상태 (Updates) */
     var updateStatus by mutableStateOf(io.github.eocnd36.kongi.UpdateStatus.Idle)
+    var updateVersion by mutableStateOf<String?>(null)
+    var updateChanges by mutableStateOf<List<String>>(emptyList())
+    /** 업데이트 뒤 처음 열었을 때 보여 줄 (버전, 바뀐 것) */
+    var installedNotes by mutableStateOf<Pair<String, List<String>>?>(null)
+    /** 앱을 열면 "새 버전이 있어요" 창을 띄움 */
+    var updatePrompt by mutableStateOf(false)
 
     /** 링크·카메라로 들어와 확인을 기다리는 연결 */
     var pendingPairing by mutableStateOf<Pairing?>(null)

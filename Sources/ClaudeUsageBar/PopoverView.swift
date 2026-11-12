@@ -64,11 +64,16 @@ private struct WindowHeightFitter: NSViewRepresentable {
 struct UsageView: View {
     @EnvironmentObject private var store: UsageStore
     @ObservedObject private var tasks = AppServices.shared.tasks
+    @ObservedObject private var updater = AppServices.shared.updater
     let openSettings: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             header
+
+            if let card = updater.card {
+                UpdateCard(card: card, updater: updater)
+            }
 
             if store.isConnected, let status = store.serviceStatus, status.hasProblem {
                 StatusBanner(status: status)
@@ -212,6 +217,54 @@ struct UsageView: View {
 }
 
 /// 내용 묶음: 은은한 바탕의 둥근 카드 (유리는 버튼에만 씀)
+/// 새 버전이 있거나 방금 업데이트했을 때 맨 위에 뜨는 카드 (무엇이 바뀌었는지)
+private struct UpdateCard: View {
+    let card: Updater.Card
+    @ObservedObject var updater: Updater
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label(card.installed ? String(localized: "Kongi was updated to \(card.version)") : String(localized: "Kongi \(card.version) is available"),
+                      systemImage: card.installed ? "sparkles" : "arrow.down.circle.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(KongiTheme.green)
+                Spacer()
+                Button { updater.dismissCard() } label: { Image(systemName: "xmark").font(.caption.weight(.semibold)) }
+                    .buttonStyle(.plain).foregroundStyle(.secondary).help(Text(card.installed ? "Close" : "Later"))
+            }
+            if !card.changes.isEmpty {
+                VStack(alignment: .leading, spacing: 3) {
+                    ForEach(card.changes, id: \.self) { change in
+                        HStack(alignment: .firstTextBaseline, spacing: 6) {
+                            Text(verbatim: "•").foregroundStyle(.secondary)
+                            Text(verbatim: change).fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .font(.caption)
+            }
+            if !card.installed {
+                HStack(spacing: 8) {
+                    if case .installing = updater.state {
+                        ProgressView().controlSize(.small)
+                        Text("Updating… Kongi will reopen when it's done.").font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        KButton(title: String(localized: "Update now"), symbol: "arrow.down.circle", style: .primary) {
+                            Task { await updater.install() }
+                        }
+                        Button(String(localized: "Later")) { updater.dismissCard() }
+                            .buttonStyle(.plain).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(KongiTheme.green.opacity(0.12)))
+    }
+}
+
 private struct SectionCard<Content: View>: View {
     @ViewBuilder var content: () -> Content
 

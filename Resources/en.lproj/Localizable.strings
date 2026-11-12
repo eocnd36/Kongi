@@ -230,3 +230,8 @@
 "Tell me when a new version of Kongi is out." = "Tell me when a new version of Kongi is out.";
 "Install updates automatically" = "Install updates automatically";
 "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working.";
+
+/* Update card */
+"Kongi was updated to %@" = "Kongi was updated to %@";
+"Later" = "Later";
+"What's new" = "What's new";

@@ -83,4 +83,8 @@
     <string name="update_installing">Downloading and installing…</string>
     <string name="update_failed">Couldn\'t update. Try again later.</string>
     <string name="update_idle">From GitHub releases</string>
+    <string name="update_title">Kongi %1$s is available</string>
+    <string name="updated_title">Kongi was updated to %1$s</string>
+    <string name="later">Later</string>
+    <string name="ok">OK</string>
 </resources>

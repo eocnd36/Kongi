@@ -505,3 +505,8 @@
 "Tell me when a new version of Kongi is out." = "Сообщать о выходе новой версии Kongi.";
 "Install updates automatically" = "Устанавливать обновления автоматически";
 "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "Скачивает и устанавливает новые версии, затем снова открывает Kongi. Ждёт, пока Claude не закончит работу.";
+
+/* Update card */
+"Kongi was updated to %@" = "Kongi обновлён до %@";
+"Later" = "Позже";
+"What's new" = "Что нового";

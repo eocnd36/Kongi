@@ -32,7 +32,7 @@ object Updates {
     private const val CHECK_EVERY = 6 * 3600_000L
     private const val NOTICE_ID = 50
 
-    private val main = Handler(Looper.getMainLooper())
+    private val main by lazy { Handler(Looper.getMainLooper()) }
     @Volatile private var busy = false
 
     private fun prefs(context: Context) = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -60,7 +60,20 @@ object Updates {
                 expected.equals(installedHash(app), ignoreCase = true) -> UpdateStatus.UpToDate
                 else -> UpdateStatus.Available
             }
-            main.post { AppModel.updateStatus = status }
+            // 무엇이 바뀌었는지 (릴리스 노트). 못 받아도 업데이트는 그대로.
+            val release = if (status == UpdateStatus.Available) runCatching { latestRelease() }.getOrNull() else null
+            release?.let { prefs(app).edit().putString("version", it.first).putString("notes", it.second).apply() }
+            // 앱을 다시 열었을 때도 "새 버전" 창을 띄울 수 있게 기억해 둡니다.
+            if (status == UpdateStatus.Available) prefs(app).edit().putBoolean("available", true).apply()
+            if (status == UpdateStatus.UpToDate) prefs(app).edit().putBoolean("available", false).apply()
+            main.post {
+                AppModel.updateStatus = status
+                if (release != null) {
+                    AppModel.updateVersion = release.first
+                    AppModel.updateChanges = highlights(release.second)
+                    AppModel.updatePrompt = enabled(app, NOTIFY) && release.first != dismissed(app)
+                }
+            }
             if (status != UpdateStatus.Available || expected == null) return@Thread
             when {
                 enabled(app, AUTO) -> install(app, expected)
@@ -93,6 +106,61 @@ object Updates {
         }.start()
     }
 
+    /** 최신 릴리스의 (버전, 릴리스 노트) */
+    private fun latestRelease(): Pair<String, String> {
+        val json = org.json.JSONObject(String(download("https://api.github.com/repos/eocnd36/Kongi/releases/latest", limit = 500_000)))
+        return json.optString("tag_name").removePrefix("v") to json.optString("body")
+    }
+
+    /** 릴리스 노트에서 바뀐 것 몇 줄: "What's new" 아래 목록의 굵은 제목 (Mac의 AppUpdate.highlights와 같은 규칙) */
+    fun highlights(notes: String, limit: Int = 6): List<String> {
+        var lines = notes.lines()
+        val start = lines.indexOfFirst { it.startsWith("#") && it.lowercase().contains("new") }
+        if (start >= 0) {
+            lines = lines.drop(start + 1)
+            val end = lines.indexOfFirst { it.startsWith("#") }
+            if (end >= 0) lines = lines.take(end)
+        }
+        val result = mutableListOf<String>()
+        for (line in lines) {
+            if (!(line.startsWith("- ") || line.startsWith("* "))) continue
+            var text = line.substring(2).trim()
+            text = if (text.startsWith("**") && text.indexOf("**", 2) > 2) {
+                text.substring(2, text.indexOf("**", 2))
+            } else {
+                text.replace("**", "").replace("`", "").substringBefore(" — ")
+            }
+            text = text.trim()
+            if (text.isNotEmpty()) result += if (text.length > 80) text.take(79) + "…" else text
+            if (result.size == limit) break
+        }
+        return result
+    }
+
+    /** 업데이트 뒤 처음 켰을 때: 이 버전의 바뀐 것 (한 번만) */
+    fun takeInstalledNotes(context: Context): Pair<String, List<String>>? {
+        val prefs = prefs(context)
+        val version = prefs.getString("installing", null) ?: return null
+        val notes = prefs.getString("notes", "").orEmpty()
+        prefs.edit().remove("installing").apply()
+        return if (version == BuildConfig.VERSION_NAME) version to highlights(notes) else null
+    }
+
+    /** 앱을 열 때: 지난번 확인에서 새 버전이 있었으면 그 상태를 되살립니다 (확인은 6시간에 한 번이라). */
+    fun restore(context: Context) {
+        val prefs = prefs(context)
+        val version = prefs.getString("version", null)
+        if (!supported || !prefs.getBoolean("available", false) || version == null || version == BuildConfig.VERSION_NAME) return
+        AppModel.updateStatus = UpdateStatus.Available
+        AppModel.updateVersion = version
+        AppModel.updateChanges = highlights(prefs.getString("notes", "").orEmpty())
+        AppModel.updatePrompt = enabled(context, NOTIFY) && version != dismissed(context)
+    }
+
+    /** 앱을 열 때 띄우는 "새 버전" 창을 이 버전에는 다시 띄우지 않음 */
+    fun dismiss(context: Context, version: String) = prefs(context).edit().putString("dismissed", version).apply()
+    fun dismissed(context: Context) = prefs(context).getString("dismissed", null)
+
     private fun latestHash(): String? {
         val sums = String(download(BASE + "SHA256SUMS.txt", limit = 64_000))
         return sums.lines().map { it.trim().split(Regex("\\s+")) }
@@ -116,6 +184,8 @@ object Updates {
             notifyAvailable(context)
             return
         }
+        // 다시 열렸을 때 "무엇이 바뀌었는지"를 보여 주려고 적어 둡니다.
+        prefs(context).getString("version", null)?.let { prefs(context).edit().putString("installing", it).apply() }
         runCatching {
             val installer = context.packageManager.packageInstaller
             val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
@@ -163,6 +233,7 @@ object Updates {
     fun sha256(bytes: ByteArray) = MessageDigest.getInstance("SHA-256").digest(bytes).joinToString("") { "%02x".format(it) }
 
     private fun notifyAvailable(context: Context) {
+        val changes = highlights(prefs(context).getString("notes", "").orEmpty(), limit = 4)
         val open = Intent(context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra("update", true)
@@ -173,7 +244,10 @@ object Updates {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setColor(0xFFA8E6B5.toInt())
                 .setContentTitle(context.getString(R.string.update_available))
-                .setContentText(context.getString(R.string.update_tap))
+                .setContentText(if (changes.isEmpty()) context.getString(R.string.update_tap) else changes.joinToString(" · "))
+                .setStyle(Notification.BigTextStyle().bigText(
+                    (changes.map { "• $it" } + context.getString(R.string.update_tap)).joinToString("\n"),
+                ))
                 .setContentIntent(pending)
                 .setAutoCancel(true)
                 .build(),

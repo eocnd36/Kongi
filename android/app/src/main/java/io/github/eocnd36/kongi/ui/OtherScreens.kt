@@ -201,7 +201,9 @@ fun SettingsScreen(
                         Text(stringResource(if (status == UpdateStatus.Available) R.string.update_now else R.string.update_check))
                     },
                     supportingContent = {
-                        Text(stringResource(when (status) {
+                        if (status == UpdateStatus.Available && AppModel.updateChanges.isNotEmpty()) {
+                            Text(AppModel.updateChanges.joinToString("\n") { "• $it" })
+                        } else Text(stringResource(when (status) {
                             UpdateStatus.Checking -> R.string.update_checking
                             UpdateStatus.UpToDate -> R.string.update_latest
                             UpdateStatus.Available -> R.string.update_available
@@ -285,4 +287,50 @@ fun PairConfirmDialog(pairing: Pairing, onConfirm: () -> Unit, onDismiss: () -> 
         confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.pair_confirm_ok)) } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
     )
+}
+
+/** 앱을 열면: 새 버전이 있으면 바뀐 것과 "업데이트" 버튼, 방금 업데이트했으면 바뀐 것 (한 번) */
+@Composable
+fun UpdateDialogs() {
+    val context = LocalContext.current
+    val version = AppModel.updateVersion
+    if (AppModel.updatePrompt && version != null && AppModel.updateStatus == io.github.eocnd36.kongi.UpdateStatus.Available) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { AppModel.updatePrompt = false },
+            icon = { Icon(Icons.Outlined.SystemUpdate, null) },
+            title = { Text(stringResource(R.string.update_title, version)) },
+            text = { ChangeList(AppModel.updateChanges) },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = {
+                    AppModel.updatePrompt = false
+                    Updates.installNow(context)
+                }) { Text(stringResource(R.string.update_now)) }
+            },
+            dismissButton = {
+                androidx.compose.material3.TextButton(onClick = {
+                    AppModel.updatePrompt = false
+                    Updates.dismiss(context, version)
+                }) { Text(stringResource(R.string.later)) }
+            },
+        )
+    }
+    AppModel.installedNotes?.let { (installed, changes) ->
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { AppModel.installedNotes = null },
+            icon = { Icon(Icons.Outlined.SystemUpdate, null) },
+            title = { Text(stringResource(R.string.updated_title, installed)) },
+            text = { ChangeList(changes) },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { AppModel.installedNotes = null }) { Text(stringResource(R.string.ok)) }
+            },
+        )
+    }
+}
+
+@Composable
+private fun ChangeList(changes: List<String>) {
+    Column(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(6.dp)) {
+        if (changes.isEmpty()) Text(stringResource(R.string.update_tap))
+        changes.forEach { Text("• $it", style = MaterialTheme.typography.bodyMedium) }
+    }
 }

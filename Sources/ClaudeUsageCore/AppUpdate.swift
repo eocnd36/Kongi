@@ -53,6 +53,33 @@ public enum AppUpdate {
         return Release(version: version, pageURL: page, notes: json["body"] as? String ?? "", archiveURL: archive, signatureURL: signature)
     }
 
+    /// 릴리스 노트에서 바뀐 것 몇 줄: "What's new" 아래 목록의 굵은 제목 (없으면 목록 문장).
+    /// `- **Automatic updates on the Mac** — …` → "Automatic updates on the Mac"
+    public static func highlights(_ notes: String, limit: Int = 6) -> [String] {
+        var lines = notes.components(separatedBy: .newlines)
+        if let start = lines.firstIndex(where: { $0.hasPrefix("#") && $0.lowercased().contains("new") }) {
+            lines = Array(lines[(start + 1)...])
+            if let end = lines.firstIndex(where: { $0.hasPrefix("#") }) { lines = Array(lines[..<end]) }
+        }
+        var result: [String] = []
+        for line in lines {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            // 맨 앞 단계의 목록만
+            guard trimmed.hasPrefix("- ") || trimmed.hasPrefix("* "), line.first == "-" || line.first == "*" else { continue }
+            var text = String(trimmed.dropFirst(2))
+            if text.hasPrefix("**"), let end = text.range(of: "**", range: text.index(text.startIndex, offsetBy: 2)..<text.endIndex) {
+                text = String(text[text.index(text.startIndex, offsetBy: 2)..<end.lowerBound])
+            } else {
+                text = text.replacingOccurrences(of: "**", with: "").replacingOccurrences(of: "`", with: "")
+                if let dash = text.range(of: " — ") { text = String(text[..<dash.lowerBound]) }
+            }
+            text = text.trimmingCharacters(in: .whitespaces)
+            if !text.isEmpty { result.append(text.count > 80 ? String(text.prefix(79)) + "…" : text) }
+            if result.count == limit { break }
+        }
+        return result
+    }
+
     /// "2.0.1" > "2.0.0", "2.10" > "2.9". 숫자가 아닌 버전("dev")은 비교하지 않습니다.
     public static func isNewer(_ candidate: String, than current: String) -> Bool {
         guard let a = parse(candidate), let b = parse(current) else { return false }

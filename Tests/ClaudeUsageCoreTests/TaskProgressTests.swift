@@ -90,3 +90,23 @@ import Testing
         #expect(ToolActivity.shellQuoted("it's") == #"'it'\''s'"#)
     }
 }
+
+@Suite struct UpdateNotesTests {
+    @Test func picksTheHeadlines() {
+        let notes = """
+        **Kongi is a Dynamic Island** — intro.
+
+        ### What's new in 2.2
+
+        - **Automatic updates on the Mac** — Settings → General.
+        - **The Android app updates itself** — Settings → Updates.
+          - nested detail
+        - Plain line — with detail
+
+        **Android:** install by hand once.
+        """
+        #expect(AppUpdate.highlights(notes) == ["Automatic updates on the Mac", "The Android app updates itself", "Plain line"])
+        #expect(AppUpdate.highlights("- one\n- two\n- three", limit: 2) == ["one", "two"])
+        #expect(AppUpdate.highlights("no list here").isEmpty)
+    }
+}

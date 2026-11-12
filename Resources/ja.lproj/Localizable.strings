@@ -505,3 +505,8 @@
 "Tell me when a new version of Kongi is out." = "Kongi の新しいバージョンが出たら知らせます。";
 "Install updates automatically" = "アップデートを自動でインストール";
 "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "新しいバージョンをダウンロードしてインストールし、Kongi を開き直します。Claude の作業中は終わるまで待ちます。";
+
+/* Update card */
+"Kongi was updated to %@" = "Kongi を %@ にアップデートしました";
+"Later" = "あとで";
+"What's new" = "新機能";

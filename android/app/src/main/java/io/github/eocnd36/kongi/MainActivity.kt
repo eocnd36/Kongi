@@ -30,6 +30,7 @@ import com.journeyapps.barcodescanner.ScanOptions
 import io.github.eocnd36.kongi.ui.AppModel
 import io.github.eocnd36.kongi.ui.HomeScreen
 import io.github.eocnd36.kongi.ui.KongiTheme
+import io.github.eocnd36.kongi.ui.UpdateDialogs
 import io.github.eocnd36.kongi.ui.Notice
 import io.github.eocnd36.kongi.ui.PairConfirmDialog
 import io.github.eocnd36.kongi.ui.PairScreen
@@ -55,6 +56,8 @@ class MainActivity : ComponentActivity(), MacLink.Listener {
             return
         }
         AppModel.refreshPairing(LinkService.enabled(this))
+        Updates.restore(this)
+        Updates.takeInstalledNotes(this)?.let { AppModel.installedNotes = it }
         setContent { KongiTheme { App() } }
         handle(intent)
     }
@@ -202,6 +205,7 @@ class MainActivity : ComponentActivity(), MacLink.Listener {
         AppModel.pendingPairing?.let { pairing ->
             PairConfirmDialog(pairing, onConfirm = { acceptPairing(pairing) }, onDismiss = { AppModel.pendingPairing = null })
         }
+        UpdateDialogs()
     }
 
     companion object {
