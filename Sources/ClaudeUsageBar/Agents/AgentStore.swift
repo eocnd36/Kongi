@@ -108,6 +108,12 @@ struct AgentSession: Codable, Identifiable, Equatable {
     var turnStartedAt: Date?
     /// 사용 한도 때문에 멈춘 시각 (이 대화에만 "초기화되면 이어서 하기"를 권합니다). 다시 입력하면 지워집니다.
     var limitStoppedAt: Date?
+    /// Claude Code가 아닌 에이전트 (예: "codex"). 훅 도우미의 `--agent`로 붙습니다.
+    var agent: String?
+
+    var agentName: String { agent.map { $0 == "codex" ? "Codex" : $0.capitalized } ?? "Claude" }
+    /// 화면에 보일 이름 (다른 에이전트면 이름을 붙임)
+    var title: String { agent == nil ? projectName : "\(projectName) · \(agentName)" }
 
     var isAlive: Bool {
         state != .ended && (context.claudePid.map { $0 > 0 && kill($0, 0) == 0 } ?? false)
@@ -341,6 +347,13 @@ final class AgentStore: ObservableObject {
             connection?.reply(nil)
             return
         }
+        if event.name.hasPrefix("Kongi") {
+            // kongi 명령 (notify, task, widget, status). status만 답을 돌려줍니다.
+            // connection?.reply(handle(…))로 쓰면 답이 필요 없는 이벤트(연결 nil)는 handle이 아예 불리지 않습니다.
+            let reply = AppServices.shared.tasks.handle(envelope.event)
+            connection?.reply(reply)
+            return
+        }
         if envelope.waitsForContinue == true {
             if let connection { addWaiter(connection, for: event.sessionId) }
             // 오류(한도 등)로 멈춘 것은 기다리는 도우미로만 알려지므로 여기서 함께 처리합니다.
@@ -353,6 +366,7 @@ final class AgentStore: ObservableObject {
         switch event.name {
         case "SessionStart":
             session.state = .waitingForInput
+            emit("session.start", session)
         case "UserPromptSubmit":
             session.state = .thinking
             session.lastPrompt = event.prompt
@@ -363,6 +377,7 @@ final class AgentStore: ObservableObject {
             }
             // 직접 입력했으니 기다리던 도우미는 물러납니다 (다음에 멈추면 새로 생김).
             cancelWaiter(for: session.id)
+            emit("session.prompt", session, ["prompt": .string(String((event.prompt ?? "").prefix(2000)))])
             // 터미널에서 직접 입력한 말과 함께 Claude가 읽으므로, 바쁠 때 보낸 말은 그대로 다음 멈춤까지 기다립니다.
         case "PreToolUse":
             if event.toolName == "AskUserQuestion", let connection {
@@ -376,6 +391,8 @@ final class AgentStore: ObservableObject {
             if let connection {
                 session.state = .waitingForApproval
                 save(session)
+                emit("session.approval", session, ["tool": .string(event.toolName ?? ""),
+                                                   "detail": .string(String(Self.detail(toolName: event.toolName ?? "", input: event.toolInput).prefix(2000)))])
                 addPermission(event: event, session: session, connection: connection)
                 return
             }
@@ -404,13 +421,15 @@ final class AgentStore: ObservableObject {
                !last.isEmpty, !session.messages.contains(where: { $0.role == .assistant && $0.text == Self.clipped(last) }) {
                 Self.append(AgentMessage(id: UUID().uuidString, date: now, role: .assistant, text: Self.clipped(last)), to: &session)
             }
+            emit(event.name == "Stop" ? "session.done" : "session.error", session,
+                 ["message": .string(String((event.raw["last_assistant_message"]?.stringValue ?? "").prefix(2000)))])
             guard event.name == "Stop" else { break }
             postSummary(for: session, now: now)
             lastCompletion = now
             if UserDefaults.standard.bool(forKey: AppSettings.agentNotifications) {
                 Notifier.post(
                     title: String(localized: "\(session.projectName): done"),
-                    body: String(localized: "Claude finished working.")
+                    body: session.agent == nil ? String(localized: "Claude finished working.") : String(localized: "\(session.agentName) finished working.")
                 )
             }
         case "SessionEnd":
@@ -419,6 +438,7 @@ final class AgentStore: ObservableObject {
             markRunningActivities(in: &session, as: .succeeded)
             cancelWaiter(for: session.id)
             save(session)
+            emit("session.end", session)
             return
         default:
             break
@@ -439,10 +459,12 @@ final class AgentStore: ObservableObject {
             updatedAt: now
         )
         if let cwd = event.cwd, !cwd.isEmpty { session.cwd = cwd }
-        if session.launchDirectory == nil, let cwd = event.cwd, let transcript = event.transcriptPath {
+        if let agent = event.raw["kongi_agent"]?.stringValue { session.agent = agent }
+        if session.launchDirectory == nil, session.agent == nil, let cwd = event.cwd, let transcript = event.transcriptPath {
             session.launchDirectory = LaunchDirectory.find(cwd: cwd, transcriptPath: transcript)
         }
-        if let transcript = event.transcriptPath, !transcript.isEmpty, session.transcriptPath != transcript {
+        // 대화 기록 파일은 Claude Code 형식만 읽습니다 (다른 에이전트는 훅으로 온 말만 보여 줌).
+        if session.agent == nil, let transcript = event.transcriptPath, !transcript.isEmpty, session.transcriptPath != transcript {
             session.transcriptPath = transcript
             session.transcriptOffset = nil
         }
@@ -743,6 +765,10 @@ final class AgentStore: ObservableObject {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty, var session = session(sessionId) else { return .failed }
         let alive = session.isAlive
+        // Codex 등 다른 에이전트는 실행 중인 터미널에 입력하는 것만 됩니다.
+        if session.agent != nil {
+            return alive && session.state != .ended && TerminalJumper.send(text, to: session.context) ? .sent : .failed
+        }
         var message = AgentMessage(id: UUID().uuidString, date: Date(), role: .user, text: Self.clipped(text))
 
         let result: SendResult
@@ -956,9 +982,20 @@ final class AgentStore: ObservableObject {
 
     // MARK: Helpers
 
+    /// 확장의 events 파일에 알립니다.
+    private func emit(_ name: String, _ session: AgentSession, _ extra: [String: JSONValue] = [:]) {
+        var payload: [String: JSONValue] = [
+            "session_id": .string(session.id), "agent": .string(session.agent ?? "claude"),
+            "project": .string(session.projectName), "cwd": .string(session.cwd),
+        ]
+        payload.merge(extra) { $1 }
+        AppServices.shared.extensions.emit(name, payload)
+    }
+
     static func detail(toolName: String, input: JSONValue?) -> String {
         switch toolName {
-        case "Bash": return input?["command"]?.stringValue ?? ""
+        case "Bash", "shell", "exec_command": return ToolActivity.commandText(input) ?? ""
+        case "apply_patch": return ToolActivity.patchedFiles(ToolActivity.commandText(input)).joined(separator: "\n")
         case "Edit", "MultiEdit", "Write", "Read": return input?["file_path"]?.stringValue ?? ""
         case "NotebookEdit": return input?["notebook_path"]?.stringValue ?? ""
         case "WebFetch": return input?["url"]?.stringValue ?? ""

@@ -247,6 +247,9 @@ private struct ScheduleEditor: View {
     @State private var repeats: Bool
     @State private var continueConversation: Bool
     @State private var permission: ScheduledPrompt.Permission
+    /// 빈 문자열 = Claude Code 기본값
+    @State private var model: String
+    @State private var effort: String
     /// 비어 있으면 폴더에서 새로 실행, 아니면 그 Claude Code 대화에 이어서 보냄
     @State private var targetSessionId: String
 
@@ -258,6 +261,8 @@ private struct ScheduleEditor: View {
         _repeats = State(initialValue: existing?.repeats ?? false)
         _continueConversation = State(initialValue: existing?.continueConversation ?? false)
         _permission = State(initialValue: existing?.permission ?? .acceptEdits)
+        _model = State(initialValue: existing?.model ?? "")
+        _effort = State(initialValue: existing?.effort ?? "")
         _targetSessionId = State(initialValue: existing?.sessionId ?? draft?.sessionId ?? "")
         switch existing?.trigger {
         case .weeklyReset:
@@ -357,6 +362,14 @@ private struct ScheduleEditor: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
+                Picker("Model", selection: $model) {
+                    Text("Claude Code default").tag("")
+                    ForEach(["fable", "opus", "sonnet", "haiku"], id: \.self) { Text(verbatim: $0.capitalized).tag($0) }
+                }
+                Picker("Effort", selection: $effort) {
+                    Text("Claude Code default").tag("")
+                    ForEach(ScheduledPrompt.effortLevels, id: \.self) { Text(verbatim: $0).tag($0) }
+                }
             }
             .formStyle(.grouped)
 
@@ -433,6 +446,8 @@ private struct ScheduleEditor: View {
         prompt.repeats = repeats
         if prompt.sessionId == nil { prompt.continueConversation = continueConversation }
         prompt.permission = permission
+        prompt.model = model.isEmpty ? nil : model
+        prompt.effort = effort.isEmpty ? nil : effort
         prompt.enabled = true
         prompt.finished = false
         scheduler.save(prompt)

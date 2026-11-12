@@ -616,7 +616,7 @@ private struct LimitBanner: View {
                 }
                 ForEach(sessions) { session in
                     HStack {
-                        Text(verbatim: session.projectName)
+                        Text(verbatim: session.title)
                             .font(.system(size: 12))
                             .lineLimit(1)
                         Spacer()
@@ -716,7 +716,7 @@ private struct RequestCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 6) {
                 Image(systemName: "exclamationmark.circle.fill").foregroundStyle(.yellow)
-                Text(verbatim: session?.projectName ?? "")
+                Text(verbatim: session?.title ?? "")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.6))
                 Spacer()
@@ -1047,7 +1047,7 @@ private struct SessionRow: View {
             PulsingDot(color: session.state.color, size: 8, pulses: session.state.isBusy || session.state.needsAttention)
                 .id(session.state.isBusy || session.state.needsAttention)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: session.projectName)
+                Text(verbatim: session.title)
                     .font(.system(size: 12, weight: .semibold))
                     .lineLimit(1)
                 Text(subtitle)
@@ -1113,7 +1113,7 @@ private struct SessionDetail: View {
                 IslandIconButton(symbol: "chevron.left", help: String(localized: "Back")) { model.navigate(to: .sessions) }
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(spacing: 6) {
-                        Text(verbatim: session.projectName).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+                        Text(verbatim: session.title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                         if let branch = session.gitBranch { BranchChip(branch: branch) }
                     }
                     Text(session.state.label)

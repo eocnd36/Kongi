@@ -77,7 +77,7 @@ struct LiveFocusView: View {
                 Kongi(mood: mood, size: large ? 46 : 30)
             }
             VStack(alignment: .leading, spacing: 1) {
-                Text(verbatim: session.projectName)
+                Text(verbatim: session.title)
                     .font(.system(size: large ? 15 : 12, weight: .semibold))
                     .lineLimit(1)
                 Text(verbatim: "Claude Code")

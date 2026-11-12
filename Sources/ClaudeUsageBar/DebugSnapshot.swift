@@ -66,6 +66,29 @@ enum DebugSnapshot {
             let store: UsageStore
             if demo {
                 store = demoStore()
+                // 스코어보드 예시: 진행 중인 빌드와 끝난 테스트
+                for (id, name, state, fraction, passed, failed, seconds) in [
+                    ("d1", "npm run build", "running", 0.64, 0, 0, 12.0),
+                    ("d2", "cargo test", "succeeded", 1.0, 48, 0, 31.0),
+                    ("d3", "pytest", "failed", 1.0, 41, 2, 9.0),
+                ] {
+                    _ = AppServices.shared.tasks.handle(.object([
+                        "hook_event_name": .string("KongiTask"), "id": .string(id), "name": .string(name),
+                        "cwd": .string("/Users/demo/weather-app"), "state": .string(state), "fraction": .number(fraction),
+                        "passed": .number(Double(passed)), "failed": .number(Double(failed)), "seconds": .number(seconds),
+                    ]))
+                }
+                // 확장 위젯 예시 (Codex 확장의 사용 한도)
+                for (id, title, value, detail, progress) in [
+                    ("codex-5h", "Codex · 5 hours", "18%", "Resets 15:40", 0.18),
+                    ("codex-week", "Codex · weekly", "52%", "Resets Mon 09:00", 0.52),
+                ] {
+                    _ = AppServices.shared.tasks.handle(.object([
+                        "hook_event_name": .string("KongiWidget"), "id": .string(id), "title": .string(title),
+                        "value": .string(value), "detail": .string(detail), "progress": .number(progress),
+                        "symbol": .string("gauge.with.dots.needle.50percent"),
+                    ]))
+                }
             } else {
                 store = UsageStore()
                 while store.snapshot == nil && store.error == nil {

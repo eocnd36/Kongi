@@ -17,6 +17,13 @@ extension AppSettings {
     static let focusMinutes = "focusMinutes"
     static let breakMinutes = "breakMinutes"
     static let shellMinimumSeconds = "shellMinimumSeconds"
+    /// 이 Mac의 앱·스크립트·확장이 `kongi notify`·`kongi run`으로 아일랜드에 보내는 것을 받음
+    static let appNotices = "appNotices"
+    /// 발열·저장 공간·메모리 압박 알림
+    static let systemAlerts = "systemAlerts"
+    /// 같은 iCloud의 iPhone에서 오는 전화·알림 (손쉬운 사용 권한 필요)
+    static let iPhoneCalls = "iPhoneCalls"
+    static let iPhoneNotices = "iPhoneNotices"
 
     static func registerExtrasDefaults() {
         UserDefaults.standard.register(defaults: [
@@ -27,6 +34,10 @@ extension AppSettings {
             focusMinutes: 25,
             breakMinutes: 5,
             shellMinimumSeconds: 10,
+            appNotices: true,
+            systemAlerts: true,
+            iPhoneCalls: false,
+            iPhoneNotices: false,
         ])
     }
 }
@@ -80,7 +91,7 @@ final class UsagePaceWatcher {
 /// 섬이 곧 타이머: 집중 → 쉬기를 번갈아. 접힌 섬에 남은 시간이 보입니다.
 @MainActor
 final class FocusTimer: ObservableObject {
-    enum Phase: Equatable { case focus, rest }
+    enum Phase: Equatable { case focus, rest, timer }
 
     @Published private(set) var phase: Phase?
     @Published private(set) var endsAt: Date?
@@ -96,8 +107,11 @@ final class FocusTimer: ObservableObject {
         return min(max(date.timeIntervalSince(startedAt) / endsAt.timeIntervalSince(startedAt), 0), 1)
     }
 
-    func start(_ phase: Phase = .focus) {
-        let minutes = UserDefaults.standard.integer(forKey: phase == .focus ? AppSettings.focusMinutes : AppSettings.breakMinutes)
+    /// 그냥 타이머 (몇 분 뒤 알림)
+    func startTimer(minutes: Int) { start(.timer, minutes: minutes) }
+
+    func start(_ phase: Phase = .focus, minutes: Int? = nil) {
+        let minutes = minutes ?? UserDefaults.standard.integer(forKey: phase == .focus ? AppSettings.focusMinutes : AppSettings.breakMinutes)
         self.phase = phase
         startedAt = Date()
         endsAt = Date().addingTimeInterval(TimeInterval(max(minutes, 1) * 60))
@@ -126,6 +140,11 @@ final class FocusTimer: ObservableObject {
                        title: String(localized: "Focus done"), detail: String(localized: "Take a short break")), for: 8)
             Notifier.post(title: String(localized: "Focus done"), body: String(localized: "Take a short break"))
             start(.rest)
+        } else if ended == .timer {
+            post(.init(key: "timer-end", symbol: "timer", tint: KongiTheme.accent,
+                       title: String(localized: "Timer done"), detail: nil), for: 8)
+            Notifier.post(title: String(localized: "Timer done"), body: "")
+            stop()
         } else {
             post(.init(key: "rest-end", symbol: "timer", tint: KongiTheme.accent,
                        title: String(localized: "Break is over"), detail: String(localized: "Ready for the next one?")), for: 8)

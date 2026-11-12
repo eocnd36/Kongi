@@ -12,6 +12,11 @@ import Foundation
 
 signal(SIGPIPE, SIG_IGN)
 
+// `kongi` 명령: 개발자가 만든 앱·스크립트·확장이 아일랜드에 알림을 보내거나, 빌드·테스트를 감싸 진행률을 보냅니다.
+if let command = CommandLine.arguments.dropFirst().first, ["notify", "task", "widget", "status", "run", "codex", "help", "--help"].contains(command) {
+    exit(KongiCommand.main(Array(CommandLine.arguments.dropFirst(2)), command: command))
+}
+
 // 셸 연동: 오래 걸린 명령이 끝났을 때 (--shell 상태 초 폴더 명령)
 let shellArgs = Array(CommandLine.arguments.dropFirst())
 if shellArgs.first == "--shell", shellArgs.count >= 5 {
@@ -32,7 +37,17 @@ if shellArgs.first == "--shell", shellArgs.count >= 5 {
 }
 
 let input = FileHandle.standardInput.readDataToEndOfFile()
-guard let json = try? JSONDecoder().decode(JSONValue.self, from: input) else { exit(0) }
+guard var json = try? JSONDecoder().decode(JSONValue.self, from: input) else { exit(0) }
+// 다른 에이전트(Codex 등)의 훅: `--agent codex`. Claude Code와 같은 형식이라 그대로 넘기고 이름만 붙입니다.
+// Codex 앱은 Claude Code의 훅 설정을 가져다 쓰기도 해서, 플래그가 없어도 Codex 형식이면 알아봅니다.
+if case .object(var fields) = json {
+    if let flag = CommandLine.arguments.firstIndex(of: "--agent"), flag + 1 < CommandLine.arguments.count {
+        fields["kongi_agent"] = .string(String(CommandLine.arguments[flag + 1].prefix(20)))
+    } else if HookEvent.looksLikeCodex(json) {
+        fields["kongi_agent"] = .string("codex")
+    }
+    json = .object(fields)
+}
 let event = HookEvent(json: json)
 
 if CommandLine.arguments.dropFirst().contains(HookSettingsEditor.waitArgument) {

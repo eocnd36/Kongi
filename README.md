@@ -54,8 +54,18 @@ Notched MacBooks have a natural home for a Dynamic Island. **Macs without a notc
 - **Music** from Apple Music and Spotify, with artwork and controls
 - **AirPods and headphones** connecting with battery levels, **volume**, **charging** and **low battery**
 - **Notices** when a task finishes, a command ends or a meeting is about to start
-- **Focus timer**, **system stats**, GitHub, local servers and clipboard tools
+- **Focus timer** and quick **timers**, **system stats**, GitHub, local servers and clipboard tools
+- **Calls and notifications from your iPhone** (same iCloud account) in the island — optional, needs Accessibility permission
+- **Your Mac's health**: running hot, low memory or almost-full storage (at most once an hour each)
 - Music and Claude Code **side by side**, like on iPhone
+
+### Builds, tests and your own apps
+
+- **`kongi run -- npm run build`** (or `cargo test`, `pytest`, …) shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends.
+- **`kongi notify "Deploy done" "api · 42s"`** sends anything to the island from your own apps and scripts. Nothing to install.
+- **Codex like Claude Code:** install the Codex extension from Settings → Extensions. Codex sessions and approvals show up in the island, and your Codex 5-hour and weekly limits appear in the menu bar window. If Codex hasn't already imported Kongi's hooks, it adds them to `~/.codex/hooks.json` (backed up first); run `/hooks` in Codex once to trust them.
+- **Extensions:** Kongi's own extensions install with one click, and you can install extensions people share on GitHub from Settings → Extensions. Extensions can post notices, live progress and menu bar widgets, read Kongi's status, and react to events (a session starts, asks for approval, finishes; a build ends). Making one is a folder with a `kongi-extension.json` — see [extensions/README.md](extensions/README.md).
+- **Scheduled prompts** can pick a model and effort level.
 
 ### Meet Kongi
 
@@ -97,6 +107,7 @@ Approve requests from a notification, follow every session live, read the conver
 - **Usage:** Kongi only reads the Claude Code login and never changes it. The token goes only to `api.anthropic.com`; the only other request is the public status page. No analytics.
 - **Island:** Claude Code hooks talk to Kongi through a local socket on your Mac. Connecting backs up `~/.claude/settings.json` first, leaves your own settings alone, and removing the connection takes out only Kongi's entries. If Kongi isn't running, Claude Code works as usual.
 - **Phone link:** off until you turn it on. Only devices on your local network can reach it, every message is sealed with AES-256-GCM using the key from the QR code, and replays are rejected.
+- **Extensions** run with your permissions, like any app you install. Kongi asks before installing one; only install extensions from people you trust.
 - **Your Claude usage:** running Kongi uses none. Only prompts you schedule or send use usage, exactly like typing them yourself.
 
 <details>

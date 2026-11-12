@@ -58,6 +58,10 @@ lipo -create "${HELPERS[@]}" -output "$APP/Contents/MacOS/$HOOK_HELPER"
 cp -R Resources/*.lproj "$APP/Contents/Resources/"
 # 가져온 오픈 소스 코드의 라이선스
 cp THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/"
+# Kongi가 만든 확장 (마켓플레이스에서 내려받지 않고 바로 설치)
+mkdir -p "$APP/Contents/Resources/extensions"
+for dir in extensions/*/; do cp -R "${dir%/}" "$APP/Contents/Resources/extensions/"; done
+cp marketplace/catalog.json "$APP/Contents/Resources/extensions/catalog.json"
 if [[ -f Resources/AppIcon.icns ]]; then
   cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 fi

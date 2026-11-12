@@ -439,3 +439,64 @@
 "The download wasn't the expected version, so nothing was changed." = "Le téléchargement n’était pas la version attendue, rien n’a été modifié.";
 "Update now" = "Mettre à jour";
 "Updating… Kongi will reopen when it's done." = "Mise à jour… Kongi se rouvrira à la fin.";
+
+/* Extensions, scoreboard, system alerts */
+"%@ left" = "Reste %@";
+"Add features made by others, or send to the island from your own apps." = "Ajoutez des fonctions créées par d’autres ou envoyez vers l’île depuis vos propres apps.";
+"Builds & tests" = "Compilations et tests";
+"Can't find the file to run" = "Impossible de trouver le fichier à lancer";
+"Claude Code default" = "Valeur par défaut de Claude Code";
+"Clear" = "Effacer";
+"Codex: add this line to ~/.codex/config.toml to hear when Codex finishes." = "Codex : ajoutez cette ligne à ~/.codex/config.toml pour savoir quand Codex a fini.";
+"Copy" = "Copier";
+"Couldn't download it. Check the address and your connection." = "Téléchargement impossible. Vérifiez l’adresse et votre connexion.";
+"Couldn't start" = "Impossible de démarrer";
+"Done: %@" = "Terminé : %@";
+"Effort" = "Effort";
+"Enter a GitHub repository, like owner/repo or owner/repo/folder." = "Saisissez un dépôt GitHub, comme owner/repo ou owner/repo/dossier.";
+"Extensions" = "Extensions";
+"Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust." = "Les extensions s’exécutent sur votre Mac avec vos autorisations, comme toute app installée. N’installez que des extensions de personnes de confiance.";
+"For developers" = "Pour les développeurs";
+"Install from GitHub" = "Installer depuis GitHub";
+"Install “%@/%@”?" = "Installer « %@/%@ » ?";
+"Installed" = "Installée";
+"Installed." = "Installée.";
+"It may slow down to cool off" = "Il peut ralentir pour refroidir";
+"Let apps on this Mac post to the island" = "Autoriser les apps de ce Mac à publier dans l’île";
+"Marketplace" = "Marketplace";
+"Memory is running low" = "La mémoire est presque pleine";
+"Model" = "Modèle";
+"No extensions listed yet. You can still install one from GitHub below." = "Aucune extension listée pour l’instant. Vous pouvez en installer une depuis GitHub ci-dessous.";
+"Off" = "Désactivée";
+"Open the log" = "Ouvrir le journal";
+"Quit apps you aren't using" = "Quittez les apps inutilisées";
+"Restart" = "Redémarrer";
+"Stopped (code %lld)" = "Arrêtée (code %lld)";
+"Storage is almost full" = "Le stockage est presque plein";
+"System alerts" = "Alertes système";
+"That download isn't a valid extension." = "Ce téléchargement n’est pas une extension valide.";
+"That extension points outside its own folder, so it wasn't installed." = "Cette extension pointe hors de son dossier, elle n’a donc pas été installée.";
+"That repository is too large to install." = "Ce dépôt est trop volumineux pour être installé.";
+"That repository wasn't found, or it's private." = "Dépôt introuvable ou privé.";
+"There's no kongi-extension.json there." = "Il n’y a pas de kongi-extension.json à cet endroit.";
+"Timer" = "Minuteur";
+"Timer done" = "Minuteur terminé";
+"Use the kongi command from your own apps, scripts and build tools. Nothing to install." = "Utilisez la commande kongi depuis vos apps, scripts et outils de compilation. Rien à installer.";
+"View on GitHub" = "Voir sur GitHub";
+"When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each." = "Quand votre Mac chauffe, que la mémoire manque ou que le stockage est presque plein. Au plus une fois par heure pour chacune.";
+"Your Mac" = "Votre Mac";
+"Your Mac is running hot" = "Votre Mac chauffe";
+"kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends." = "kongi run affiche la progression et un anneau réussite/échec dans la fenêtre de la barre des menus, et vous prévient dans l’île à la fin.";
+"owner/repo" = "owner/repo";
+
+/* iPhone banners */
+"Allow Kongi in Accessibility" = "Autoriser Kongi dans Accessibilité";
+"Calls from iPhone" = "Appels de l’iPhone";
+"Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac." = "Kongi lit ces bannières à l’écran pour les afficher dans l’île. Rien ne quitte ce Mac.";
+"Open Settings" = "Ouvrir les Réglages";
+"Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up." = "Affiche dans l’île les notifications que votre iPhone envoie à ce Mac. Nécessite la recopie de l’iPhone.";
+"Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone." = "Affiche dans l’île qui appelle quand votre iPhone sonne. Nécessite les appels depuis l’iPhone dans FaceTime ou Téléphone.";
+"iPhone notifications" = "Notifications de l’iPhone";
+
+/* Other agents */
+"%@ finished working." = "%@ a terminé.";

@@ -439,3 +439,64 @@
 "The download wasn't the expected version, so nothing was changed." = "想定したバージョンではなかったため、何も変更していません。";
 "Update now" = "今すぐアップデート";
 "Updating… Kongi will reopen when it's done." = "アップデート中… 終わると Kongi が再び開きます。";
+
+/* Extensions, scoreboard, system alerts */
+"%@ left" = "残り %@";
+"Add features made by others, or send to the island from your own apps." = "ほかの人が作った機能を追加したり、自分のアプリからアイランドに送ったりできます。";
+"Builds & tests" = "ビルドとテスト";
+"Can't find the file to run" = "実行するファイルが見つかりません";
+"Claude Code default" = "Claude Code の既定";
+"Clear" = "消去";
+"Codex: add this line to ~/.codex/config.toml to hear when Codex finishes." = "Codex: ~/.codex/config.toml にこの行を加えると、Codex が終わったときに知らせます。";
+"Copy" = "コピー";
+"Couldn't download it. Check the address and your connection." = "ダウンロードできませんでした。アドレスと接続を確認してください。";
+"Couldn't start" = "起動できませんでした";
+"Done: %@" = "完了: %@";
+"Effort" = "Effort";
+"Enter a GitHub repository, like owner/repo or owner/repo/folder." = "GitHub リポジトリを入力してください（例: owner/repo、owner/repo/フォルダ）。";
+"Extensions" = "拡張機能";
+"Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust." = "拡張機能はほかのアプリと同じく、あなたの権限でこの Mac 上で動きます。信頼できる人の拡張機能だけをインストールしてください。";
+"For developers" = "開発者向け";
+"Install from GitHub" = "GitHub からインストール";
+"Install “%@/%@”?" = "“%@/%@” をインストールしますか？";
+"Installed" = "インストール済み";
+"Installed." = "インストールしました。";
+"It may slow down to cool off" = "冷やすために遅くなることがあります";
+"Let apps on this Mac post to the island" = "この Mac のアプリがアイランドに投稿できるようにする";
+"Marketplace" = "マーケットプレイス";
+"Memory is running low" = "メモリが不足しています";
+"Model" = "モデル";
+"No extensions listed yet. You can still install one from GitHub below." = "まだ一覧に拡張機能はありません。下から GitHub でインストールできます。";
+"Off" = "オフ";
+"Open the log" = "ログを開く";
+"Quit apps you aren't using" = "使っていないアプリを終了してください";
+"Restart" = "再起動";
+"Stopped (code %lld)" = "停止（コード %lld）";
+"Storage is almost full" = "ストレージがほぼいっぱいです";
+"System alerts" = "システム通知";
+"That download isn't a valid extension." = "有効な拡張機能ではありません。";
+"That extension points outside its own folder, so it wasn't installed." = "拡張機能が自分のフォルダの外を指しているため、インストールしませんでした。";
+"That repository is too large to install." = "リポジトリが大きすぎてインストールできません。";
+"That repository wasn't found, or it's private." = "リポジトリが見つからないか、非公開です。";
+"There's no kongi-extension.json there." = "そこに kongi-extension.json がありません。";
+"Timer" = "タイマー";
+"Timer done" = "タイマー終了";
+"Use the kongi command from your own apps, scripts and build tools. Nothing to install." = "自分のアプリ、スクリプト、ビルドツールから kongi コマンドを使えます。インストールは不要です。";
+"View on GitHub" = "GitHub で見る";
+"When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each." = "Mac が熱くなったとき、メモリが少ないとき、ストレージがほぼいっぱいのとき。種類ごとに 1 時間に 1 回まで。";
+"Your Mac" = "この Mac";
+"Your Mac is running hot" = "Mac が熱くなっています";
+"kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends." = "kongi run はメニューバーのウインドウに進捗と成功/失敗のリングを表示し、終わるとアイランドで知らせます。";
+"owner/repo" = "owner/repo";
+
+/* iPhone banners */
+"Allow Kongi in Accessibility" = "アクセシビリティで Kongi を許可";
+"Calls from iPhone" = "iPhone の着信";
+"Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac." = "画面に出たバナーを読んでアイランドに表示します。この Mac の外には何も送りません。";
+"Open Settings" = "設定を開く";
+"Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up." = "iPhone がこの Mac に送る通知をアイランドに表示します。iPhone ミラーリングの設定が必要です。";
+"Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone." = "iPhone に着信があると、相手をアイランドに表示します。FaceTime または電話で「iPhone からの通話」をオンにしておく必要があります。";
+"iPhone notifications" = "iPhone の通知";
+
+/* Other agents */
+"%@ finished working." = "%@ が作業を終えました。";

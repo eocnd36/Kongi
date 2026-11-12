@@ -41,7 +41,7 @@ public enum TerminalProbe {
             let hasTTY = row.tty != "??" && !row.tty.isEmpty
             if hasTTY, firstTTY == nil { firstTTY = "/dev/" + row.tty }
             let name = (row.command as NSString).lastPathComponent.lowercased()
-            if name.contains("claude") || name == "node" {
+            if name.contains("claude") || name == "node" || name.hasPrefix("codex") {
                 return (row.pid, hasTTY ? "/dev/" + row.tty : firstTTY)
             }
             current = row.ppid

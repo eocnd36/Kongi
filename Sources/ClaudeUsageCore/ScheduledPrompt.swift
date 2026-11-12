@@ -49,6 +49,13 @@ public struct ScheduledPrompt: Codable, Identifiable, Equatable, Sendable {
     public var sessionContext: HookContext?
     /// 기다리는 초기화 시각. 초기화가 지나면 사용량 정보가 다음 창 시각(또는 없음)으로 바뀌므로 미리 잡아 둡니다.
     public var resetAt: Date?
+    /// 실행할 모델 (`claude --model`, 예: opus, sonnet). 없으면 Claude Code 기본값
+    public var model: String?
+    /// 생각하는 정도 (`claude --effort`: low…max). 없으면 Claude Code 기본값
+    public var effort: String?
+
+    /// `--effort`가 받는 값
+    public static let effortLevels = ["low", "medium", "high", "xhigh", "max"]
 
     public init(
         id: UUID = UUID(), projectPath: String, prompt: String, trigger: Trigger, repeats: Bool = false,
@@ -81,6 +88,9 @@ public struct ScheduledPrompt: Codable, Identifiable, Equatable, Sendable {
     /// `claude`에 넘길 인자
     public var arguments: [String] {
         var args = ["-p", prompt, "--permission-mode", permission.rawValue]
+        // shortcut: 열린 터미널에 직접 입력하는 예약(PromptScheduler)에는 모델·effort가 적용되지 않습니다.
+        if let model, !model.isEmpty { args += ["--model", model] }
+        if let effort, Self.effortLevels.contains(effort) { args += ["--effort", effort] }
         if let sessionId {
             args += ["--resume", sessionId]
         } else if continueConversation {

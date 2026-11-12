@@ -45,6 +45,11 @@ public struct HookEvent: Sendable {
         name == "PermissionRequest" || (name == "PreToolUse" && toolName == "AskUserQuestion")
     }
 
+    /// Codex 훅 입력: turn_id가 있거나 대화 기록이 ~/.codex/ 아래에 있음 (Claude Code는 둘 다 아님)
+    public static func looksLikeCodex(_ json: JSONValue) -> Bool {
+        json["turn_id"] != nil || json["transcript_path"]?.stringValue?.contains("/.codex/") == true
+    }
+
     /// 터미널 위치 같은 정보를 다시 모을 만한 이벤트 (도구 이벤트마다 프로세스를 띄우지 않도록)
     public var wantsTerminalContext: Bool {
         ["SessionStart", "UserPromptSubmit", "PermissionRequest", "Notification", "Stop"].contains(name)
@@ -282,11 +287,15 @@ public struct ToolActivity: Codable, Equatable, Sendable {
             return ToolActivity(kind: .write, toolName: toolName, target: file("file_path"))
         case "NotebookEdit":
             return ToolActivity(kind: .edit, toolName: toolName, target: file("notebook_path"))
-        case "Bash", "BashOutput":
+        case "Bash", "BashOutput", "shell", "exec_command":
             // Claude Code가 명령마다 붙이는 짧은 설명이 있으면 그것을 (긴 명령 대신)
             let description = input?["description"]?.stringValue?.trimmingCharacters(in: .whitespacesAndNewlines)
-            return ToolActivity(kind: .run, toolName: toolName,
-                                target: short(description?.isEmpty == false ? description : input?["command"]?.stringValue))
+            return ToolActivity(kind: .run, toolName: "Bash",
+                                target: short(description?.isEmpty == false ? description : commandText(input)))
+        case "apply_patch":
+            // Codex: 패치 안의 "*** Update File: 경로"
+            let path = patchedFiles(commandText(input)).first ?? ""
+            return ToolActivity(kind: .edit, toolName: "Edit", target: (path as NSString).lastPathComponent)
         case "Glob", "Grep":
             return ToolActivity(kind: .search, toolName: toolName, target: short(input?["pattern"]?.stringValue))
         case "WebFetch":
@@ -305,6 +314,23 @@ public struct ToolActivity: Codable, Equatable, Sendable {
             // MCP 도구는 mcp__server__tool 형태 → 마지막 부분만
             let name = toolName.components(separatedBy: "__").last ?? toolName
             return ToolActivity(kind: .other, toolName: name, target: "")
+        }
+    }
+
+    /// Codex는 명령을 문자열이나 ["bash", "-lc", "…"] 배열로 보냅니다.
+    public static func commandText(_ input: JSONValue?) -> String? {
+        if let text = input?["command"]?.stringValue { return text }
+        if case .array(let parts)? = input?["command"] { return parts.compactMap(\.stringValue).last }
+        return input?["input"]?.stringValue
+    }
+
+    /// apply_patch 내용에서 고치는 파일들
+    public static func patchedFiles(_ patch: String?) -> [String] {
+        (patch ?? "").split(separator: "\n").compactMap { line in
+            for prefix in ["*** Update File: ", "*** Add File: ", "*** Delete File: "] where line.hasPrefix(prefix) {
+                return String(line.dropFirst(prefix.count)).trimmingCharacters(in: .whitespaces)
+            }
+            return nil
         }
     }
 

@@ -439,3 +439,64 @@
 "The download wasn't the expected version, so nothing was changed." = "下載的不是預期的版本，因此未做任何變更。";
 "Update now" = "立即更新";
 "Updating… Kongi will reopen when it's done." = "正在更新… 完成後 Kongi 會重新打開。";
+
+/* Extensions, scoreboard, system alerts */
+"%@ left" = "剩餘 %@";
+"Add features made by others, or send to the island from your own apps." = "加入他人製作的功能，或從你自己的 App 傳送到動態島。";
+"Builds & tests" = "建置與測試";
+"Can't find the file to run" = "找不到要執行的檔案";
+"Claude Code default" = "Claude Code 預設";
+"Clear" = "清除";
+"Codex: add this line to ~/.codex/config.toml to hear when Codex finishes." = "Codex：將這一行加入 ~/.codex/config.toml，Codex 完成時會通知你。";
+"Copy" = "拷貝";
+"Couldn't download it. Check the address and your connection." = "無法下載。請檢查位址和網路連線。";
+"Couldn't start" = "無法啟動";
+"Done: %@" = "完成：%@";
+"Effort" = "Effort";
+"Enter a GitHub repository, like owner/repo or owner/repo/folder." = "輸入 GitHub 儲存庫，例如 owner/repo 或 owner/repo/檔案夾。";
+"Extensions" = "延伸功能";
+"Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust." = "延伸功能會像你安裝的其他 App 一樣，以你的權限在這台 Mac 上執行。只安裝你信任的人製作的延伸功能。";
+"For developers" = "開發者";
+"Install from GitHub" = "從 GitHub 安裝";
+"Install “%@/%@”?" = "要安裝「%@/%@」嗎？";
+"Installed" = "已安裝";
+"Installed." = "已安裝。";
+"It may slow down to cool off" = "可能會降速以散熱";
+"Let apps on this Mac post to the island" = "允許這台 Mac 上的 App 傳送到動態島";
+"Marketplace" = "市集";
+"Memory is running low" = "記憶體不足";
+"Model" = "模型";
+"No extensions listed yet. You can still install one from GitHub below." = "目錄中還沒有延伸功能。你仍可在下方透過 GitHub 安裝。";
+"Off" = "關閉";
+"Open the log" = "打開記錄";
+"Quit apps you aren't using" = "結束不用的 App";
+"Restart" = "重新啟動";
+"Stopped (code %lld)" = "已停止（代碼 %lld）";
+"Storage is almost full" = "儲存空間幾乎已滿";
+"System alerts" = "系統提醒";
+"That download isn't a valid extension." = "這不是有效的延伸功能。";
+"That extension points outside its own folder, so it wasn't installed." = "該延伸功能指向其檔案夾之外，因此未安裝。";
+"That repository is too large to install." = "儲存庫太大，無法安裝。";
+"That repository wasn't found, or it's private." = "找不到該儲存庫，或它是私人的。";
+"There's no kongi-extension.json there." = "那裡沒有 kongi-extension.json。";
+"Timer" = "計時器";
+"Timer done" = "計時結束";
+"Use the kongi command from your own apps, scripts and build tools. Nothing to install." = "在你自己的 App、腳本和建置工具中使用 kongi 指令。不需要安裝。";
+"View on GitHub" = "在 GitHub 上檢視";
+"When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each." = "當 Mac 過熱、記憶體不足或儲存空間快滿時。每種最多每小時一次。";
+"Your Mac" = "你的 Mac";
+"Your Mac is running hot" = "Mac 溫度過高";
+"kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends." = "kongi run 會在選單列視窗顯示進度和成功/失敗圓環，結束時在動態島通知你。";
+"owner/repo" = "owner/repo";
+
+/* iPhone banners */
+"Allow Kongi in Accessibility" = "在輔助使用中允許 Kongi";
+"Calls from iPhone" = "iPhone 來電";
+"Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac." = "Kongi 讀取螢幕上的橫幅並顯示在動態島中。不會傳送到這台 Mac 之外。";
+"Open Settings" = "打開設定";
+"Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up." = "在動態島中顯示 iPhone 傳送到這台 Mac 的通知。需要設定 iPhone 鏡像輸出。";
+"Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone." = "iPhone 來電時在動態島中顯示來電者。需要在 FaceTime 或電話中開啟「來自 iPhone 的通話」。";
+"iPhone notifications" = "iPhone 通知";
+
+/* Other agents */
+"%@ finished working." = "%@ 已完成工作。";

@@ -195,7 +195,7 @@ struct DynamicCompact: View {
             HStack(spacing: 7) {
                 TimerRing(progress: focus.progress(at: context.date), size: height - 12)
                     .frame(width: height - 8)
-                Text(focus.phase == .rest ? String(localized: "Break") : String(localized: "Focus"))
+                Text(focus.phase == .rest ? String(localized: "Break") : focus.phase == .timer ? String(localized: "Timer") : String(localized: "Focus"))
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.white.opacity(0.7))
                 Spacer(minLength: 0)

@@ -439,3 +439,64 @@
 "The download wasn't the expected version, so nothing was changed." = "예상한 버전이 아니어서 아무것도 바꾸지 않았어요.";
 "Update now" = "지금 업데이트";
 "Updating… Kongi will reopen when it's done." = "업데이트하는 중… 끝나면 Kongi가 다시 열려요.";
+
+/* Extensions, scoreboard, system alerts */
+"%@ left" = "%@ 남음";
+"Add features made by others, or send to the island from your own apps." = "다른 사람이 만든 기능을 더하거나, 내 앱에서 아일랜드로 보내요.";
+"Builds & tests" = "빌드 및 테스트";
+"Can't find the file to run" = "실행할 파일을 찾을 수 없어요";
+"Claude Code default" = "Claude Code 기본값";
+"Clear" = "지우기";
+"Codex: add this line to ~/.codex/config.toml to hear when Codex finishes." = "Codex: ~/.codex/config.toml에 이 줄을 넣으면 Codex가 끝날 때 알려 줘요.";
+"Copy" = "복사";
+"Couldn't download it. Check the address and your connection." = "받지 못했어요. 주소와 인터넷 연결을 확인하세요.";
+"Couldn't start" = "시작하지 못했어요";
+"Done: %@" = "완료: %@";
+"Effort" = "Effort";
+"Enter a GitHub repository, like owner/repo or owner/repo/folder." = "GitHub 저장소를 입력하세요. 예: owner/repo 또는 owner/repo/폴더";
+"Extensions" = "확장";
+"Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust." = "확장은 다른 앱처럼 내 권한으로 이 Mac에서 실행돼요. 믿을 수 있는 사람이 만든 확장만 설치하세요.";
+"For developers" = "개발자용";
+"Install from GitHub" = "GitHub에서 설치";
+"Install “%@/%@”?" = "“%@/%@”을(를) 설치할까요?";
+"Installed" = "설치됨";
+"Installed." = "설치했어요.";
+"It may slow down to cool off" = "식히느라 느려질 수 있어요";
+"Let apps on this Mac post to the island" = "이 Mac의 앱이 아일랜드에 보낼 수 있게 하기";
+"Marketplace" = "마켓플레이스";
+"Memory is running low" = "메모리가 부족해요";
+"Model" = "모델";
+"No extensions listed yet. You can still install one from GitHub below." = "아직 목록에 확장이 없어요. 아래에서 GitHub 주소로 설치할 수 있어요.";
+"Off" = "꺼짐";
+"Open the log" = "기록 열기";
+"Quit apps you aren't using" = "쓰지 않는 앱을 종료하세요";
+"Restart" = "다시 시작";
+"Stopped (code %lld)" = "멈춤 (코드 %lld)";
+"Storage is almost full" = "저장 공간이 거의 찼어요";
+"System alerts" = "시스템 알림";
+"That download isn't a valid extension." = "올바른 확장이 아니에요.";
+"That extension points outside its own folder, so it wasn't installed." = "확장이 자기 폴더 밖을 가리켜서 설치하지 않았어요.";
+"That repository is too large to install." = "저장소가 너무 커서 설치할 수 없어요.";
+"That repository wasn't found, or it's private." = "저장소를 찾을 수 없거나 비공개예요.";
+"There's no kongi-extension.json there." = "그곳에 kongi-extension.json이 없어요.";
+"Timer" = "타이머";
+"Timer done" = "타이머 끝";
+"Use the kongi command from your own apps, scripts and build tools. Nothing to install." = "내 앱, 스크립트, 빌드 도구에서 kongi 명령을 쓰세요. 따로 설치할 건 없어요.";
+"View on GitHub" = "GitHub에서 보기";
+"When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each." = "Mac이 뜨거워지거나, 메모리가 부족하거나, 저장 공간이 거의 찼을 때. 종류마다 1시간에 한 번만.";
+"Your Mac" = "내 Mac";
+"Your Mac is running hot" = "Mac이 뜨거워요";
+"kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends." = "kongi run은 메뉴 막대 창에 진행률과 성공/실패 링을 보여 주고, 끝나면 아일랜드로 알려 줘요.";
+"owner/repo" = "owner/repo";
+
+/* iPhone banners */
+"Allow Kongi in Accessibility" = "손쉬운 사용에서 Kongi 허용";
+"Calls from iPhone" = "iPhone 전화";
+"Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac." = "화면에 뜬 배너를 읽어 아일랜드에 보여 줘요. 이 Mac 밖으로는 아무것도 보내지 않아요.";
+"Open Settings" = "설정 열기";
+"Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up." = "iPhone이 이 Mac에 보내는 알림을 아일랜드에 보여 줘요. iPhone 미러링이 설정되어 있어야 해요.";
+"Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone." = "iPhone에 전화가 오면 누가 거는지 아일랜드에 보여 줘요. FaceTime 또는 전화 앱에서 'iPhone에서 통화'가 켜져 있어야 해요.";
+"iPhone notifications" = "iPhone 알림";
+
+/* Other agents */
+"%@ finished working." = "%@가 작업을 마쳤어요.";

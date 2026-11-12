@@ -164,3 +164,64 @@
 "The download wasn't the expected version, so nothing was changed." = "The download wasn't the expected version, so nothing was changed.";
 "Update now" = "Update now";
 "Updating… Kongi will reopen when it's done." = "Updating… Kongi will reopen when it's done.";
+
+/* Extensions, scoreboard, system alerts */
+"%@ left" = "%@ left";
+"Add features made by others, or send to the island from your own apps." = "Add features made by others, or send to the island from your own apps.";
+"Builds & tests" = "Builds & tests";
+"Can't find the file to run" = "Can't find the file to run";
+"Claude Code default" = "Claude Code default";
+"Clear" = "Clear";
+"Codex: add this line to ~/.codex/config.toml to hear when Codex finishes." = "Codex: add this line to ~/.codex/config.toml to hear when Codex finishes.";
+"Copy" = "Copy";
+"Couldn't download it. Check the address and your connection." = "Couldn't download it. Check the address and your connection.";
+"Couldn't start" = "Couldn't start";
+"Done: %@" = "Done: %@";
+"Effort" = "Effort";
+"Enter a GitHub repository, like owner/repo or owner/repo/folder." = "Enter a GitHub repository, like owner/repo or owner/repo/folder.";
+"Extensions" = "Extensions";
+"Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust." = "Extensions run on your Mac with your permissions, like any app you install. Only install extensions from people you trust.";
+"For developers" = "For developers";
+"Install from GitHub" = "Install from GitHub";
+"Install “%@/%@”?" = "Install “%@/%@”?";
+"Installed" = "Installed";
+"Installed." = "Installed.";
+"It may slow down to cool off" = "It may slow down to cool off";
+"Let apps on this Mac post to the island" = "Let apps on this Mac post to the island";
+"Marketplace" = "Marketplace";
+"Memory is running low" = "Memory is running low";
+"Model" = "Model";
+"No extensions listed yet. You can still install one from GitHub below." = "No extensions listed yet. You can still install one from GitHub below.";
+"Off" = "Off";
+"Open the log" = "Open the log";
+"Quit apps you aren't using" = "Quit apps you aren't using";
+"Restart" = "Restart";
+"Stopped (code %lld)" = "Stopped (code %lld)";
+"Storage is almost full" = "Storage is almost full";
+"System alerts" = "System alerts";
+"That download isn't a valid extension." = "That download isn't a valid extension.";
+"That extension points outside its own folder, so it wasn't installed." = "That extension points outside its own folder, so it wasn't installed.";
+"That repository is too large to install." = "That repository is too large to install.";
+"That repository wasn't found, or it's private." = "That repository wasn't found, or it's private.";
+"There's no kongi-extension.json there." = "There's no kongi-extension.json there.";
+"Timer" = "Timer";
+"Timer done" = "Timer done";
+"Use the kongi command from your own apps, scripts and build tools. Nothing to install." = "Use the kongi command from your own apps, scripts and build tools. Nothing to install.";
+"View on GitHub" = "View on GitHub";
+"When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each." = "When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each.";
+"Your Mac" = "Your Mac";
+"Your Mac is running hot" = "Your Mac is running hot";
+"kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends." = "kongi run shows progress and a pass/fail ring in the menu bar window, and tells you in the island when it ends.";
+"owner/repo" = "owner/repo";
+
+/* iPhone banners */
+"Allow Kongi in Accessibility" = "Allow Kongi in Accessibility";
+"Calls from iPhone" = "Calls from iPhone";
+"Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac." = "Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac.";
+"Open Settings" = "Open Settings";
+"Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up." = "Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up.";
+"Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone." = "Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone.";
+"iPhone notifications" = "iPhone notifications";
+
+/* Other agents */
+"%@ finished working." = "%@ finished working.";

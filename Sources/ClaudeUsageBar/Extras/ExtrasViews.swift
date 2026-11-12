@@ -10,10 +10,15 @@ struct IslandToolbox: View {
     @ObservedObject var github = AppServices.shared.github
     @ObservedObject var ports = AppServices.shared.ports
     @ObservedObject var clipboard = AppServices.shared.clipboard
+    @ObservedObject var tasks = AppServices.shared.tasks
     @State private var showsClipboard = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
+            // kongi run으로 돌고 있는 빌드·테스트 (백그라운드 작업)
+            ForEach(tasks.running) { task in
+                ToolRow(symbol: "hammer.fill", tint: KongiTheme.orange) { TaskRow(task: task) } trailing: { EmptyView() }
+            }
             FocusRow(focus: focus)
             if let meeting = meetings.next, meeting.start.timeIntervalSinceNow < 3 * 3600 {
                 ToolRow(symbol: "video.fill", tint: Color(red: 0.4, green: 0.7, blue: 1.0)) {
@@ -136,7 +141,7 @@ struct FocusRow: View {
                         Text(verbatim: Self.clock(focus.remaining(at: context.date)))
                             .font(.system(size: 13, weight: .semibold, design: .rounded))
                             .monospacedDigit()
-                        Text(focus.phase == .rest ? String(localized: "Break") : String(localized: "Focus"))
+                        Text(focus.phase == .rest ? String(localized: "Break") : focus.phase == .timer ? String(localized: "Timer") : String(localized: "Focus"))
                             .font(.system(size: 11)).foregroundStyle(.white.opacity(0.55))
                     }
                 }
@@ -147,6 +152,18 @@ struct FocusRow: View {
             if focus.isRunning {
                 IslandTextButton(title: String(localized: "Stop"), symbol: "stop.fill") { focus.stop() }
             } else {
+                // 몇 분짜리 타이머 (아일랜드에서 남은 시간을 보여 주고 끝나면 알림)
+                Menu {
+                    ForEach([1, 3, 5, 10, 15, 30, 60], id: \.self) { minutes in
+                        Button(String(localized: "\(minutes) min")) { focus.startTimer(minutes: minutes) }
+                    }
+                } label: {
+                    Image(systemName: "timer").font(.system(size: 12, weight: .semibold))
+                }
+                .menuStyle(.borderlessButton)
+                .menuIndicator(.hidden)
+                .fixedSize()
+                .help(Text("Timer"))
                 IslandPillButton(title: String(localized: "Start"), style: .secondary) { focus.start() }
             }
         }
@@ -246,12 +263,38 @@ struct ToolsPane: View {
     @AppStorage(AppSettings.meetingsEnabled) private var meetingsEnabled = false
     @AppStorage(AppSettings.clipboardEnabled) private var clipboardEnabled = false
     @AppStorage(AppSettings.shellMinimumSeconds) private var shellSeconds = 10
+    @AppStorage(AppSettings.systemAlerts) private var systemAlerts = true
+    @AppStorage(AppSettings.iPhoneCalls) private var iPhoneCalls = false
+    @AppStorage(AppSettings.iPhoneNotices) private var iPhoneNotices = false
     @ObservedObject private var meetings = AppServices.shared.meetings
     @State private var shellInstalled = ShellIntegration.isInstalled
     @State private var shellError: String?
 
     var body: some View {
         KPage(title: String(localized: "Tools"), subtitle: String(localized: "Extra things the island can do. Anything that needs a permission or touches your files is off until you turn it on.")) {
+            KLabel(String(localized: "Your Mac"))
+            KCard {
+                KToggleRow(title: String(localized: "System alerts"),
+                           detail: String(localized: "When your Mac runs hot, memory runs low or storage is almost full. At most once an hour each."),
+                           isOn: $systemAlerts)
+            }
+            KLabel("iPhone")
+            KCard {
+                KToggleRow(title: String(localized: "Calls from iPhone"),
+                           detail: String(localized: "Show who's calling in the island when your iPhone rings. Needs Calls from iPhone turned on in FaceTime or Phone."),
+                           isOn: $iPhoneCalls)
+                KDivider()
+                KToggleRow(title: String(localized: "iPhone notifications"),
+                           detail: String(localized: "Show notifications your iPhone sends to this Mac in the island. Needs iPhone Mirroring set up."),
+                           isOn: $iPhoneNotices)
+                if (iPhoneCalls || iPhoneNotices) && !AXIsProcessTrusted() {
+                    KDivider()
+                    KRow(title: String(localized: "Allow Kongi in Accessibility"),
+                         detail: String(localized: "Kongi reads these banners on screen to show them in the island. Nothing leaves this Mac.")) {
+                        KButton(title: String(localized: "Open Settings"), symbol: "lock.open") { PhoneBanners.openAccessibilitySettings() }
+                    }
+                }
+            }
             KLabel("Claude Code")
             KCard {
                 KToggleRow(title: String(localized: "Summary when Claude finishes"),

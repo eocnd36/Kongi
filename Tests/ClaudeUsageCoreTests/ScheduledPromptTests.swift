@@ -103,4 +103,16 @@ import Testing
         p.continueConversation = true
         #expect(p.arguments == ["-p", "continue", "--permission-mode", "acceptEdits", "--resume", "abc-123"])
     }
+
+    @Test func passesModelAndEffort() throws {
+        var p = prompt(.sessionReset)
+        p.model = "opus"
+        p.effort = "high"
+        #expect(p.arguments == ["-p", "continue", "--permission-mode", "acceptEdits", "--model", "opus", "--effort", "high"])
+        p.effort = "turbo"  // 모르는 값은 넘기지 않음
+        #expect(!p.arguments.contains("--effort"))
+        // 예전에 저장된 예약(필드 없음)도 그대로 읽힘
+        let old = try JSONEncoder().encode(prompt(.sessionReset))
+        #expect(try JSONDecoder().decode(ScheduledPrompt.self, from: old).model == nil)
+    }
 }

@@ -8,12 +8,12 @@ import SwiftUI
 enum SettingsWindow {
     enum Pane: String, CaseIterable, Identifiable {
         case home, sessions, schedules
-        case general, notifications, island, claudeCode, tools, phone, about
+        case general, notifications, island, claudeCode, tools, extensions, phone, about
 
         var id: String { rawValue }
 
         static let app: [Pane] = [.home, .sessions, .schedules]
-        static let settings: [Pane] = [.general, .notifications, .island, .claudeCode, .tools, .phone, .about]
+        static let settings: [Pane] = [.general, .notifications, .island, .claudeCode, .tools, .extensions, .phone, .about]
 
         var title: String {
             switch self {
@@ -25,6 +25,7 @@ enum SettingsWindow {
             case .island: return String(localized: "Island")
             case .claudeCode: return "Claude Code"
             case .tools: return String(localized: "Tools")
+            case .extensions: return String(localized: "Extensions")
             case .phone: return String(localized: "Phone")
             case .about: return String(localized: "About")
             }
@@ -40,6 +41,7 @@ enum SettingsWindow {
             case .island: return "capsule"
             case .claudeCode: return "terminal"
             case .tools: return "wand.and.stars"
+            case .extensions: return "puzzlepiece.extension"
             case .phone: return "iphone"
             case .about: return "info.circle"
             }
@@ -135,6 +137,7 @@ private struct KongiWindowRoot: View {
             case .island: IslandPane()
             case .claudeCode: ClaudeCodePane()
             case .tools: ToolsPane()
+            case .extensions: ExtensionsPane(store: AppServices.shared.extensions)
             case .phone: PhonePane(mobile: AppServices.shared.mobile)
             case .about: AboutPane()
             }

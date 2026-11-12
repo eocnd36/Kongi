@@ -63,10 +63,11 @@ private struct WindowHeightFitter: NSViewRepresentable {
 
 struct UsageView: View {
     @EnvironmentObject private var store: UsageStore
+    @ObservedObject private var tasks = AppServices.shared.tasks
     let openSettings: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             header
 
             if store.isConnected, let status = store.serviceStatus, status.hasProblem {
@@ -79,15 +80,18 @@ struct UsageView: View {
                 if let error = store.error {
                     ErrorBanner(error: error)
                 }
-                ForEach(snapshot.limits) { item in
-                    LimitRow(item: item, now: store.now)
-                }
-                if let extra = snapshot.extraUsagePercent {
-                    ExtraUsageRow(percent: extra)
+                SectionCard {
+                    ForEach(snapshot.limits) { item in
+                        LimitRow(item: item, now: store.now)
+                        if item.id != snapshot.limits.last?.id { Divider().opacity(0.5) }
+                    }
+                    if let extra = snapshot.extraUsagePercent {
+                        Divider().opacity(0.5)
+                        ExtraUsageRow(percent: extra)
+                    }
                 }
                 if !snapshot.breakdown.isEmpty {
-                    Divider()
-                    BreakdownView(items: snapshot.breakdown)
+                    SectionCard { BreakdownView(items: snapshot.breakdown) }
                 }
             } else if let error = store.error {
                 ErrorStateView(error: error)
@@ -100,21 +104,43 @@ struct UsageView: View {
                 .padding(.vertical, 24)
             }
 
-            Divider()
+            if !tasks.tasks.isEmpty {
+                // 빌드·테스트 스코어보드 (kongi run)
+                SectionCard {
+                    HStack {
+                        Label("Builds & tests", systemImage: "hammer").font(.subheadline.weight(.semibold))
+                        Spacer()
+                        if tasks.tasks.contains(where: { $0.state != .running }) {
+                            Button(String(localized: "Clear")) { tasks.clearFinished() }
+                                .buttonStyle(.plain).font(.caption).foregroundStyle(Color.accentColor)
+                        }
+                    }
+                    ForEach(tasks.tasks) { TaskRow(task: $0) }
+                }
+            }
+
+            if !tasks.widgets.isEmpty {
+                // 확장·앱이 올린 위젯 (kongi widget)
+                SectionCard {
+                    Label("Extensions", systemImage: "puzzlepiece.extension").font(.subheadline.weight(.semibold))
+                    ForEach(tasks.widgets) { WidgetRow(widget: $0) }
+                }
+            }
+
             footer
         }
-        .padding(16)
+        .padding(14)
     }
 
     private var header: some View {
         HStack(spacing: 8) {
             Text("Claude Usage")
-                .font(.headline)
+                .font(.title3.weight(.semibold))
             if let plan = store.credentials?.planName {
                 Text(plan)
-                    .font(.caption2.weight(.semibold))
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
                     .background(Capsule().fill(Color.accentColor.opacity(0.15)))
                     .foregroundStyle(Color.accentColor)
             }
@@ -146,6 +172,17 @@ struct UsageView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()
+            footerButtons
+                .padding(.horizontal, 4)
+                .padding(.vertical, 2)
+                // 조작 버튼만 유리로 묶습니다 (macOS 26 도구 막대처럼)
+                .kongiGlass(Capsule(), interactive: true)
+        }
+    }
+
+    @ViewBuilder
+    private var footerButtons: some View {
+        HStack(spacing: 2) {
             Link(destination: AppInfo.claudeUsageURL) {
                 Image(systemName: "arrow.up.forward.app")
             }
@@ -174,6 +211,18 @@ struct UsageView: View {
     }
 }
 
+/// 내용 묶음: 은은한 바탕의 둥근 카드 (유리는 버튼에만 씀)
+private struct SectionCard<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) { content() }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(Color.primary.opacity(0.05)))
+    }
+}
+
 // MARK: - Rows
 
 private struct LimitRow: View {
@@ -192,7 +241,7 @@ private struct LimitRow: View {
                 }
                 Spacer()
                 Text(MenuBarFormatter.percentText(item.percent))
-                    .font(.system(.title3, design: .rounded).weight(.semibold))
+                    .font(.system(.title2, design: .rounded).weight(.bold))
                     .monospacedDigit()
                     .foregroundStyle(item.severity.color)
             }
@@ -237,8 +286,8 @@ private struct StatusBanner: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(8)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange.opacity(0.1)))
+        .padding(10)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.orange.opacity(0.1)))
     }
 }
 
@@ -283,7 +332,7 @@ private struct UsageBar: View {
                 }
             }
         }
-        .frame(height: 8)
+        .frame(height: 10)
     }
 }
 
@@ -413,8 +462,8 @@ private struct ErrorBanner: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(8)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.orange.opacity(0.1)))
+        .padding(10)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.orange.opacity(0.1)))
     }
 }
 
@@ -423,8 +472,8 @@ private struct IconButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundStyle(.secondary)
-            .frame(width: 22, height: 22)
-            .contentShape(Rectangle())
+            .frame(width: 28, height: 28)
+            .contentShape(Circle())
             .opacity(configuration.isPressed ? 0.5 : 1)
     }
 }

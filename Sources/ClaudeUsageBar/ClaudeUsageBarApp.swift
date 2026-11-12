@@ -56,6 +56,10 @@ final class AppServices: ObservableObject {
     let clipboard = ClipboardHistory()
     let pace = UsagePaceWatcher()
     let updater = Updater()
+    let tasks = TaskBoard()
+    let extensions = ExtensionStore()
+    let systemAlerts = SystemAlerts()
+    let phone = PhoneBanners()
     private var extrasObserver: AnyCancellable?
 
     /// 설정이 바뀌면 켜고 끕니다.
@@ -71,6 +75,7 @@ final class AppServices: ObservableObject {
         github.apply()
         meetings.apply()
         clipboard.apply()
+        phone.apply()
         let ports = PortWatcher.ports()
         if ports != lastPorts {
             lastPorts = ports
@@ -107,6 +112,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
             LoginItem.refreshRegistrationIfRenamed()
             services.startExtras()
             services.updater.start()
+            services.extensions.start()
+            services.systemAlerts.start()
         }
 
         if Notifier.isAvailable {
@@ -127,6 +134,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
     func applicationWillTerminate(_ notification: Notification) {
         // 종료 직전 세션 기록을 저장합니다.
         AppServices.shared.agents.flushHistory()
+        AppServices.shared.extensions.stopAll()
     }
 
     // 메뉴바 앱은 대부분 활성 앱이 아니지만, 팝오버가 열려 있을 때도 배너를 보여줍니다.
