@@ -81,5 +81,10 @@ import Testing
 
         let shell = ToolActivity.describe(toolName: "shell", input: try decode(#"{"command":["bash","-lc","npm test"]}"#))
         #expect(shell.kind == .run && shell.target == "npm test")
+        // 셸 스크립트 형태가 아니면 실행될 명령 전체를 보여 줍니다 (마지막 인자만 보이면 승인 화면이 속음).
+        #expect(ToolActivity.commandText(try decode(#"{"command":["rm","-rf","/"]}"#)) == "rm -rf /")
+        #expect(ToolActivity.commandText(try decode(#"{"command":["bash","-lc","echo hi","extra"]}"#)) == "bash -lc 'echo hi' extra")
+        #expect(ToolActivity.commandText(try decode(#"{"command":["sh","-c","it's"]}"#)) == "it's")
+        #expect(ToolActivity.shellQuoted("it's") == #"'it'\''s'"#)
     }
 }

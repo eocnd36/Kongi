@@ -318,10 +318,25 @@ public struct ToolActivity: Codable, Equatable, Sendable {
     }
 
     /// Codex는 명령을 문자열이나 ["bash", "-lc", "…"] 배열로 보냅니다.
+    /// 승인 화면에 그대로 쓰이므로 실제로 실행될 것을 모두 보여 줍니다: 정확히 [셸, -c|-lc, 스크립트]일 때만 스크립트로 줄입니다.
     public static func commandText(_ input: JSONValue?) -> String? {
         if let text = input?["command"]?.stringValue { return text }
-        if case .array(let parts)? = input?["command"] { return parts.compactMap(\.stringValue).last }
+        if case .array(let parts)? = input?["command"] {
+            let argv = parts.compactMap(\.stringValue)
+            guard argv.count == parts.count else { return String(decoding: JSONValue.array(parts).encodedData(), as: UTF8.self) }
+            if argv.count == 3, ["sh", "bash", "zsh"].contains((argv[0] as NSString).lastPathComponent), ["-c", "-lc"].contains(argv[1]) {
+                return argv[2]
+            }
+            return argv.map(shellQuoted).joined(separator: " ")
+        }
         return input?["input"]?.stringValue
+    }
+
+    /// 공백·특수문자가 있으면 작은따옴표로 감쌉니다 (보이는 그대로 다시 실행할 수 있게).
+    public static func shellQuoted(_ word: String) -> String {
+        let plain = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_./=:@%+-,")
+        if !word.isEmpty, word.unicodeScalars.allSatisfy(plain.contains) { return word }
+        return "'" + word.replacingOccurrences(of: "'", with: "'\\''") + "'"
     }
 
     /// apply_patch 내용에서 고치는 파일들
