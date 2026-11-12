@@ -24,6 +24,10 @@ import androidx.compose.material.icons.outlined.LinkOff
 import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material.icons.outlined.Sync
+import androidx.compose.material.icons.outlined.SystemUpdate
+import androidx.compose.material.icons.outlined.Download
+import io.github.eocnd36.kongi.UpdateStatus
+import io.github.eocnd36.kongi.Updates
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -170,6 +174,47 @@ fun SettingsScreen(
                     leadingContent = { Icon(Icons.Outlined.LinkOff, null, tint = MaterialTheme.colorScheme.error) },
                     colors = itemColors(),
                     modifier = Modifier.clickable { confirmUnpair = true },
+                )
+            }
+            SectionTitle(stringResource(R.string.updates))
+            Group {
+                val context = LocalContext.current
+                var notify by remember { mutableStateOf(Updates.enabled(context, Updates.NOTIFY)) }
+                var auto by remember { mutableStateOf(Updates.enabled(context, Updates.AUTO)) }
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.update_notify)) },
+                    supportingContent = { Text(stringResource(R.string.update_notify_help)) },
+                    leadingContent = { Icon(Icons.Outlined.NotificationsActive, null) },
+                    trailingContent = { Switch(notify, onCheckedChange = { notify = it; Updates.set(context, Updates.NOTIFY, it) }) },
+                    colors = itemColors(),
+                )
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.update_auto)) },
+                    supportingContent = { Text(stringResource(R.string.update_auto_help)) },
+                    leadingContent = { Icon(Icons.Outlined.Download, null) },
+                    trailingContent = { Switch(auto, onCheckedChange = { auto = it; Updates.set(context, Updates.AUTO, it) }) },
+                    colors = itemColors(),
+                )
+                val status = AppModel.updateStatus
+                ListItem(
+                    headlineContent = {
+                        Text(stringResource(if (status == UpdateStatus.Available) R.string.update_now else R.string.update_check))
+                    },
+                    supportingContent = {
+                        Text(stringResource(when (status) {
+                            UpdateStatus.Checking -> R.string.update_checking
+                            UpdateStatus.UpToDate -> R.string.update_latest
+                            UpdateStatus.Available -> R.string.update_available
+                            UpdateStatus.Installing -> R.string.update_installing
+                            UpdateStatus.Failed -> R.string.update_failed
+                            UpdateStatus.Idle -> R.string.update_idle
+                        }))
+                    },
+                    leadingContent = { Icon(Icons.Outlined.SystemUpdate, null) },
+                    colors = itemColors(),
+                    modifier = Modifier.clickable(enabled = status != UpdateStatus.Checking && status != UpdateStatus.Installing) {
+                        if (status == UpdateStatus.Available) Updates.installNow(context) else Updates.check(context, force = true)
+                    },
                 )
             }
             SectionTitle(stringResource(R.string.about))

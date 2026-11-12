@@ -49,6 +49,9 @@ object AppModel {
     var screen by mutableStateOf<Screen>(Screen.Home)
     var detail by mutableStateOf<SessionDetail?>(null)
         private set
+    /** 앱 업데이트 확인 상태 (Updates) */
+    var updateStatus by mutableStateOf(io.github.eocnd36.kongi.UpdateStatus.Idle)
+
     /** 링크·카메라로 들어와 확인을 기다리는 연결 */
     var pendingPairing by mutableStateOf<Pairing?>(null)
 

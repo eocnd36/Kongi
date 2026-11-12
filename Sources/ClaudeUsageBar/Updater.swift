@@ -32,7 +32,9 @@ final class Updater: ObservableObject {
 
     func start() {
         loop?.cancel()
-        guard isSupported, UserDefaults.standard.bool(forKey: AppSettings.checkForUpdates) else { return }
+        let defaults = UserDefaults.standard
+        // 알림이나 자동 설치 중 하나라도 켜져 있으면 확인합니다.
+        guard isSupported, defaults.bool(forKey: AppSettings.checkForUpdates) || defaults.bool(forKey: AppSettings.autoInstallUpdates) else { return }
         loop = Task { [weak self] in
             // 켜자마자 네트워크를 쓰지 않도록 잠시 기다렸다가
             try? await Task.sleep(nanoseconds: 20_000_000_000)
@@ -62,7 +64,11 @@ final class Updater: ObservableObject {
             }
             if AppUpdate.isNewer(release.version, than: AppInfo.version) {
                 state = .available(release)
-                announce(release)
+                if !userInitiated, UserDefaults.standard.bool(forKey: AppSettings.autoInstallUpdates) {
+                    await installWhenIdle()
+                } else if userInitiated || UserDefaults.standard.bool(forKey: AppSettings.checkForUpdates) {
+                    announce(release)
+                }
             } else {
                 state = .upToDate
             }
@@ -86,6 +92,19 @@ final class Updater: ObservableObject {
     }
 
     // MARK: Installing
+
+    /// 자동 설치: Claude·Codex가 일하는 중이면 다시 열리지 않게 끝날 때까지 기다립니다 (최대 6시간, 1분마다 확인).
+    private func installWhenIdle() async {
+        for _ in 0..<360 {
+            // 기다리는 동안 설정을 끄거나 확인이 다시 시작되면(취소) 설치하지 않습니다.
+            guard !Task.isCancelled, UserDefaults.standard.bool(forKey: AppSettings.autoInstallUpdates) else { return }
+            if !AppServices.shared.agents.activeSessions.contains(where: { $0.state.isBusy }) {
+                await install()
+                return
+            }
+            try? await Task.sleep(nanoseconds: 60 * 1_000_000_000)
+        }
+    }
 
     func install() async {
         guard case let .available(release) = state else { return }

@@ -65,6 +65,11 @@ class MainActivity : ComponentActivity(), MacLink.Listener {
     }
 
     private fun handle(intent: Intent?) {
+        // 업데이트 알림을 눌렀을 때
+        if (intent?.getBooleanExtra("update", false) == true) {
+            intent.removeExtra("update")
+            Updates.installNow(this)
+        }
         intent?.getStringExtra("session")?.let { session ->
             if (MacLink.pairing != null) AppModel.openSession(session)
         }
@@ -81,6 +86,7 @@ class MainActivity : ComponentActivity(), MacLink.Listener {
         MacLink.hold(TAG)
         LinkService.start(this)
         AppModel.onConnection(MacLink.live)
+        Updates.check(this)
     }
 
     override fun onStop() {

@@ -7,7 +7,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$PWD"
-VERSION="${VERSION:-2.0.0}"
+VERSION="${VERSION:-2.2.0}"
 TOOLS="$ROOT/.tools"
 SDK="$TOOLS/android-sdk"
 CMDLINE="$SDK/cmdline-tools/latest"

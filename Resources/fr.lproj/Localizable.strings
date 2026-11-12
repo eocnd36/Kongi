@@ -425,7 +425,6 @@
 
 /* Updates */
 "Check for updates" = "Rechercher des mises à jour";
-"Check for updates automatically" = "Rechercher automatiquement les mises à jour";
 "Checking…" = "Recherche…";
 "Click to update" = "Cliquez pour mettre à jour";
 "Couldn't check for updates." = "Impossible de rechercher des mises à jour.";
@@ -500,3 +499,9 @@
 
 /* Other agents */
 "%@ finished working." = "%@ a terminé.";
+
+/* Updates */
+"Update notifications" = "Notifications de mise à jour";
+"Tell me when a new version of Kongi is out." = "Me prévenir quand une nouvelle version de Kongi sort.";
+"Install updates automatically" = "Installer les mises à jour automatiquement";
+"Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "Télécharge et installe les nouvelles versions, puis rouvre Kongi. Attend que Claude ne travaille plus.";

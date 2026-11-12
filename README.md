@@ -98,9 +98,9 @@ Approve requests from a notification, follow every session live, read the conver
 3. Click the gauge in the menu bar and press **Connect** to see your usage.
 4. For the island, open **Settings → Claude Code → Connect**, then start a new Claude Code session.
 
-**Updates:** Kongi checks GitHub for new versions and tells you in the island. Press **Update now** in Settings → About and it updates and reopens itself. Every download is checked against a signature before anything is replaced.
+**Updates:** Kongi checks GitHub for new versions and tells you in the island. Press **Update now** in Settings → About and it updates and reopens itself. Every download is checked against a signature before anything is replaced. Turn on **Install updates automatically** in Settings → General to skip the button — Kongi waits until Claude isn't working.
 
-**Android (optional):** download **[Kongi.apk](https://github.com/eocnd36/Kongi/releases/latest/download/Kongi.apk)** on your phone and allow installing from your browser. On the Mac, open **Settings → Phone**, turn on the phone link and scan the QR code. Android 8 or later.
+**Android (optional):** download **[Kongi.apk](https://github.com/eocnd36/Kongi/releases/latest/download/Kongi.apk)** on your phone and allow installing from your browser. On the Mac, open **Settings → Phone**, turn on the phone link and scan the QR code. Android 8 or later. The app tells you about new versions and can install them itself (Settings → Updates).
 
 ## Privacy and safety
 

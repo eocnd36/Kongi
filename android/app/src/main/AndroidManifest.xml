@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_REMOTE_MESSAGING" />
+    <!-- GitHub 릴리스에서 받은 새 버전 설치 (해시를 확인한 것만, Updates) -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- 평문 HTTP는 같은 Wi-Fi 안의 Mac에만 씁니다. 내용은 앱이 직접 암호화합니다 (PhoneCipher). -->
     <application
@@ -49,6 +51,10 @@
 
         <receiver
             android:name=".ActionReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".Updates$UpdateReceiver"
             android:exported="false" />
     </application>
 </manifest>

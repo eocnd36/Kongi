@@ -68,4 +68,18 @@
     <string name="outage">Claude에 장애가 있어요</string>
     <string name="about">정보</string>
     <string name="licenses">오픈 소스 라이선스</string>
+    <string name="updates">업데이트</string>
+    <string name="update_notify">업데이트 알림</string>
+    <string name="update_notify_help">새 버전이 나오면 알려 줘요</string>
+    <string name="update_auto">자동으로 업데이트</string>
+    <string name="update_auto_help">GitHub에서 새 버전을 받아 설치해요. 처음 한 번은 Kongi에서 앱 설치를 허용해야 해요.</string>
+    <string name="update_check">업데이트 확인</string>
+    <string name="update_now">지금 업데이트</string>
+    <string name="update_checking">확인하는 중…</string>
+    <string name="update_latest">최신 버전이에요</string>
+    <string name="update_available">Kongi 새 버전이 있어요</string>
+    <string name="update_tap">눌러서 업데이트</string>
+    <string name="update_installing">받아서 설치하는 중…</string>
+    <string name="update_failed">업데이트하지 못했어요. 나중에 다시 해 보세요.</string>
+    <string name="update_idle">GitHub 릴리스에서 받아요</string>
 </resources>

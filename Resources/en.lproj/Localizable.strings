@@ -150,7 +150,6 @@
 
 /* Updates */
 "Check for updates" = "Check for updates";
-"Check for updates automatically" = "Check for updates automatically";
 "Checking…" = "Checking…";
 "Click to update" = "Click to update";
 "Couldn't check for updates." = "Couldn't check for updates.";
@@ -225,3 +224,9 @@
 
 /* Other agents */
 "%@ finished working." = "%@ finished working.";
+
+/* Updates */
+"Update notifications" = "Update notifications";
+"Tell me when a new version of Kongi is out." = "Tell me when a new version of Kongi is out.";
+"Install updates automatically" = "Install updates automatically";
+"Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working.";

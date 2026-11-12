@@ -69,4 +69,18 @@
     <string name="outage">Claude is having issues</string>
     <string name="about">About</string>
     <string name="licenses">Open source licenses</string>
+    <string name="updates">Updates</string>
+    <string name="update_notify">Update notifications</string>
+    <string name="update_notify_help">Let you know when a new version is out</string>
+    <string name="update_auto">Install updates automatically</string>
+    <string name="update_auto_help">Downloads the new version from GitHub and installs it. The first time, Android asks you to allow installs from Kongi.</string>
+    <string name="update_check">Check for updates</string>
+    <string name="update_now">Update now</string>
+    <string name="update_checking">Checking…</string>
+    <string name="update_latest">You have the latest version</string>
+    <string name="update_available">A new version of Kongi is available</string>
+    <string name="update_tap">Tap to update</string>
+    <string name="update_installing">Downloading and installing…</string>
+    <string name="update_failed">Couldn\'t update. Try again later.</string>
+    <string name="update_idle">From GitHub releases</string>
 </resources>

@@ -12,8 +12,10 @@ android {
         applicationId = "io.github.eocnd36.kongi"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = (project.findProperty("kongiVersion") as String?) ?: "2.0.0"
+        versionName = (project.findProperty("kongiVersion") as String?) ?: "2.2.0"
+        // 2.2.0 → 20200. 업데이트는 같거나 큰 번호만 설치되므로 버전에서 만듭니다.
+        versionCode = versionName!!.split(".").map { it.filter(Char::isDigit).toIntOrNull() ?: 0 }
+            .let { it.getOrElse(0) { 0 } * 10000 + it.getOrElse(1) { 0 } * 100 + it.getOrElse(2) { 0 } }
         buildConfigField("boolean", "DEMO", "false")
     }
 

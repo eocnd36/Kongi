@@ -425,7 +425,6 @@
 
 /* Updates */
 "Check for updates" = "检查更新";
-"Check for updates automatically" = "自动检查更新";
 "Checking…" = "正在检查…";
 "Click to update" = "点按以更新";
 "Couldn't check for updates." = "无法检查更新。";
@@ -500,3 +499,9 @@
 
 /* Other agents */
 "%@ finished working." = "%@ 已完成工作。";
+
+/* Updates */
+"Update notifications" = "更新通知";
+"Tell me when a new version of Kongi is out." = "Kongi 有新版本时通知我。";
+"Install updates automatically" = "自动安装更新";
+"Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "下载并安装新版本，然后重新打开 Kongi。Claude 工作时会等它完成。";

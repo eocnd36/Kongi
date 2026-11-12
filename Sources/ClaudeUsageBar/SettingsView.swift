@@ -167,6 +167,7 @@ struct GeneralPane: View {
     @AppStorage(AppSettings.menuBarStyle) private var styleRaw = MenuBarStyle.sessionAndWeekly.rawValue
     @AppStorage(AppSettings.refreshMinutes) private var refreshMinutes = 5
     @AppStorage(AppSettings.checkForUpdates) private var checkForUpdates = true
+    @AppStorage(AppSettings.autoInstallUpdates) private var autoInstallUpdates = false
     @State private var launchAtLogin = LoginItem.isEnabled
     @State private var loginItemError: String?
     @State private var language = AppLanguage.override ?? ""
@@ -203,12 +204,18 @@ struct GeneralPane: View {
                 KDivider()
                 KToggleRow(title: String(localized: "Launch at login"), detail: loginItemError, isOn: $launchAtLogin)
                 KDivider()
-                KToggleRow(title: String(localized: "Check for updates automatically"), isOn: $checkForUpdates)
+                KToggleRow(title: String(localized: "Update notifications"),
+                           detail: String(localized: "Tell me when a new version of Kongi is out."), isOn: $checkForUpdates)
+                KDivider()
+                KToggleRow(title: String(localized: "Install updates automatically"),
+                           detail: String(localized: "Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working."),
+                           isOn: $autoInstallUpdates)
             }
         }
         .onChange(of: language) { code in AppLanguage.set(code.isEmpty ? nil : code) }
         .onChange(of: refreshMinutes) { _ in store.startPolling() }
         .onChange(of: checkForUpdates) { _ in AppServices.shared.updater.start() }
+        .onChange(of: autoInstallUpdates) { _ in AppServices.shared.updater.start() }
         .onChange(of: launchAtLogin) { enabled in
             guard enabled != LoginItem.isEnabled else { return }
             do {

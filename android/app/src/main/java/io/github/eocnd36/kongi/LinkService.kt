@@ -31,11 +31,22 @@ class LinkService : Service() {
             getSystemService(android.app.NotificationManager::class.java).notify(Notices.LINK_ID, status(live))
         }
         MacLink.hold(TAG)
+        // 백그라운드 연결 중에도 가끔 업데이트를 확인합니다 (6시간에 한 번만 실제로 확인).
+        handler.post(updateCheck)
+    }
+
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val updateCheck = object : Runnable {
+        override fun run() {
+            Updates.check(this@LinkService)
+            handler.postDelayed(this, 3 * 3600_000L)
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = START_STICKY
 
     override fun onDestroy() {
+        handler.removeCallbacks(updateCheck)
         MacLink.onLiveChange = null
         MacLink.release(TAG)
         super.onDestroy()

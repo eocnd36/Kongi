@@ -6,7 +6,10 @@ import ServiceManagement
 enum AppSettings {
     static let menuBarStyle = "menuBarStyle"
     /// GitHub 릴리스에서 새 버전을 자동으로 확인 (켤 때와 12시간마다)
+    /// 새 버전 알림 (아일랜드·알림). 예전 "자동으로 업데이트 확인"과 같은 키.
     static let checkForUpdates = "checkForUpdates"
+    /// 새 버전을 받아 저절로 설치 (Claude가 일하는 중이면 끝날 때까지 기다림)
+    static let autoInstallUpdates = "autoInstallUpdates"
     static let refreshMinutes = "refreshMinutes"
     static let connected = "connected"
     /// 사용량 알림 켜기/끄기와 기준 (쉼표로 구분한 퍼센트, 예: "80,95")
@@ -73,6 +76,7 @@ enum AppSettings {
         defaults.register(defaults: [
             menuBarStyle: MenuBarStyle.sessionAndWeekly.rawValue,
             checkForUpdates: true,
+            autoInstallUpdates: false,
             refreshMinutes: 5,
             connected: false,
             notificationsEnabled: true,

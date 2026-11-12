@@ -120,6 +120,11 @@ object Notices {
         return Notification.Action.Builder(null, title, pending).build()
     }
 
+    /** 알림 권한이 있을 때만 띄웁니다. */
+    fun show(context: Context, id: Int, notification: Notification) {
+        if (allowed(context)) context.getSystemService(NotificationManager::class.java).notify(id, notification)
+    }
+
     fun alert(context: Context, title: String, body: String) {
         if (!allowed(context)) return
         val notification = Notification.Builder(context, CHANNEL_ALERTS)

@@ -425,7 +425,6 @@
 
 /* Updates */
 "Check for updates" = "업데이트 확인";
-"Check for updates automatically" = "자동으로 업데이트 확인";
 "Checking…" = "확인하는 중…";
 "Click to update" = "눌러서 업데이트";
 "Couldn't check for updates." = "업데이트를 확인하지 못했어요.";
@@ -500,3 +499,9 @@
 
 /* Other agents */
 "%@ finished working." = "%@가 작업을 마쳤어요.";
+
+/* Updates */
+"Update notifications" = "업데이트 알림";
+"Tell me when a new version of Kongi is out." = "Kongi 새 버전이 나오면 알려 줘요.";
+"Install updates automatically" = "자동으로 업데이트";
+"Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "새 버전을 받아 설치하고 Kongi를 다시 열어요. Claude가 일하는 중이면 끝날 때까지 기다려요.";

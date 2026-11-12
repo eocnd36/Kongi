@@ -425,7 +425,6 @@
 
 /* Updates */
 "Check for updates" = "Проверить обновления";
-"Check for updates automatically" = "Проверять обновления автоматически";
 "Checking…" = "Проверка…";
 "Click to update" = "Нажмите, чтобы обновить";
 "Couldn't check for updates." = "Не удалось проверить обновления.";
@@ -500,3 +499,9 @@
 
 /* Other agents */
 "%@ finished working." = "%@ закончил работу.";
+
+/* Updates */
+"Update notifications" = "Уведомления об обновлениях";
+"Tell me when a new version of Kongi is out." = "Сообщать о выходе новой версии Kongi.";
+"Install updates automatically" = "Устанавливать обновления автоматически";
+"Downloads and installs new versions, then reopens Kongi. Waits until Claude isn't working." = "Скачивает и устанавливает новые версии, затем снова открывает Kongi. Ждёт, пока Claude не закончит работу.";
