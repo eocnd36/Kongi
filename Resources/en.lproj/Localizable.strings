@@ -235,3 +235,6 @@
 "Kongi was updated to %@" = "Kongi was updated to %@";
 "Later" = "Later";
 "What's new" = "What's new";
+
+/* Island timing */
+"about %@ left" = "about %@ left";

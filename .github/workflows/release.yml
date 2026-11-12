@@ -29,6 +29,17 @@ jobs:
           REPO_URL="https://github.com/${GITHUB_REPOSITORY}" \
           ./scripts/build-app.sh
 
+      # 릴리스 SDK로 빌드한 앱이 켜지자마자 꺼지는 일이 있었습니다 (2.1.0~2.2.1). 15초 동안 살아 있는지 확인합니다.
+      - name: Launch check
+        run: |
+          dist/Kongi.app/Contents/MacOS/Kongi &
+          pid=$!
+          sleep 15
+          if ! kill -0 "$pid" 2>/dev/null; then
+            wait "$pid"; echo "::error::Kongi quit right after launch (exit $?)"; exit 1
+          fi
+          kill "$pid"
+
       - name: Checksum and update signature
         env:
           KONGI_UPDATE_KEY: ${{ secrets.KONGI_UPDATE_KEY }}

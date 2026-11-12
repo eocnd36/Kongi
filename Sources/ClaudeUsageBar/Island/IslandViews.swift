@@ -1033,6 +1033,18 @@ private struct SessionRow: View {
     let session: AgentSession
     let open: () -> Void
 
+    /// 일하는 중: "3분 12초 · 2/5 · 약 2분 남음", 아니면 마지막 소식이 얼마 전인지
+    private func timing(now: Date) -> String {
+        guard session.state.isBusy, let start = session.turnStartedAt else { return Formatters.shortElapsed(since: session.updatedAt) }
+        var parts = [TaskBoard.duration(now.timeIntervalSince(start))]
+        if let done = session.todoDone, let total = session.todoTotal, total > 0 { parts.append("\(done)/\(total)") }
+        if let left = session.estimatedRemaining(now: now) {
+            let remaining = TaskBoard.duration(max(left, 60).rounded(.up))
+            parts.append(String(localized: "about \(remaining) left"))
+        }
+        return parts.joined(separator: " · ")
+    }
+
     /// 마지막으로 한 말이나 지금 하는 일
     private var subtitle: String {
         if session.state.isBusy || session.state.needsAttention { return session.state.label }
@@ -1062,11 +1074,11 @@ private struct SessionRow: View {
             if !session.changes.isEmpty {
                 ChangeCount(added: session.added, removed: session.removed)
             }
-            TimelineView(.periodic(from: .now, by: 30)) { _ in
-                Text(verbatim: Formatters.shortElapsed(since: session.updatedAt))
+            TimelineView(.periodic(from: .now, by: session.state.isBusy ? 1 : 30)) { context in
+                Text(verbatim: timing(now: context.date))
                     .font(.system(size: 10))
                     .monospacedDigit()
-                    .foregroundStyle(.white.opacity(0.4))
+                    .foregroundStyle(.white.opacity(session.state.isBusy ? 0.6 : 0.4))
             }
             IslandIconButton(
                 symbol: "arrow.up.forward.app",

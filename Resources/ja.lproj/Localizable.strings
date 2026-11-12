@@ -510,3 +510,6 @@
 "Kongi was updated to %@" = "Kongi を %@ にアップデートしました";
 "Later" = "あとで";
 "What's new" = "新機能";
+
+/* Island timing */
+"about %@ left" = "残り約 %@";

@@ -510,3 +510,6 @@
 "Kongi was updated to %@" = "Kongi 已更新到 %@";
 "Later" = "稍后";
 "What's new" = "新功能";
+
+/* Island timing */
+"about %@ left" = "约剩 %@";

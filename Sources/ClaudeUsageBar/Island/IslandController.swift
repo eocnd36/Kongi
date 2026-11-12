@@ -177,6 +177,8 @@ final class IslandModel: ObservableObject {
 
     private var collapseTask: Task<Void, Never>?
     private var routeResetTask: Task<Void, Never>?
+    /// 마우스가 실제로 섬 창 위에 있는지 (IslandController가 채움)
+    var mouseInside: () -> Bool = { false }
 
     func hover(_ inside: Bool, keepOpen: Bool) {
         collapseTask?.cancel()
@@ -189,6 +191,11 @@ final class IslandModel: ObservableObject {
         } else if !pinned, !keepOpen {
             collapseTask = Task { [weak self] in
                 try? await Task.sleep(nanoseconds: 500_000_000)
+                // SwiftUI가 나갔다고 잘못 알려도 (창 크기가 바뀌는 중 등) 마우스가 실제로 섬 위에 있으면 접지 않고,
+                // 정말 나갈 때까지 기다렸다가 접습니다.
+                while !Task.isCancelled, self?.mouseInside() == true {
+                    try? await Task.sleep(nanoseconds: 250_000_000)
+                }
                 guard !Task.isCancelled else { return }
                 self?.collapse()
             }
@@ -442,7 +449,17 @@ final class IslandController {
             )
             // 창 크기는 IslandController가 정합니다 (SwiftUI가 창 크기를 바꾸지 않도록).
             hosting.sizingOptions = []
-            panel.contentView = hosting
+            // NSHostingView를 창의 contentView로 바로 두면, macOS 26 SDK로 빌드했을 때 SwiftUI가 창 최소·최대 크기를
+            // 계속 다시 맞추다 레이아웃이 끝없이 돌아 앱이 꺼집니다 (Update Constraints 무한 반복). 빈 NSView 안에 넣습니다.
+            let container = NSView()
+            hosting.autoresizingMask = [.width, .height]
+            container.addSubview(hosting)
+            panel.contentView = container
+            hosting.frame = container.bounds
+            model.mouseInside = { [weak panel] in
+                guard let panel, panel.isVisible else { return false }
+                return panel.frame.contains(NSEvent.mouseLocation)
+            }
             self.panel = panel
         }
         layout()

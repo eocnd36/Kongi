@@ -157,3 +157,17 @@ public struct ExtensionManifest: Codable, Equatable, Sendable {
         return true
     }
 }
+
+/// 일하는 중인 요청의 남은 시간 어림 (초). 근거가 없으면 nil.
+public enum TurnEstimate {
+    /// 할 일 목록이 있으면 진행률로 (끝난 하나당 걸린 시간 × 남은 수),
+    /// 없으면 지난 요청 시간의 가운데값에서 지금까지 걸린 시간을 뺀 것 (지난 요청이 3개 이상일 때만).
+    public static func remaining(elapsed: Double, done: Int?, total: Int?, past: [Double]) -> Double? {
+        if let done, let total, done > 0, done < total {
+            return elapsed / Double(done) * Double(total - done)
+        }
+        guard past.count >= 3 else { return nil }
+        let left = past.sorted()[past.count / 2] - elapsed
+        return left > 15 ? left : nil
+    }
+}

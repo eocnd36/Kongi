@@ -110,6 +110,18 @@ struct AgentSession: Codable, Identifiable, Equatable {
     var limitStoppedAt: Date?
     /// Claude Code가 아닌 에이전트 (예: "codex"). 훅 도우미의 `--agent`로 붙습니다.
     var agent: String?
+    /// 이번 요청의 할 일 목록 진행 (TodoWrite, Codex의 update_plan): 끝난 수 / 전체
+    var todoDone: Int?
+    var todoTotal: Int?
+    /// 지난 요청들이 걸린 시간 (초, 최근 8개). 남은 시간 어림에 씁니다.
+    var turnDurations: [Double]?
+
+    /// 일하는 중일 때 남은 시간 어림. 할 일 목록이 있으면 그 진행률로, 없으면 이 대화의 지난 요청들(가운데값)로.
+    /// 근거가 없으면 nil (지어내지 않음).
+    func estimatedRemaining(now: Date) -> TimeInterval? {
+        guard state.isBusy, let start = turnStartedAt else { return nil }
+        return TurnEstimate.remaining(elapsed: now.timeIntervalSince(start), done: todoDone, total: todoTotal, past: turnDurations ?? [])
+    }
 
     var agentName: String { agent.map { $0 == "codex" ? "Codex" : $0.capitalized } ?? "Claude" }
     /// 화면에 보일 이름 (다른 에이전트면 이름을 붙임)
@@ -372,6 +384,8 @@ final class AgentStore: ObservableObject {
             session.lastPrompt = event.prompt
             session.limitStoppedAt = nil
             session.turnStartedAt = now
+            session.todoDone = nil
+            session.todoTotal = nil
             if let prompt = event.prompt?.trimmingCharacters(in: .whitespacesAndNewlines), !prompt.isEmpty {
                 Self.append(AgentMessage(id: UUID().uuidString, date: now, role: .user, text: Self.clipped(prompt)), to: &session)
             }
@@ -385,6 +399,12 @@ final class AgentStore: ObservableObject {
                 save(session)
                 addQuestion(event: event, session: session, connection: connection)
                 return
+            }
+            // 할 일 목록 (Claude: todos[].status, Codex update_plan: plan[].status)
+            if event.toolName == "TodoWrite" || event.toolName == "update_plan",
+               case .array(let items)? = event.toolInput?["todos"] ?? event.toolInput?["plan"], !items.isEmpty {
+                session.todoTotal = items.count
+                session.todoDone = items.filter { $0["status"]?.stringValue == "completed" }.count
             }
             preToolUse(event, context: envelope.context, session: &session, now: now)
         case "PermissionRequest":
@@ -424,6 +444,9 @@ final class AgentStore: ObservableObject {
             emit(event.name == "Stop" ? "session.done" : "session.error", session,
                  ["message": .string(String((event.raw["last_assistant_message"]?.stringValue ?? "").prefix(2000)))])
             guard event.name == "Stop" else { break }
+            if let start = session.turnStartedAt, now.timeIntervalSince(start) > 5 {
+                session.turnDurations = Array(((session.turnDurations ?? []) + [now.timeIntervalSince(start)]).suffix(8))
+            }
             postSummary(for: session, now: now)
             lastCompletion = now
             if UserDefaults.standard.bool(forKey: AppSettings.agentNotifications) {

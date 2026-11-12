@@ -510,3 +510,6 @@
 "Kongi was updated to %@" = "Kongi se actualizó a %@";
 "Later" = "Más tarde";
 "What's new" = "Novedades";
+
+/* Island timing */
+"about %@ left" = "faltan unos %@";

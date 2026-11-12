@@ -510,3 +510,6 @@
 "Kongi was updated to %@" = "Kongi를 %@(으)로 업데이트했어요";
 "Later" = "나중에";
 "What's new" = "새로운 점";
+
+/* Island timing */
+"about %@ left" = "약 %@ 남음";

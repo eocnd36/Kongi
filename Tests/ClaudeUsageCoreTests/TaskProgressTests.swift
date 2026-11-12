@@ -110,3 +110,16 @@ import Testing
         #expect(AppUpdate.highlights("no list here").isEmpty)
     }
 }
+
+@Suite struct TurnEstimateTests {
+    @Test func estimatesFromTodosThenHistory() {
+        // 5개 중 2개를 3분에 끝냄 → 남은 3개에 4분 30초
+        #expect(TurnEstimate.remaining(elapsed: 180, done: 2, total: 5, past: []) == 270)
+        // 목록이 없거나 아직 하나도 못 끝냄 → 지난 요청 가운데값(120초) - 지금까지(30초)
+        #expect(TurnEstimate.remaining(elapsed: 30, done: 0, total: 5, past: [60, 120, 600]) == 90)
+        // 근거 부족 또는 이미 평소보다 오래 걸림 → 어림하지 않음
+        #expect(TurnEstimate.remaining(elapsed: 30, done: nil, total: nil, past: [60, 120]) == nil)
+        #expect(TurnEstimate.remaining(elapsed: 200, done: nil, total: nil, past: [60, 120, 600]) == nil)
+        #expect(TurnEstimate.remaining(elapsed: 100, done: 5, total: 5, past: []) == nil)
+    }
+}

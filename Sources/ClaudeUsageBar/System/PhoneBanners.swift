@@ -15,6 +15,8 @@ final class PhoneBanners {
     private var scanQueued = false
     private var macApps: Set<String> = []
     private var macAppsAt = Date.distantPast
+    /// 앱을 켠 직후 첫 apply는 nil (그때는 묻지 않음)
+    private var wasOn: Bool?
 
     private static let notificationCenter = "com.apple.notificationcenterui"
     /// 전화가 오면 배너를 띄우는 앱 (시스템 언어 이름 + 영어 이름)
@@ -31,10 +33,15 @@ final class PhoneBanners {
 
     /// 설정이 바뀔 때마다 불립니다.
     func apply() {
-        if callsOn || noticesOn {
+        let on = callsOn || noticesOn
+        defer { wasOn = on }
+        if on {
             guard timer == nil else { return }
-            // 권한이 없으면 macOS가 손쉬운 사용 허용 창을 띄웁니다 (사용자가 직접 허용).
-            _ = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary)
+            // 설정에서 직접 켰을 때만 macOS의 허용 창을 띄웁니다 (앱을 켤 때마다 묻지 않게).
+            // 허용이 안 돼 있으면 설정의 "손쉬운 사용에서 Kongi 허용" 줄이 안내합니다.
+            if wasOn == false {
+                _ = AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary)
+            }
             // 권한을 나중에 주거나 알림 센터가 다시 시작돼도 따라 붙습니다.
             timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
                 Task { @MainActor in self?.attach() }
