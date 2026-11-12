@@ -324,7 +324,9 @@ public struct ToolActivity: Codable, Equatable, Sendable {
         if case .array(let parts)? = input?["command"] {
             let argv = parts.compactMap(\.stringValue)
             guard argv.count == parts.count else { return String(decoding: JSONValue.array(parts).encodedData(), as: UTF8.self) }
-            if argv.count == 3, ["sh", "bash", "zsh"].contains((argv[0] as NSString).lastPathComponent), ["-c", "-lc"].contains(argv[1]) {
+            // 셸은 이름 그대로이거나 시스템 경로일 때만 (/tmp/x/bash 같은 다른 프로그램이 숨지 않게)
+            let shells = ["sh", "bash", "zsh"].flatMap { [$0, "/bin/\($0)", "/usr/bin/\($0)"] }
+            if argv.count == 3, shells.contains(argv[0]), ["-c", "-lc"].contains(argv[1]) {
                 return argv[2]
             }
             return argv.map(shellQuoted).joined(separator: " ")

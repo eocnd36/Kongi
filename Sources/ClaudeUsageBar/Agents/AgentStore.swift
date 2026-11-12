@@ -994,9 +994,9 @@ final class AgentStore: ObservableObject {
 
     static func detail(toolName: String, input: JSONValue?) -> String {
         switch toolName {
-        case "Bash", "shell", "exec_command": return ToolActivity.commandText(input) ?? ""
-        // 승인 화면에 패치 전체를 보여 줍니다 (파일 이름만으로는 무엇이 바뀌는지 알 수 없음).
-        case "apply_patch": return ToolActivity.commandText(input) ?? ""
+        // 명령 전체, apply_patch는 패치 전체 (승인 화면에 쓰임). 명령을 못 찾으면 아래에서 입력 전체를 보여 줍니다.
+        case "Bash", "shell", "exec_command", "apply_patch" where ToolActivity.commandText(input) != nil:
+            return ToolActivity.commandText(input) ?? ""
         case "Edit", "MultiEdit", "Write", "Read": return input?["file_path"]?.stringValue ?? ""
         case "NotebookEdit": return input?["notebook_path"]?.stringValue ?? ""
         case "WebFetch": return input?["url"]?.stringValue ?? ""

@@ -85,6 +85,8 @@ import Testing
         #expect(ToolActivity.commandText(try decode(#"{"command":["rm","-rf","/"]}"#)) == "rm -rf /")
         #expect(ToolActivity.commandText(try decode(#"{"command":["bash","-lc","echo hi","extra"]}"#)) == "bash -lc 'echo hi' extra")
         #expect(ToolActivity.commandText(try decode(#"{"command":["sh","-c","it's"]}"#)) == "it's")
+        #expect(ToolActivity.commandText(try decode(#"{"command":["/bin/zsh","-lc","ls"]}"#)) == "ls")
+        #expect(ToolActivity.commandText(try decode(#"{"command":["/tmp/x/bash","-c","ls"]}"#)) == "/tmp/x/bash -c ls")
         #expect(ToolActivity.shellQuoted("it's") == #"'it'\''s'"#)
     }
 }
