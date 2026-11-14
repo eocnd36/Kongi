@@ -14,6 +14,10 @@ data class MacState(
     val sessions: List<SessionSummary>,
     val requests: List<Request>,
     val outage: Outage?,
+    /** Mac이 이 상태를 만든 시각 (남은 시간을 휴대폰에서 이어서 셀 때 기준) */
+    val updated: Instant = Instant.EPOCH,
+    /** Mac에 켜 둔 확장의 일 수 (홈의 확장 단추) */
+    val actions: Int = 0,
 ) {
     companion object {
         fun parse(json: JSONObject) = MacState(
@@ -25,6 +29,8 @@ data class MacState(
             outage = json.optJSONObject("outage")?.let { o ->
                 Outage(o.optString("summary"), o.optJSONArray("incidents").strings())
             },
+            updated = instant(json.optString("updated")),
+            actions = json.optInt("actions"),
         )
     }
 }
@@ -61,6 +67,16 @@ data class SessionSummary(
     val mood: String,
     /** 최근 단계 세 개 */
     val steps: List<Step>,
+    /** 실시간: 이번 차례를 시작한 시각 (일하는 중이 아니면 null) */
+    val turnStarted: Instant? = null,
+    /** Mac이 상태를 만들 때의 남은 시간(초). 모르면 음수 */
+    val remaining: Double = -1.0,
+    /** 지난 어느 기록보다 오래 걸리는 중 */
+    val overdue: Boolean = false,
+    /** 할 일 진행 "2/5" */
+    val todo: String = "",
+    /** 대답이 끝난 뒤에도 뒤에서 도는 명령들 */
+    val background: List<BackgroundJob> = emptyList(),
 ) {
     companion object {
         fun parse(o: JSONObject) = SessionSummary(
@@ -80,12 +96,63 @@ data class SessionSummary(
             done = o.optBoolean("done"),
             mood = o.optString("mood"),
             steps = o.optJSONArray("steps").objects().map { Step(it.optString("id"), it.optString("title"), it.optString("status")) },
+            turnStarted = o.optString("turnStarted").takeIf { it.isNotEmpty() }?.let(::instant),
+            remaining = o.optDouble("remaining", -1.0),
+            overdue = o.optBoolean("overdue"),
+            todo = o.optString("todo"),
+            background = o.optJSONArray("background").objects().map {
+                BackgroundJob(it.optString("label"), instant(it.optString("started")), it.optDouble("remaining", -1.0))
+            },
         )
     }
 }
 
 @Immutable
 data class Step(val id: String, val title: String, val status: String)
+
+/** Mac 확장의 일 하나 (글은 Mac 앱 언어) */
+@Immutable
+data class ActionInfo(
+    val id: String,
+    val title: String,
+    val extension: String,
+    val placeholder: String,
+    val takesInput: Boolean,
+    val monospaced: Boolean,
+    val wantsProject: Boolean,
+    val choiceTitle: String,
+    val choices: List<Pair<String, String>>,
+) {
+    companion object {
+        fun parse(o: JSONObject) = ActionInfo(
+            id = o.optString("id"), title = o.optString("title"), extension = o.optString("extension"),
+            placeholder = o.optString("placeholder"), takesInput = o.optBoolean("takesInput", true),
+            monospaced = o.optBoolean("monospaced"), wantsProject = o.optBoolean("wantsProject"),
+            choiceTitle = o.optString("choiceTitle"),
+            choices = o.optJSONArray("choices").objects().map { it.optString("id") to it.optString("title") },
+        )
+    }
+}
+
+/** 확장의 일 결과: 글(과 메모), 더 알아야 할 질문, 또는 오류 */
+@Immutable
+data class ActionResult(val kind: String, val text: String, val note: String, val questions: List<ActionQuestion>) {
+    companion object {
+        fun parse(o: JSONObject) = ActionResult(
+            kind = o.optString("kind"), text = o.optString("text"), note = o.optString("note"),
+            questions = o.optJSONArray("questions").objects().map {
+                ActionQuestion(it.optString("question"), it.optJSONArray("options").strings(), it.optBoolean("multiSelect"), it.optString("confirm"))
+            },
+        )
+    }
+}
+
+/** 확장이 묻는 것: 보기, 여러 개 고르기, 확인 단추 이름(예: 삭제) */
+@Immutable
+data class ActionQuestion(val question: String, val options: List<String>, val multiSelect: Boolean, val confirm: String)
+
+@Immutable
+data class BackgroundJob(val label: String, val started: Instant, val remaining: Double)
 
 @Immutable
 data class Request(
@@ -214,7 +281,7 @@ data class DiffLine(val kind: String, val text: String, val number: Int)
 
 private fun instant(text: String): Instant = runCatching { Instant.parse(text) }.getOrDefault(Instant.EPOCH)
 
-private fun JSONArray?.objects(): List<JSONObject> =
+internal fun JSONArray?.objects(): List<JSONObject> =
     if (this == null) emptyList() else (0 until length()).mapNotNull { optJSONObject(it) }
 
 private fun JSONArray?.arrays(): List<JSONArray> =

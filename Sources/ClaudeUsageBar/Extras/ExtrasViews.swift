@@ -225,6 +225,20 @@ struct IslandDropModifier: ViewModifier {
                 }
             }
             .onDrop(of: [UTType.fileURL], isTargeted: $targeted.animation(.easeOut(duration: 0.15))) { providers in
+                // 파일 첨부를 받는 확장 화면을 보고 있으면 그 화면에 붙입니다.
+                if case let .action(id) = model.route,
+                   AppServices.shared.extensions.actions.first(where: { $0.id == id })?.action.wantsFiles == true {
+                    for provider in providers {
+                        _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                            guard let url else { return }
+                            Task { @MainActor in
+                                if model.actionFiles[id, default: []].contains(url) == false { model.actionFiles[id, default: []].append(url) }
+                                model.holdOpen()
+                            }
+                        }
+                    }
+                    return true
+                }
                 guard let target = targetSession else { return false }
                 for provider in providers {
                     _ = provider.loadObject(ofClass: URL.self) { url, _ in
@@ -233,7 +247,7 @@ struct IslandDropModifier: ViewModifier {
                             agents.appendDraft(url.path, to: target)
                             withAnimation(IslandModel.morph) {
                                 model.expanded = true
-                                model.pinned = true
+                                model.holdOpen()
                             }
                             model.navigate(to: .session(target))
                         }

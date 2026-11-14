@@ -66,7 +66,10 @@ message=$(
 tools=""
 [ -n "$project" ] && tools="Read Glob Grep"
 [ -n "$files" ] && [ -z "$tools" ] && tools="Read"
-set -- -p --tools "$tools" --no-session-persistence --strict-mcp-config --setting-sources "" --output-format text --system-prompt "$SYSTEM"
+# 결과와 함께 실제로 쓴 모델을 받습니다 (별칭 haiku·sonnet·opus는 Claude Code가 그때의 최신 모델로 바꿈).
+format=text
+command -v jq >/dev/null 2>&1 && format=json
+set -- -p --tools "$tools" --no-session-persistence --strict-mcp-config --setting-sources "" --output-format "$format" --system-prompt "$SYSTEM"
 case "${KONGI_CHOICE:-}" in
   haiku|sonnet|opus) set -- "$@" --model "$KONGI_CHOICE" ;;
 esac
@@ -77,5 +80,21 @@ if [ -n "$files" ]; then
 $dirs
 DIRS
 fi
+case "${KONGI_LANGUAGE:-en}" in
+  ko*) T_MODEL="모델" ;; ja*) T_MODEL="モデル" ;; zh*) T_MODEL="模型" ;; es*|pt*) T_MODEL="Modelo" ;;
+  fr*) T_MODEL="Modèle" ;; de*) T_MODEL="Modell" ;; it*) T_MODEL="Modello" ;; ru*) T_MODEL="Модель" ;; *) T_MODEL="Model" ;;
+esac
 cd "${project:-${TMPDIR:-/tmp}}" || exit 1
-printf '%s' "$message" | "$CLAUDE" "$@"
+if [ "$format" = "text" ]; then
+  printf '%s' "$message" | "$CLAUDE" "$@"
+  exit $?
+fi
+out=$(printf '%s' "$message" | "$CLAUDE" "$@") || { printf '%s\n' "$out" >&2; exit 1; }
+if [ "$(printf '%s' "$out" | jq -r '.is_error // false')" = "true" ]; then
+  printf '%s' "$out" | jq -r '.result // "Claude Code failed."' >&2
+  exit 1
+fi
+# claude-haiku-5-5 → Claude Haiku 5.5
+model=$(printf '%s' "$out" | jq -r '.modelUsage // {} | keys | map(select(startswith("claude-"))) | first // empty' \
+  | sed -E 's/^claude-//; s/-([0-9]+)-([0-9]+)(-.*)?$/ \1.\2/' | awk '{ $1 = toupper(substr($1, 1, 1)) substr($1, 2); print "Claude " $0 }')
+printf '%s' "$out" | jq --arg note "${model:+$T_MODEL: $model}" '{result: .result, note: $note}'

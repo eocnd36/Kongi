@@ -1,7 +1,7 @@
 {
   "name": "Prompt upgrade",
   "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
-  "version": "1.1",
+  "version": "1.2",
   "actions": [
     {
       "id": "upgrade",
@@ -33,17 +33,17 @@
       },
       "run": "upgrade.sh",
       "choiceTitle": {
-        "en": "Model",
-        "ko": "모델",
-        "ja": "モデル",
-        "zh-Hans": "模型",
-        "zh-Hant": "模型",
-        "es": "Modelo",
-        "fr": "Modèle",
-        "de": "Modell",
-        "it": "Modello",
-        "pt-BR": "Modelo",
-        "ru": "Модель"
+        "en": "Model (always the newest)",
+        "ko": "모델 (항상 최신)",
+        "ja": "モデル（常に最新）",
+        "zh-Hans": "模型（始终最新）",
+        "zh-Hant": "模型（一律最新）",
+        "es": "Modelo (siempre el más nuevo)",
+        "fr": "Modèle (toujours le plus récent)",
+        "de": "Modell (immer das neueste)",
+        "it": "Modello (sempre il più recente)",
+        "pt-BR": "Modelo (sempre o mais novo)",
+        "ru": "Модель (всегда новейшая)"
       },
       "choices": [
         {
@@ -61,17 +61,17 @@
         {
           "id": "default",
           "title": {
-            "en": "Default",
-            "ko": "기본",
-            "ja": "デフォルト",
-            "zh-Hans": "默认",
-            "zh-Hant": "預設",
-            "es": "Predeterminado",
-            "fr": "Par défaut",
-            "de": "Standard",
-            "it": "Predefinito",
-            "pt-BR": "Padrão",
-            "ru": "По умолчанию"
+            "en": "My Claude Code default",
+            "ko": "내 Claude Code 기본값",
+            "ja": "Claude Codeの既定",
+            "zh-Hans": "我的 Claude Code 默认",
+            "zh-Hant": "我的 Claude Code 預設",
+            "es": "Mi predeterminado de Claude Code",
+            "fr": "Mon réglage Claude Code",
+            "de": "Mein Claude-Code-Standard",
+            "it": "Il mio predefinito di Claude Code",
+            "pt-BR": "Meu padrão do Claude Code",
+            "ru": "Моя модель Claude Code"
           }
         }
       ],
@@ -82,5 +82,9 @@
       ]
     }
   ],
-  "minKongi": "2.2.3"
+  "minKongi": "2.2.3",
+  "permissions": [
+    "claude",
+    "files-read"
+  ]
 }

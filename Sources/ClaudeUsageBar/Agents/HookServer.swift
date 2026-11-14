@@ -10,7 +10,6 @@ final class HookServer: @unchecked Sendable {
     private let queue = DispatchQueue(label: "io.github.claudeusagebar.hooks")
     /// 답을 기다리는 연결의 끊김 감시용
     private let watchQueue = DispatchQueue(label: "io.github.claudeusagebar.hooks.watch", attributes: .concurrent)
-    private var listenFD: Int32 = -1
     private var source: DispatchSourceRead?
     private var socketInode: UInt64?
 
@@ -24,10 +23,10 @@ final class HookServer: @unchecked Sendable {
             log.error("Could not listen on hook socket")
             return false
         }
-        listenFD = fd
         socketInode = UnixSocket.inode(HookPaths.socketPath)
         let source = DispatchSource.makeReadSource(fileDescriptor: fd, queue: queue)
-        source.setEventHandler { [weak self] in self?.acceptClient() }
+        // 리스너마다 자기 fd로 받습니다 (다시 열 때 다른 스레드가 바뀌는 listenFD를 읽지 않게).
+        source.setEventHandler { [weak self] in self?.acceptClient(on: fd) }
         source.setCancelHandler { close(fd) }
         source.resume()
         self.source = source
@@ -50,7 +49,7 @@ final class HookServer: @unchecked Sendable {
         return start()
     }
 
-    private func acceptClient() {
+    private func acceptClient(on listenFD: Int32) {
         let client = accept(listenFD, nil, nil)
         guard client >= 0 else { return }
         var noSigPipe: Int32 = 1

@@ -87,4 +87,20 @@
     <string name="updated_title">Kongi was updated to %1$s</string>
     <string name="later">Later</string>
     <string name="ok">OK</string>
+    <string name="live">Live</string>
+    <string name="about_left">about %1$s left</string>
+    <string name="longer_than_usual">longer than usual</string>
+    <string name="running_in_background">Running in the background</string>
+    <string name="extensions">Extensions</string>
+    <string name="no_extensions">No extensions with actions are turned on in Kongi on your Mac.</string>
+    <string name="run">Run</string>
+    <string name="refresh">Refresh</string>
+    <string name="copy">Copy</string>
+    <string name="send_to_conversation">Send to a conversation</string>
+    <string name="no_project">No project</string>
+    <string name="questions_title">A few questions to make it better</string>
+    <string name="your_answer">Your answer</string>
+    <string name="continue_answers">Continue</string>
+    <string name="skip">Skip</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -45,6 +45,8 @@ final class DeviceEventsMonitor: ObservableObject {
             case openWindow
             /// 설정 → 정보 (업데이트)
             case openAbout
+            /// 설정 → 확장 (확장 업데이트)
+            case openExtensions
         }
 
         var key: String
@@ -150,9 +152,26 @@ final class DeviceEventsMonitor: ObservableObject {
     // MARK: Showing
 
     /// 아일랜드에 잠깐 띄웁니다 (Claude 모드, 다이나믹 아일랜드 모드 모두). 기기 소식보다 길게 둡니다.
+    /// 여러 소식이 한꺼번에 오면 차례로 보여 줍니다 (예전엔 새 소식이 앞의 것을 바로 덮어 휙 지나갔음).
+    /// 같은 소식(key)이 바뀐 것이면 줄 세우지 않고 그 자리에서 고칩니다.
     func post(_ notice: Notice, for seconds: Double = 5) {
-        show(.notice(notice), for: seconds)
+        guard case let .notice(current)? = event, current.key != notice.key else {
+            show(.notice(notice), for: seconds)
+            return
+        }
+        waiting.removeAll { $0.notice.key == notice.key }
+        waiting = Array((waiting + [(notice, seconds)]).suffix(Self.maxWaiting))
+        // 기다리는 소식이 있으면 지금 것은 최소 시간만 보여 주고 넘깁니다.
+        let shown = Date().timeIntervalSince(shownAt)
+        scheduleClear(after: max(min(clearAt.timeIntervalSinceNow, Self.minimumShown - shown), 0))
     }
+
+    /// 차례를 기다리는 소식 (최대 6개)
+    private var waiting: [(notice: Notice, seconds: Double)] = []
+    private var shownAt = Date.distantPast
+    private var clearAt = Date.distantPast
+    private static let minimumShown: Double = 2.5
+    private static let maxWaiting = 6
 
     #if DEBUG
     /// 데모 영상: 기기 소식을 직접 띄웁니다.
@@ -161,11 +180,24 @@ final class DeviceEventsMonitor: ObservableObject {
 
     private func show(_ event: Event, for seconds: Double) {
         self.event = event
+        shownAt = Date()
+        // 기다리는 소식이 있으면 이것도 최소 시간만
+        scheduleClear(after: waiting.isEmpty ? seconds : min(seconds, Self.minimumShown))
+    }
+
+    private func scheduleClear(after seconds: Double) {
+        clearAt = Date().addingTimeInterval(seconds)
         clearTask?.cancel()
         clearTask = Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
-            guard !Task.isCancelled else { return }
-            self?.event = nil
+            try? await Task.sleep(nanoseconds: UInt64(max(seconds, 0) * 1_000_000_000))
+            guard !Task.isCancelled, let self else { return }
+            self.event = nil
+            guard !self.waiting.isEmpty else { return }
+            // 섬이 한 번 작아졌다가 다음 소식으로 (붙어서 휙 바뀌지 않게)
+            try? await Task.sleep(nanoseconds: 350_000_000)
+            guard !Task.isCancelled, self.event == nil, !self.waiting.isEmpty else { return }
+            let next = self.waiting.removeFirst()
+            self.show(.notice(next.notice), for: next.seconds)
         }
     }
 

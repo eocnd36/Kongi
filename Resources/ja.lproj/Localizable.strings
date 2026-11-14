@@ -523,3 +523,72 @@
 "Send feedback" = "フィードバックを送る";
 "Updated." = "アップデートしました。";
 "Update to %@" = "%@にアップデート";
+
+/* Background work */
+"%@: background work done" = "%@：バックグラウンドの作業が完了";
+"%lld in background" = "バックグラウンドで%lld件";
+"%lld running" = "%lld件実行中";
+"Running in the background" = "バックグラウンドで実行中";
+
+/* Pinned sessions */
+"Unpin" = "固定を解除";
+"Pin to top" = "一番上に固定";
+"Show in Finder" = "Finderで表示";
+"Copy path" = "パスをコピー";
+"longer than usual" = "いつもより時間がかかっています";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "Macから離れているときだけ";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "このMacを使っている間はスマートフォンを鳴らしません。Macがロックされているか2分間操作がないとき、または承認・質問に2分間応答がないときに通知します。";
+
+/* Extension actions */
+"Run" = "実行";
+"Working…" = "処理中…";
+"Send to a conversation" = "会話に送る";
+"Continuing in the background" = "バックグラウンドで続けます";
+"Ready" = "準備完了";
+"It took too long and was stopped." = "時間がかかりすぎたため停止しました。";
+"Something went wrong. See the extension's log." = "問題が発生しました。拡張機能のログを確認してください。";
+
+/* Extension context */
+"No project" = "プロジェクトなし";
+"Pick a project so the result fits what you're working on" = "作業中のプロジェクトを選ぶと、それに合わせて作ります";
+"Attach" = "添付";
+"A few questions to make it better" = "より良くするためのいくつかの質問";
+"Your answer" = "回答";
+"Continue" = "続ける";
+"Skip" = "スキップ";
+
+/* Extension context */
+"or drop files here" = "またはここにドロップ";
+
+/* Marketplace */
+"Official" = "公式";
+"Needs Kongi %@" = "Kongi %@ 以降が必要";
+"Use %@ for this Kongi" = "このKongi用の %@ を使う";
+
+/* Extension versions */
+"%@ %@ is available" = "%@ %@ が利用できます";
+"Update it in Settings → Extensions." = "設定 → 拡張機能でアップデートしてください。";
+"Versions" = "バージョン";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "%@ に固定中。Kongiは置き換えたりアップデートを通知したりしません。";
+"(Recommended)" = "（おすすめ）";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code（使用量を消費）";
+"Reads files" = "ファイルの読み取り";
+"Changes files" = "ファイルの変更";
+"Internet" = "インターネット";
+"Other apps' info" = "他のアプリの情報";
+"Other" = "その他";
+"Uses: %@" = "使用するもの：%@";
+
+/* Session summary */
+"Last turn" = "前回の作業";
+"Copy summary" = "概要をコピー";
+"%lld commands" = "コマンド %lld件";
+"%lld commands (%lld failed)" = "コマンド %lld件（失敗 %lld）";
+
+/* Session summary */
+"Show all" = "すべて表示";
+"Show less" = "閉じる";

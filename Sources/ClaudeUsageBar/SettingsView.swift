@@ -329,7 +329,7 @@ struct NotificationsPane: View {
 struct IslandPane: View {
     @AppStorage(AppSettings.islandEnabled) private var islandEnabled = true
     @AppStorage(AppSettings.islandAutoHide) private var islandAutoHide = false
-    @AppStorage(AppSettings.islandModeKey) private var islandMode = IslandMode.claude.rawValue
+    @AppStorage(AppSettings.islandModeKey) private var islandMode = IslandMode.dynamic.rawValue
     @AppStorage(AppSettings.showSystemStats) private var showSystemStats = true
     @AppStorage(AppSettings.islandShowsDevices) private var showsDevices = true
     @AppStorage(AppSettings.islandShowsCharging) private var showsCharging = true
@@ -598,7 +598,7 @@ private struct ThresholdEditor: View {
                     } label: {
                         Image(systemName: "xmark").font(.system(size: 8, weight: .bold))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(KHoverStyle())
                     .foregroundStyle(KongiTheme.secondary)
                 }
                 .font(.system(size: 12.5, weight: .medium))

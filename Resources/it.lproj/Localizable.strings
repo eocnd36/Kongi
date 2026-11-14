@@ -523,3 +523,72 @@
 "Send feedback" = "Invia feedback";
 "Updated." = "Aggiornato.";
 "Update to %@" = "Aggiorna a %@";
+
+/* Background work */
+"%@: background work done" = "%@: lavoro in background finito";
+"%lld in background" = "%lld in background";
+"%lld running" = "%lld in corso";
+"Running in the background" = "In esecuzione in background";
+
+/* Pinned sessions */
+"Unpin" = "Sblocca";
+"Pin to top" = "Fissa in alto";
+"Show in Finder" = "Mostra nel Finder";
+"Copy path" = "Copia percorso";
+"longer than usual" = "più del solito";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "Solo quando non sono al Mac";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "Mentre usi questo Mac il telefono resta silenzioso. Suona quando il Mac è bloccato o inutilizzato da 2 minuti, e per approvazioni o domande senza risposta da 2 minuti.";
+
+/* Extension actions */
+"Run" = "Esegui";
+"Working…" = "Elaborazione…";
+"Send to a conversation" = "Invia a una conversazione";
+"Continuing in the background" = "Continua in background";
+"Ready" = "Pronto";
+"It took too long and was stopped." = "Ci voleva troppo ed è stato interrotto.";
+"Something went wrong. See the extension's log." = "Qualcosa è andato storto. Controlla il registro dell’estensione.";
+
+/* Extension context */
+"No project" = "Nessun progetto";
+"Pick a project so the result fits what you're working on" = "Scegli un progetto perché il risultato si adatti al tuo lavoro";
+"Attach" = "Allega";
+"A few questions to make it better" = "Qualche domanda per migliorarlo";
+"Your answer" = "La tua risposta";
+"Continue" = "Continua";
+"Skip" = "Salta";
+
+/* Extension context */
+"or drop files here" = "o trascina qui i file";
+
+/* Marketplace */
+"Official" = "Ufficiale";
+"Needs Kongi %@" = "Richiede Kongi %@";
+"Use %@ for this Kongi" = "Usa %@ per questo Kongi";
+
+/* Extension versions */
+"%@ %@ is available" = "%@ %@ è disponibile";
+"Update it in Settings → Extensions." = "Aggiornala in Impostazioni → Estensioni.";
+"Versions" = "Versioni";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "Bloccata su %@. Kongi non la sostituirà né ti ricorderà gli aggiornamenti.";
+"(Recommended)" = "(Consigliata)";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code (usa la tua quota)";
+"Reads files" = "Legge file";
+"Changes files" = "Modifica file";
+"Internet" = "Internet";
+"Other apps' info" = "Info di altre app";
+"Other" = "Altro";
+"Uses: %@" = "Usa: %@";
+
+/* Session summary */
+"Last turn" = "Ultimo turno";
+"Copy summary" = "Copia riepilogo";
+"%lld commands" = "%lld comandi";
+"%lld commands (%lld failed)" = "%lld comandi (%lld non riusciti)";
+
+/* Session summary */
+"Show all" = "Mostra tutto";
+"Show less" = "Mostra meno";

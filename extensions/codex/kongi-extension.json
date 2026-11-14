@@ -4,5 +4,10 @@
   "version": "2.1",
   "run": "main.sh",
   "uninstall": "uninstall.sh",
-  "minKongi": "2.1.0"
+  "minKongi": "2.1.0",
+  "permissions": [
+    "files-read",
+    "files-write",
+    "notifications"
+  ]
 }

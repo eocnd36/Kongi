@@ -12,6 +12,9 @@ import io.github.eocnd36.kongi.SessionDetail
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
+import io.github.eocnd36.kongi.ActionInfo
+import io.github.eocnd36.kongi.ActionResult
+import io.github.eocnd36.kongi.objects
 import org.json.JSONObject
 import kotlin.coroutines.resume
 
@@ -20,6 +23,8 @@ sealed interface Screen {
     data object Home : Screen
     data class Session(val id: String) : Screen
     data object Settings : Screen
+    /** Mac에 켜 둔 확장의 일 (프롬프트 업그레이드 등) */
+    data object Extensions : Screen
 }
 
 /** 화면 아래에 잠깐 띄우는 말 (문자열 리소스 또는 Mac이 보낸 글) */
@@ -156,8 +161,8 @@ object AppModel {
 
     // MARK: requests
 
-    suspend fun call(method: String, path: String, body: JSONObject? = null): Reply = suspendCancellableCoroutine { continuation ->
-        MacLink.rpc(method, path, body) { status, json ->
+    suspend fun call(method: String, path: String, body: JSONObject? = null, readTimeout: Int = 20_000): Reply = suspendCancellableCoroutine { continuation ->
+        MacLink.rpc(method, path, body, readTimeout) { status, json ->
             val reply = runCatching { JSONObject(json) }.getOrDefault(JSONObject())
             val result = when {
                 status == 401 -> {
@@ -182,6 +187,24 @@ object AppModel {
         return when (val reply = call("POST", "/api/requests/$requestId", body)) {
             is Reply.Ok -> true
             is Reply.Failed -> { notice(reply.notice); false }
+        }
+    }
+
+    /** Mac에 켜 둔 확장의 일 목록 */
+    suspend fun actions(): List<ActionInfo> = when (val reply = call("GET", "/api/actions")) {
+        is Reply.Ok -> reply.body.optJSONArray("actions").objects().map(ActionInfo::parse)
+        is Reply.Failed -> { notice(reply.notice); emptyList() }
+    }
+
+    /** 확장의 일을 Mac에서 실행합니다 (오래 걸릴 수 있어 3분까지 기다림). */
+    suspend fun runAction(id: String, input: String, choice: String?, sessionId: String?, answers: List<Pair<String, String>>, skip: Boolean): ActionResult? {
+        val body = JSONObject().put("id", id).put("input", input).put("skip", skip)
+        if (choice != null) body.put("choice", choice)
+        if (sessionId != null) body.put("sessionId", sessionId)
+        body.put("answers", org.json.JSONArray(answers.map { JSONObject().put("question", it.first).put("answer", it.second) }))
+        return when (val reply = call("POST", "/api/actions/run", body, readTimeout = 200_000)) {
+            is Reply.Ok -> ActionResult.parse(reply.body)
+            is Reply.Failed -> { notice(reply.notice); null }
         }
     }
 

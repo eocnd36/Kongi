@@ -325,3 +325,21 @@ private func decodeSample() throws -> UsageResponse {
         #expect(tracker.active.isEmpty)
     }
 }
+
+@Suite struct PresenceTests {
+    @Test func decidesWhenThePhoneShouldRing() {
+        // 쓰는 중 / 잠금 / 화면 꺼짐 / 2분 입력 없음
+        #expect(!Presence.isAway(idle: 5, locked: false, displayAsleep: false))
+        #expect(Presence.isAway(idle: 5, locked: true, displayAsleep: false))
+        #expect(Presence.isAway(idle: 5, locked: false, displayAsleep: true))
+        #expect(Presence.isAway(idle: 130, locked: false, displayAsleep: false))
+        // 승인: 쓰는 중이면 기다렸다가 2분 넘게 답이 없으면
+        #expect(!Presence.alertRequest(age: 30, away: false))
+        #expect(Presence.alertRequest(age: 130, away: false))
+        #expect(Presence.alertRequest(age: 0, away: true))
+        // 미뤄 둔 알림: 방금 자리를 떴으면 보내고, 너무 오래된 것은 버림
+        #expect(Presence.held(age: 60, away: false) == .keep)
+        #expect(Presence.held(age: 200, away: true) == .send)
+        #expect(Presence.held(age: 20 * 60, away: true) == .drop)
+    }
+}

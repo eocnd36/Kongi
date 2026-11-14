@@ -6,10 +6,12 @@ import SwiftUI
 /// 캐릭터 대신 쓰는 작은 Claude 상태 표시
 struct ClaudeGlyph: View {
     var mood: Kongi.Mood
+    /// 대답은 끝났지만 뒤에서 명령이 도는 중: 평소 색(회색) 그대로 돌기만
+    var background = false
     var size: CGFloat = 14
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 20, paused: !mood.isBusy && mood != .alert)) { context in
+        TimelineView(.animation(minimumInterval: 1 / 20, paused: !mood.isBusy && mood != .alert && !background)) { context in
             let t = context.date.timeIntervalSinceReferenceDate
             Group {
                 switch mood {
@@ -27,6 +29,7 @@ struct ClaudeGlyph: View {
                 default:
                     Image(systemName: "sparkle")
                         .foregroundStyle(Color.white.opacity(0.45))
+                        .rotationEffect(.degrees(background ? t * 120 : 0))
                 }
             }
             .font(.system(size: size, weight: .bold))
@@ -142,7 +145,7 @@ struct DynamicCompact: View {
     private var leftWing: some View {
         switch activity {
         case .music, .both: Artwork(image: nowPlaying.track?.artwork, size: height * 0.62, radius: 5)
-        case .claude: ClaudeGlyph(mood: agents.mood, size: height * 0.42)
+        case .claude: ClaudeGlyph(mood: agents.mood, background: !agents.background.isEmpty, size: height * 0.42)
         case .idle: EmptyView()
         }
     }
@@ -151,7 +154,7 @@ struct DynamicCompact: View {
     private var rightWing: some View {
         switch activity {
         case .music: EqualizerBars(playing: nowPlaying.track?.isPlaying == true, height: height * 0.42)
-        case .both: ClaudeGlyph(mood: agents.mood, size: height * 0.42)
+        case .both: ClaudeGlyph(mood: agents.mood, background: !agents.background.isEmpty, size: height * 0.42)
         case .claude: claudeBadge
         case .idle: EmptyView()
         }
@@ -174,7 +177,7 @@ struct DynamicCompact: View {
         case .both:
             HStack(spacing: IslandMetrics.splitGap) {
                 musicPill(trailingDot: false).frame(width: musicWidth, height: height)
-                ClaudeGlyph(mood: agents.mood, size: height * 0.46)
+                ClaudeGlyph(mood: agents.mood, background: !agents.background.isEmpty, size: height * 0.46)
                     .frame(width: height, height: height)
             }
         }
@@ -224,7 +227,7 @@ struct DynamicCompact: View {
 
     private var claudePill: some View {
         HStack(spacing: 7) {
-            ClaudeGlyph(mood: agents.mood, size: height * 0.46)
+            ClaudeGlyph(mood: agents.mood, background: !agents.background.isEmpty, size: height * 0.46)
             MarqueeText(text: agents.headline, size: 11)
                 .id(agents.headline)
                 .transition(.opacity)

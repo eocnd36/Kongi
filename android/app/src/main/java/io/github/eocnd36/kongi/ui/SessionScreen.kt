@@ -82,6 +82,9 @@ import io.github.eocnd36.kongi.FileChange
 import io.github.eocnd36.kongi.R
 import io.github.eocnd36.kongi.SessionDetail
 import io.github.eocnd36.kongi.TimelineEntry
+import io.github.eocnd36.kongi.SessionSummary
+import androidx.compose.foundation.verticalScroll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
@@ -95,7 +98,8 @@ fun SessionScreen(id: String, snackbar: SnackbarHostState) {
     val summary = AppModel.state?.sessions?.firstOrNull { it.id == id }
     val detail = AppModel.detail?.takeIf { it.id == id }
     val busy = summary?.busy ?: detail?.busy ?: false
-    var tab by rememberSaveable(id) { mutableStateOf(0) }
+    // 0 실시간 · 1 대화 · 2 변경. 일하는 중이면 실시간부터
+    var tab by rememberSaveable(id) { mutableStateOf(if (busy || summary?.background?.isNotEmpty() == true) 0 else 1) }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -142,8 +146,9 @@ fun SessionScreen(id: String, snackbar: SnackbarHostState) {
                     if (busy) SweepBar(MaterialTheme.colorScheme.primary)
                 }
                 PrimaryTabRow(selectedTabIndex = tab, containerColor = MaterialTheme.colorScheme.surface) {
-                    Tab(tab == 0, onClick = { tab = 0 }, text = { Text(stringResource(R.string.conversation)) })
-                    Tab(tab == 1, onClick = { tab = 1 }, text = { Text(stringResource(R.string.changes) + (detail?.changes?.size?.takeIf { it > 0 }?.let { " $it" } ?: "")) })
+                    Tab(tab == 0, onClick = { tab = 0 }, text = { Text(stringResource(R.string.live)) })
+                    Tab(tab == 1, onClick = { tab = 1 }, text = { Text(stringResource(R.string.conversation)) })
+                    Tab(tab == 2, onClick = { tab = 2 }, text = { Text(stringResource(R.string.changes) + (detail?.changes?.size?.takeIf { it > 0 }?.let { " $it" } ?: "")) })
                 }
             }
         },
@@ -152,14 +157,83 @@ fun SessionScreen(id: String, snackbar: SnackbarHostState) {
             Box(Modifier.weight(1f)) {
                 when {
                     detail == null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { BeanDots(dot = 9.dp) }
-                    tab == 0 -> Conversation(detail)
+                    tab == 0 -> Live(summary, detail)
+                    tab == 1 -> Conversation(detail)
                     else -> Changes(detail.changes)
                 }
             }
-            if (tab == 0 && summary?.ended != true) Composer(id)
+            if (tab == 1 && summary?.ended != true) Composer(id)
             else Spacer(Modifier.navigationBarsPadding())
         }
     }
+}
+
+// MARK: live
+
+/** 실시간: 이번 차례가 얼마나 됐고 얼마나 남았는지, 지금 하는 단계, 뒤에서 도는 명령. 시간은 휴대폰이 매초 셉니다. */
+@Composable
+private fun Live(summary: SessionSummary?, detail: SessionDetail) {
+    var now by remember { mutableStateOf(Instant.now()) }
+    LaunchedEffect(Unit) { while (true) { delay(1000); now = Instant.now() } }
+    val updated = AppModel.state?.updated ?: now
+    // Mac이 상태를 만든 뒤 지난 시간만큼 남은 시간에서 뺍니다.
+    fun left(remaining: Double): Double? =
+        if (remaining < 0) null else (remaining - Duration.between(updated, now).seconds).takeIf { it > 0 }
+    val steps = detail.timeline.filterIsInstance<TimelineEntry.Step>()
+    val current = steps.lastOrNull { it.status == "running" } ?: steps.lastOrNull()
+    val background = summary?.background.orEmpty()
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        val started = summary?.turnStarted
+        if (started != null) {
+            val parts = mutableListOf(duration(Duration.between(started, now).seconds))
+            if (summary.todo.isNotEmpty()) parts += summary.todo
+            val remaining = left(summary.remaining)
+            if (remaining != null) parts += stringResource(R.string.about_left, duration(maxOf(remaining, 60.0).toLong()))
+            else if (summary.overdue) parts += stringResource(R.string.longer_than_usual)
+            Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                Text(parts.joinToString(" · "), Modifier.fillMaxWidth().padding(12.dp), style = MaterialTheme.typography.titleSmall)
+            }
+        }
+        if (summary != null && summary.steps.isNotEmpty()) SproutSteps(summary)
+        current?.let { StepRow(it) }
+        if (background.isNotEmpty()) {
+            Text(stringResource(R.string.running_in_background), style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant)
+            background.forEach { job ->
+                val elapsed = duration(Duration.between(job.started, now).seconds)
+                val remaining = left(job.remaining)
+                Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                    Column(Modifier.fillMaxWidth().padding(10.dp)) {
+                        Text(job.label, fontFamily = FontFamily.Monospace, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            listOfNotNull(elapsed, remaining?.let { stringResource(R.string.about_left, duration(maxOf(it, 60.0).toLong())) })
+                                .joinToString(" · "),
+                            style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
+        if (started == null && current == null && background.isEmpty()) {
+            Text(stringResource(R.string.no_activity), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+    }
+}
+
+/** 언어에 맞는 짧은 시간 ("3분 12초", "1 hr, 2 min") */
+private fun duration(seconds: Long): String {
+    val s = maxOf(seconds, 1)
+    val format = android.icu.text.MeasureFormat.getInstance(java.util.Locale.getDefault(), android.icu.text.MeasureFormat.FormatWidth.SHORT)
+    val measures = if (s >= 3600) {
+        arrayOf(android.icu.util.Measure(s / 3600, android.icu.util.MeasureUnit.HOUR), android.icu.util.Measure((s % 3600) / 60, android.icu.util.MeasureUnit.MINUTE))
+    } else {
+        arrayOf(android.icu.util.Measure(s / 60, android.icu.util.MeasureUnit.MINUTE), android.icu.util.Measure(s % 60, android.icu.util.MeasureUnit.SECOND))
+    }
+    return format.formatMeasures(*measures.filter { it.number.toLong() > 0 }.ifEmpty { measures.takeLast(1) }.toTypedArray())
 }
 
 // MARK: conversation

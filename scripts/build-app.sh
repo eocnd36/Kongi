@@ -47,9 +47,13 @@ BINARIES=()
 HELPERS=()
 for arch in "${ARCHS[@]}"; do
   echo "▸ Building $arch"
-  swift build -c release --arch "$arch" --product "$PRODUCT"
-  swift build -c release --arch "$arch" --product "$HOOK_HELPER"
-  BIN_PATH="$(swift build -c release --arch "$arch" --show-bin-path)"
+  # SWIFT_BUILD_FLAGS: 추가 옵션 (예: CI와 같은 SDK로 링크해 시험할 때 -Xlinker -platform_version …)
+  # shellcheck disable=SC2086
+  swift build -c release --arch "$arch" --product "$PRODUCT" ${SWIFT_BUILD_FLAGS:-}
+  # shellcheck disable=SC2086
+  swift build -c release --arch "$arch" --product "$HOOK_HELPER" ${SWIFT_BUILD_FLAGS:-}
+  # shellcheck disable=SC2086
+  BIN_PATH="$(swift build -c release --arch "$arch" --show-bin-path ${SWIFT_BUILD_FLAGS:-})"
   BINARIES+=("$BIN_PATH/$PRODUCT")
   HELPERS+=("$BIN_PATH/$HOOK_HELPER")
 done
@@ -63,8 +67,12 @@ cp -R Resources/*.lproj "$APP/Contents/Resources/"
 cp THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/"
 # Kongi가 만든 확장 (마켓플레이스에서 내려받지 않고 바로 설치)
 mkdir -p "$APP/Contents/Resources/extensions"
-for dir in extensions/*/; do cp -R "${dir%/}" "$APP/Contents/Resources/extensions/"; done
+# 마켓플레이스 목록(catalog-v2.json)에 오른 것만 넣습니다 (만들고 있는·대기 중인 확장은 빠짐).
+for name in $(python3 -I -c 'import json, sys; print("\n".join(e["source"].split("/")[-1] for e in json.load(open(sys.argv[1]))))' marketplace/catalog-v2.json); do
+  [[ -d "extensions/$name" ]] && cp -R "extensions/$name" "$APP/Contents/Resources/extensions/"
+done
 cp marketplace/catalog.json "$APP/Contents/Resources/extensions/catalog.json"
+cp marketplace/catalog-v2.json "$APP/Contents/Resources/extensions/catalog-v2.json"
 if [[ -f Resources/AppIcon.icns ]]; then
   cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 fi

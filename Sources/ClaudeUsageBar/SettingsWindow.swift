@@ -79,7 +79,8 @@ enum SettingsWindow {
             window.title = "Kongi"
             window.titleVisibility = .hidden
             window.titlebarAppearsTransparent = true
-            window.isMovableByWindowBackground = true
+            // 아무 곳이나 잡으면 창이 움직여 드래그·선택이 어려웠습니다. 위쪽 띠(WindowDragArea)로만 옮깁니다.
+            window.isMovableByWindowBackground = false
             window.backgroundColor = .black
             window.appearance = NSAppearance(named: .darkAqua)
             window.isReleasedWhenClosed = false
@@ -119,6 +120,8 @@ private struct KongiWindowRoot: View {
                 .padding([.top, .bottom, .trailing], 10)
         }
         .background(KongiTheme.window)
+        // 창을 옮기는 곳: 맨 위 띠 (신호등 단추 줄). 두 번 누르면 확대/축소
+        .overlay(alignment: .top) { WindowDragArea().frame(height: 26) }
         .foregroundStyle(KongiTheme.text)
         .tint(KongiTheme.accent)
         .preferredColorScheme(.dark)
@@ -267,6 +270,19 @@ private struct Sidebar: View {
     }
 }
 
+/// 잡고 끌면 창이 움직이는 띠 (제목 막대 대신)
+private struct WindowDragArea: NSViewRepresentable {
+    final class DragView: NSView {
+        override var mouseDownCanMoveWindow: Bool { true }
+        override func mouseDown(with event: NSEvent) {
+            if event.clickCount == 2 { window?.performZoom(nil) } else { window?.performDrag(with: event) }
+        }
+    }
+
+    func makeNSView(context: Context) -> NSView { DragView() }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+
 private struct SidebarItemStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         HoverBody(configuration: configuration)
@@ -278,8 +294,12 @@ private struct SidebarItemStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
-                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.white.opacity(hover ? 0.04 : 0)))
-                .opacity(configuration.isPressed ? 0.7 : 1)
+                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color.white.opacity(hover ? 0.07 : 0)))
+                .brightness(hover ? 0.06 : 0)
+                .scaleEffect(configuration.isPressed ? 0.98 : 1)
+                .opacity(configuration.isPressed ? 0.8 : 1)
+                .animation(.easeOut(duration: 0.15), value: hover)
+                .animation(.spring(response: 0.22, dampingFraction: 0.7), value: configuration.isPressed)
                 .onHover { hover = $0 }
         }
     }
@@ -332,7 +352,7 @@ private struct HomePage: View {
     @EnvironmentObject private var agents: AgentStore
     @EnvironmentObject private var usage: UsageStore
     @AppStorage(AppSettings.islandEnabled) private var islandEnabled = true
-    @AppStorage(AppSettings.islandModeKey) private var islandMode = IslandMode.claude.rawValue
+    @AppStorage(AppSettings.islandModeKey) private var islandMode = IslandMode.dynamic.rawValue
     @AppStorage(AppSettings.agentNotifications) private var agentNotifications = true
     @AppStorage(AppSettings.approvalsInIsland) private var approvalsInIsland = true
 
@@ -499,7 +519,7 @@ private struct RequestTile: View {
                         let model = AppServices.shared.island.model
                         withAnimation(IslandModel.morph) {
                             model.expanded = true
-                            model.pinned = true
+                            model.holdOpen()
                         }
                     }
                 }
@@ -583,12 +603,16 @@ private struct SessionColumn: View {
                     .id(session.state.isBusy || session.state.needsAttention)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: session.projectName).font(.system(size: 13, weight: .semibold)).lineLimit(1)
-                    Text(session.state.label)
+                    Text(!session.state.isBusy && !(agents.background[session.id] ?? []).isEmpty
+                         ? String(localized: "Running in the background") : session.state.label)
                         .font(.system(size: 11.5))
                         .foregroundStyle(KongiTheme.secondary)
                         .lineLimit(1)
                 }
                 Spacer(minLength: 4)
+                if agents.isPinned(session.id) {
+                    Image(systemName: "pin.fill").font(.system(size: 10)).foregroundStyle(KongiTheme.secondary)
+                }
                 if !session.changes.isEmpty {
                     ChangeCount(added: session.added, removed: session.removed)
                 }
@@ -599,6 +623,7 @@ private struct SessionColumn: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(SidebarItemStyle())
+        .contextMenu { SessionMenu(session: session) }
     }
 }
 
@@ -644,6 +669,7 @@ private struct SessionPanel: View {
                     TerminalJumper.jump(to: session)
                 }
             }
+            TurnSummaryCard(session: session, large: true)
             HStack(spacing: 4) {
                 IslandSegment(title: String(localized: "Live"), selected: current == .live, namespace: segments) { tab = .live }
                 IslandSegment(title: String(localized: "Conversation"), selected: current == .conversation, namespace: segments) { tab = .conversation }

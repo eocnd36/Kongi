@@ -7,6 +7,7 @@ struct PhoneSection: View {
     @ObservedObject var mobile: MobileBridge
     @AppStorage(AppSettings.mobileEnabled) private var enabled = false
     @AppStorage(AppSettings.mobileNotifications) private var notifications = true
+    @AppStorage(AppSettings.mobileOnlyWhenAway) private var onlyWhenAway = true
 
     var body: some View {
         Group { content }
@@ -67,6 +68,12 @@ struct PhoneSection: View {
                 }
                 KDivider()
                 KToggleRow(title: String(localized: "Send notifications to the phone too"), isOn: $notifications)
+                if notifications {
+                    KDivider()
+                    KToggleRow(title: String(localized: "Only when I'm away from the Mac"),
+                               detail: String(localized: "While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes."),
+                               isOn: $onlyWhenAway)
+                }
                 KDivider()
                 KRow(title: String(localized: "Reset phone access"), detail: String(localized: "Makes a new code. Phones that were connected need to scan again.")) {
                     KButton(title: String(localized: "Reset"), style: .destructive) { mobile.resetPairing() }

@@ -35,6 +35,7 @@ import io.github.eocnd36.kongi.ui.Notice
 import io.github.eocnd36.kongi.ui.PairConfirmDialog
 import io.github.eocnd36.kongi.ui.PairScreen
 import io.github.eocnd36.kongi.ui.Screen
+import io.github.eocnd36.kongi.ui.ExtensionsScreen
 import io.github.eocnd36.kongi.ui.SessionScreen
 import io.github.eocnd36.kongi.ui.SettingsScreen
 
@@ -192,6 +193,7 @@ class MainActivity : ComponentActivity(), MacLink.Listener {
                     null -> PairScreen(onScan = ::scan, snackbar = snackbar)
                     Screen.Home -> HomeScreen(snackbar)
                     is Screen.Session -> SessionScreen(target.id, snackbar)
+                    Screen.Extensions -> ExtensionsScreen(snackbar)
                     Screen.Settings -> SettingsScreen(
                         snackbar = snackbar,
                         version = BuildConfig.VERSION_NAME,

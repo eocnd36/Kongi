@@ -523,3 +523,72 @@
 "Send feedback" = "피드백 보내기";
 "Updated." = "업데이트했어요.";
 "Update to %@" = "%@(으)로 업데이트";
+
+/* Background work */
+"%@: background work done" = "%@: 뒤에서 하던 작업 끝";
+"%lld in background" = "뒤에서 %lld개";
+"%lld running" = "%lld개 진행 중";
+"Running in the background" = "뒤에서 실행 중";
+
+/* Pinned sessions */
+"Unpin" = "고정 해제";
+"Pin to top" = "맨 위에 고정";
+"Show in Finder" = "Finder에서 보기";
+"Copy path" = "경로 복사";
+"longer than usual" = "평소보다 오래 걸리는 중";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "Mac을 비웠을 때만";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "Mac을 쓰는 동안에는 휴대폰이 조용해요. Mac이 잠겼거나 2분 동안 손대지 않았을 때, 그리고 승인·질문에 2분 동안 답이 없을 때 울려요.";
+
+/* Extension actions */
+"Run" = "실행";
+"Working…" = "처리하는 중…";
+"Send to a conversation" = "대화에 보내기";
+"Continuing in the background" = "뒤에서 이어서 진행해요";
+"Ready" = "준비됨";
+"It took too long and was stopped." = "너무 오래 걸려서 멈췄어요.";
+"Something went wrong. See the extension's log." = "문제가 생겼어요. 확장 기록을 확인해 주세요.";
+
+/* Extension context */
+"No project" = "프로젝트 없음";
+"Pick a project so the result fits what you're working on" = "작업 중인 프로젝트를 고르면 거기에 맞춰 만들어요";
+"Attach" = "첨부";
+"A few questions to make it better" = "더 잘 만들기 위한 몇 가지 질문";
+"Your answer" = "답";
+"Continue" = "계속";
+"Skip" = "건너뛰기";
+
+/* Extension context */
+"or drop files here" = "또는 여기로 끌어다 놓기";
+
+/* Marketplace */
+"Official" = "공식";
+"Needs Kongi %@" = "Kongi %@ 이상 필요";
+"Use %@ for this Kongi" = "이 Kongi에 맞는 %@ 사용";
+
+/* Extension versions */
+"%@ %@ is available" = "%@ %@ 업데이트가 있어요";
+"Update it in Settings → Extensions." = "설정 → 확장에서 업데이트하세요.";
+"Versions" = "버전";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "%@ 버전으로 고정됨. Kongi가 바꾸거나 업데이트를 알리지 않아요.";
+"(Recommended)" = "(추천)";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code (사용량 차감)";
+"Reads files" = "파일 읽기";
+"Changes files" = "파일 바꾸기";
+"Internet" = "인터넷";
+"Other apps' info" = "다른 앱 정보";
+"Other" = "기타";
+"Uses: %@" = "사용하는 것: %@";
+
+/* Session summary */
+"Last turn" = "마지막 작업";
+"Copy summary" = "요약 복사";
+"%lld commands" = "명령 %lld개";
+"%lld commands (%lld failed)" = "명령 %lld개 (실패 %lld)";
+
+/* Session summary */
+"Show all" = "전체 보기";
+"Show less" = "접기";

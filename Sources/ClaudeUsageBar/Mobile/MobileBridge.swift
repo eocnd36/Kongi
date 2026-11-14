@@ -95,7 +95,51 @@ final class MobileBridge: ObservableObject {
                 self?.streams.values.forEach { $0.connection.ping() }
             }
         }
+        presenceTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 10 * NSEC_PER_SEC)
+                self?.presenceTick()
+            }
+        }
         refreshAddresses()
+    }
+
+    // MARK: Presence (Mac을 쓰는 중이면 휴대폰을 울리지 않음)
+
+    private var presenceTask: Task<Void, Never>?
+    /// 쓰는 중이라 미뤄 둔 알림 (자리를 비우면 보냄)
+    private var held: [(title: String, body: String, date: Date)] = []
+    /// 휴대폰에 띄워도 된다고 알린 승인·질문
+    private var alerted: Set<UUID> = []
+
+    private var onlyWhenAway: Bool { UserDefaults.standard.bool(forKey: AppSettings.mobileOnlyWhenAway) }
+
+    /// 잠금·화면 꺼짐·2분 동안 입력 없음 (권한 없이 읽을 수 있는 값만 씀)
+    static func macAway() -> Bool {
+        let idle = CGEventSource.secondsSinceLastEventType(.combinedSessionState, eventType: CGEventType(rawValue: ~0)!)
+        let session = CGSessionCopyCurrentDictionary() as? [String: Any]
+        let locked = (session?["CGSSessionScreenIsLocked"] as? Bool) ?? false
+        return Presence.isAway(idle: idle, locked: locked, displayAsleep: CGDisplayIsAsleep(CGMainDisplayID()) != 0)
+    }
+
+    private func requestAlerts(away: Bool, now: Date) -> Set<UUID> {
+        Set(agents.requests.filter { !onlyWhenAway || Presence.alertRequest(age: now.timeIntervalSince($0.createdAt), away: away) }.map(\.id))
+    }
+
+    private func presenceTick() {
+        guard running, !streams.isEmpty else { return }
+        let now = Date()
+        let away = Self.macAway()
+        held.removeAll { notice in
+            switch Presence.held(age: now.timeIntervalSince(notice.date), away: away) {
+            case .send: send(notice.title, notice.body); return true
+            case .drop: return true
+            case .keep: return false
+            }
+        }
+        // 승인·질문이 이제 휴대폰에 떠야 하면 바로 상태를 다시 보냅니다.
+        let alerts = requestAlerts(away: away, now: now)
+        if alerts != alerted { alerted = alerts; broadcast() }
     }
 
     private func stop() {
@@ -104,6 +148,8 @@ final class MobileBridge: ObservableObject {
         running = false
         cancellables.removeAll()
         pingTask?.cancel()
+        presenceTask?.cancel()
+        held.removeAll()
         dropStreams()
     }
 
@@ -208,7 +254,18 @@ final class MobileBridge: ObservableObject {
         let method = envelope["m"] as? String ?? "GET"
         let path = envelope["p"] as? String ?? ""
         let body = envelope["b"] as? [String: Any] ?? [:]
-        let reply = route(method: method, path: path, body: body)
+        // 확장의 일은 수십 초 걸릴 수 있어 끝난 뒤에 답합니다 (휴대폰은 이 요청만 오래 기다림).
+        if method == "POST", path == "/api/actions/run" {
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.reply(await self.runAction(body), nonce: nonce, to: connection)
+            }
+            return
+        }
+        reply(route(method: method, path: path, body: body), nonce: nonce, to: connection)
+    }
+
+    private func reply(_ reply: Reply, nonce: Data, to connection: MobileConnection) {
         let data = (try? JSONSerialization.data(withJSONObject: ["s": reply.status, "b": reply.body], options: [.withoutEscapingSlashes])) ?? Data()
         guard let sealed = try? cipher.seal(data, context: PhoneCipher.replyContext(nonce)) else {
             return connection.respond(.text("Error", status: 500))
@@ -219,6 +276,8 @@ final class MobileBridge: ObservableObject {
     private func route(method: String, path: String, body: [String: Any]) -> Reply {
         let parts = path.split(separator: "/").map(String.init) // ["api", ...]
         switch (method, parts.dropFirst().first ?? "") {
+        case ("GET", "actions"):
+            return (200, ["actions": Self.actionList()])
         case ("GET", "state"):
             return (200, state())
         case ("GET", "sessions"):
@@ -234,7 +293,7 @@ final class MobileBridge: ObservableObject {
             scheduler.scheduleContinue(session: session, trigger: .sessionReset)
             return (200, ["ok": true])
         case ("POST", "test"):
-            notify(title: String(localized: "Test notification"), body: String(localized: "Notifications from Kongi are working."))
+            notify(title: String(localized: "Test notification"), body: String(localized: "Notifications from Kongi are working."), force: true)
             return (200, ["ok": true])
         default:
             return (404, ["error": "not found"])
@@ -255,8 +314,16 @@ final class MobileBridge: ObservableObject {
     }
 
     /// 휴대폰 앱에 알림을 띄웁니다 (켜 둔 경우). 승인·질문은 휴대폰이 상태를 보고 직접 띄우므로 여기로 오지 않습니다.
-    func notify(title: String, body: String) {
+    func notify(title: String, body: String, force: Bool = false) {
         guard running, UserDefaults.standard.bool(forKey: AppSettings.mobileNotifications), !streams.isEmpty else { return }
+        guard force || !onlyWhenAway || Self.macAway() else {
+            held = Array((held + [(title, body, Date())]).suffix(10))
+            return
+        }
+        send(title, body)
+    }
+
+    private func send(_ title: String, _ body: String) {
         streams.values.forEach { send("notify", ["title": title, "body": body], to: $0.connection, nonce: $0.nonce) }
     }
 
@@ -276,7 +343,7 @@ final class MobileBridge: ObservableObject {
             ]
         }
         let sessions: [[String: Any]] = agents.sessions.prefix(30).map { session in
-            [
+            let base: [String: Any] = [
                 "id": session.id,
                 "project": session.projectName,
                 "state": session.state.label,
@@ -295,6 +362,7 @@ final class MobileBridge: ObservableObject {
                 "thinking": session.state == .thinking || session.state == .starting,
                 "done": session.state == .done,
                 "mood": Self.mood(of: session).rawValue,
+
                 // 최근 단계 세 개 (휴대폰의 단계 줄기)
                 "steps": session.activities.suffix(3).map { activity in
                     [
@@ -304,10 +372,14 @@ final class MobileBridge: ObservableObject {
                     ]
                 },
             ]
+            return base.merging(live(session, now: now)) { first, _ in first }
         }
+        let alerts = requestAlerts(away: Self.macAway(), now: now)
         let requests: [[String: Any]] = agents.requests.map { request in
             var item: [String: Any] = [
                 "id": request.id.uuidString,
+                // false면 휴대폰은 목록에만 두고 알림은 띄우지 않음 (Mac을 쓰는 중). 예전 휴대폰 앱은 이 값을 몰라 늘 띄웁니다.
+                "alert": alerts.contains(request.id),
                 "sessionId": request.sessionId,
                 "project": agents.session(request.sessionId)?.projectName ?? "",
             ]
@@ -337,12 +409,83 @@ final class MobileBridge: ObservableObject {
             "limits": limits,
             "sessions": sessions,
             "requests": requests,
+            // 휴대폰 홈의 확장 단추를 보일지
+            "actions": AppServices.shared.extensions.actions.count,
             "updated": Self.iso.string(from: now),
         ]
         if let status = usage.serviceStatus, status.hasProblem {
             result["outage"] = ["summary": status.summary, "incidents": status.incidents.map(\.name)]
         }
         return result
+    }
+
+    // MARK: 확장의 일 (휴대폰에서 실행)
+
+    /// 켜 둔 확장의 일들 (휴대폰 언어가 아니라 Mac 앱 언어로)
+    private static func actionList() -> [[String: Any]] {
+        let language = ExtensionStore.language
+        return AppServices.shared.extensions.actions.map { ref in
+            let action = ref.action
+            return [
+                "id": ref.id,
+                "title": action.title.text(language),
+                "extension": ref.item.manifest.name,
+                "placeholder": action.placeholder?.text(language) ?? "",
+                "takesInput": action.takesInput,
+                "monospaced": action.monospaced,
+                "wantsProject": action.wantsProject,
+                "choiceTitle": action.choiceTitle?.text(language) ?? "",
+                "choices": (action.choices ?? []).map { ["id": $0.id, "title": $0.title.text(language)] },
+            ] as [String: Any]
+        }
+    }
+
+    /// 휴대폰에서 받은 입력으로 실행합니다. 결과: 글, 질문, 또는 오류. (휴대폰에서는 파일을 첨부하지 않음)
+    private func runAction(_ body: [String: Any]) async -> Reply {
+        let store = AppServices.shared.extensions
+        guard let id = body["id"] as? String, let ref = store.actions.first(where: { $0.id == id }) else {
+            return (404, ["error": "not found"])
+        }
+        let skip = body["skip"] as? Bool ?? false
+        let answers = (body["answers"] as? [[String: Any]] ?? []).compactMap { item -> ActionContext.Answer? in
+            guard let question = item["question"] as? String, let answer = item["answer"] as? String,
+                  !answer.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
+            return .init(question: question, answer: String(answer.prefix(2000)))
+        }
+        let session = ref.action.wantsProject ? (body["sessionId"] as? String).flatMap { agents.session($0) } : nil
+        let context = ExtensionStore.context(session: session, answers: answers, skip: skip)
+        let input = String((body["input"] as? String ?? "").prefix(20000))
+        let output = await store.perform(ref, input: input, choice: body["choice"] as? String, context: context)
+        if output.failed { return (200, ["kind": "error", "text": output.text]) }
+        switch ActionOutput.parse(output.text) {
+        case let .questions(list) where !skip:
+            return (200, ["kind": "questions", "questions": list.map {
+                ["question": $0.question, "options": $0.options ?? [], "multiSelect": $0.multiSelect ?? false, "confirm": $0.confirm ?? ""] as [String: Any]
+            }])
+        case let .result(text, note):
+            return (200, ["kind": "text", "text": text, "note": note])
+        default:
+            return (200, ["kind": "text", "text": output.text])
+        }
+    }
+
+    /// 실시간 탭: 휴대폰이 이 값과 state의 "updated"로 매초 직접 셉니다 (매초 보내지 않음).
+    private func live(_ session: AgentSession, now: Date) -> [String: Any] {
+        let busy = session.state.isBusy
+        let started = busy ? session.turnStartedAt.map { Self.iso.string(from: $0) } ?? "" : ""
+        let todo = busy ? session.todoTotal.map { "\(session.todoDone ?? 0)/\($0)" } ?? "" : ""
+        let jobs: [[String: Any]] = (agents.background[session.id] ?? []).map { job in
+            let remaining: Double = agents.remaining(of: job, now: now) ?? -1
+            return ["label": job.label, "started": Self.iso.string(from: job.startedAt), "remaining": remaining]
+        }
+        let remaining: Double = agents.turnRemaining(of: session, now: now) ?? -1
+        return [
+            "turnStarted": started,
+            "remaining": remaining,
+            "overdue": agents.turnOverdue(session, now: now),
+            "todo": todo,
+            "background": jobs,
+        ]
     }
 
     /// 콩이 기분: 끝난 세션은 잠, 방금 명령이 실패했으면 시무룩

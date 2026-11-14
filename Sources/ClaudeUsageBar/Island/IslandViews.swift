@@ -26,19 +26,15 @@ struct IslandRootView: View {
                     case let .openURL(url): NSWorkspace.shared.open(url)
                     case .openWindow: SettingsWindow.show()
                     case .openAbout: SettingsWindow.show(.about)
+                    case .openExtensions: SettingsWindow.show(.extensions)
                     case let .openSession(id):
-                        withAnimation(IslandModel.morph) {
-                            model.expanded = true
-                            model.pinned = true
-                        }
+                        withAnimation(IslandModel.morph) { model.expanded = true }
                         model.navigate(to: .session(id))
                     }
                     return
                 }
-                withAnimation(IslandModel.morph) {
-                    model.expanded = true
-                    model.pinned = true
-                }
+                // 눌러서 펼치기만 합니다 (고정하지 않음: 마우스가 나가면 평소처럼 접힘. 계속 열어 두려면 핀 단추)
+                withAnimation(IslandModel.morph) { model.expanded = true }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: model.style == .floatingBuddy ? .topTrailing : .top)
             .onPreferenceChange(IslandHeightKey.self) { height in
@@ -257,6 +253,7 @@ extension AgentStore {
         }
         if let session = activeSessions.first(where: { $0.state.needsAttention }) { return session.state.label }
         if let session = activeSessions.first(where: { $0.state.isBusy }) { return session.state.label }
+        if !background.isEmpty { return String(localized: "Running in the background") }
         if mood == .happy { return String(localized: "Done") }
         if let session = activeSessions.first { return session.state.label }
         return String(localized: "No sessions")
@@ -485,12 +482,27 @@ private struct ExpandedIsland: View {
             }
             switch model.route {
             case .sessions:
+                // 여러 일이 돌면 전체 경과·전체 남은 시간을 한 줄로
+                WorkSummary()
                 // 일하는 대화가 있으면 지금 읽고 고치는 곳을 맨 위에 크게
                 if let busy = agents.activeSessions.first(where: { $0.state.isBusy && !$0.activities.isEmpty }) {
                     LiveFocusView(session: busy, scrollable: !model.rendersForSnapshot)
                         .contentShape(Rectangle())
                         .onTapGesture { model.navigate(to: .session(busy.id)) }
                         .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+                // 대답은 끝났지만 뒤에서 명령이 도는 세션: 실시간 대신 그 명령들을 맨 위에
+                if !agents.activeSessions.contains(where: { $0.state.isBusy && !$0.activities.isEmpty }),
+                   let session = agents.activeSessions.first(where: { !(agents.background[$0.id] ?? []).isEmpty }) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(verbatim: session.title)
+                            .font(.system(size: 12, weight: .semibold))
+                            .lineLimit(1)
+                        BackgroundJobsList(session: session)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture { model.navigate(to: .session(session.id)) }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
                 if model.mode == .claude || !agents.sessions.isEmpty {
                     SessionList(model: model)
@@ -506,6 +518,17 @@ private struct ExpandedIsland: View {
             case let .diff(sessionId, path):
                 if let change = agents.session(sessionId)?.changes.first(where: { $0.path == path }) {
                     DiffView(model: model, change: change) { model.navigate(to: .session(sessionId)) }
+                        .transition(.islandPage(forward: model.forward))
+                } else {
+                    SessionList(model: model)
+                }
+            case .actions:
+                ExtensionActionList(model: model)
+                    .transition(.islandPage(forward: model.forward))
+            case let .action(id):
+                if let ref = AppServices.shared.extensions.actions.first(where: { $0.id == id }) {
+                    ExtensionActionPanel(model: model, ref: ref)
+                        .id(id)
                         .transition(.islandPage(forward: model.forward))
                 } else {
                     SessionList(model: model)
@@ -542,7 +565,7 @@ private struct ExpandedIsland: View {
             if model.mode == .claude {
                 Kongi(mood: agents.mood, size: 26)
             } else {
-                ClaudeGlyph(mood: agents.mood, size: 20)
+                ClaudeGlyph(mood: agents.mood, background: !agents.background.isEmpty, size: 20)
                     .frame(width: 26, height: 26)
             }
             VStack(alignment: .leading, spacing: 1) {
@@ -569,6 +592,13 @@ private struct ExpandedIsland: View {
                     .foregroundStyle(session.severity.color)
                     .help(Text(LimitKind.session.title))
             }
+            let actions = AppServices.shared.extensions.actions
+            if !actions.isEmpty {
+                // 확장의 일: 하나면 바로, 여럿이면 목록으로
+                IslandIconButton(symbol: "puzzlepiece.extension", help: String(localized: "Extensions")) {
+                    model.navigate(to: actions.count == 1 ? .action(actions[0].id) : .actions)
+                }
+            }
             IslandIconButton(symbol: "calendar.badge.clock", help: String(localized: "Scheduled prompts")) {
                 SettingsWindow.show(.schedules)
             }
@@ -576,7 +606,7 @@ private struct ExpandedIsland: View {
                 SettingsWindow.show()
             }
             IslandIconButton(symbol: model.pinned ? "pin.fill" : "pin", help: String(localized: "Keep open")) {
-                model.pinned.toggle()
+                model.togglePin()
             }
             IslandIconButton(symbol: "chevron.up", help: String(localized: "Close")) {
                 model.collapse()
@@ -1030,24 +1060,34 @@ private struct EmptySessions: View {
 }
 
 private struct SessionRow: View {
+    @EnvironmentObject private var agents: AgentStore
     let session: AgentSession
     let open: () -> Void
 
-    /// 일하는 중: "3분 12초 · 2/5 · 약 2분 남음", 아니면 마지막 소식이 얼마 전인지
+    private var jobs: [BackgroundWork.Job] { agents.background[session.id] ?? [] }
+    private var working: Bool { session.state.isBusy || !jobs.isEmpty }
+
+    /// 일하는 중: "3분 12초 · 2/5 · 약 2분 남음" (뒤에서 도는 명령 포함), 아니면 마지막 소식이 얼마 전인지
     private func timing(now: Date) -> String {
-        guard session.state.isBusy, let start = session.turnStartedAt else { return Formatters.shortElapsed(since: session.updatedAt) }
-        var parts = [TaskBoard.duration(now.timeIntervalSince(start))]
-        if let done = session.todoDone, let total = session.todoTotal, total > 0 { parts.append("\(done)/\(total)") }
-        if let left = session.estimatedRemaining(now: now) {
-            let remaining = TaskBoard.duration(max(left, 60).rounded(.up))
-            parts.append(String(localized: "about \(remaining) left"))
+        guard let all = BackgroundWork.overall(agents.work(of: session, now: now)) else {
+            return Formatters.shortElapsed(since: session.updatedAt)
         }
+        var parts: [String] = []
+        if !session.state.isBusy, !jobs.isEmpty {
+            let count = jobs.count
+            parts.append(String(localized: "\(count) in background"))
+        }
+        parts.append(TaskBoard.duration(all.elapsed))
+        if session.state.isBusy, let done = session.todoDone, let total = session.todoTotal, total > 0 { parts.append("\(done)/\(total)") }
+        if let left = all.remaining { parts.append(WorkTiming.left(left)) }
+        else if agents.turnOverdue(session, now: now) { parts.append(String(localized: "longer than usual")) }
         return parts.joined(separator: " · ")
     }
 
     /// 마지막으로 한 말이나 지금 하는 일
     private var subtitle: String {
         if session.state.isBusy || session.state.needsAttention { return session.state.label }
+        if let job = jobs.first { return job.label }
         if let last = session.messages.last(where: { $0.role == .assistant }) {
             return last.text.replacingOccurrences(of: "\n", with: " ")
         }
@@ -1056,8 +1096,10 @@ private struct SessionRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            PulsingDot(color: session.state.color, size: 8, pulses: session.state.isBusy || session.state.needsAttention)
-                .id(session.state.isBusy || session.state.needsAttention)
+            // 뒤에서 명령이 돌면 대답이 끝났어도 일하는 중처럼 깜빡입니다.
+            PulsingDot(color: !session.state.isBusy && !jobs.isEmpty ? .orange : session.state.color, size: 8,
+                       pulses: working || session.state.needsAttention)
+                .id(working || session.state.needsAttention)
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: session.title)
                     .font(.system(size: 12, weight: .semibold))
@@ -1074,11 +1116,14 @@ private struct SessionRow: View {
             if !session.changes.isEmpty {
                 ChangeCount(added: session.added, removed: session.removed)
             }
-            TimelineView(.periodic(from: .now, by: session.state.isBusy ? 1 : 30)) { context in
+            if agents.isPinned(session.id) {
+                Image(systemName: "pin.fill").font(.system(size: 9)).foregroundStyle(.white.opacity(0.5))
+            }
+            TimelineView(.periodic(from: .now, by: working ? 1 : 30)) { context in
                 Text(verbatim: timing(now: context.date))
                     .font(.system(size: 10))
                     .monospacedDigit()
-                    .foregroundStyle(.white.opacity(session.state.isBusy ? 0.6 : 0.4))
+                    .foregroundStyle(.white.opacity(working ? 0.6 : 0.4))
             }
             IslandIconButton(
                 symbol: "arrow.up.forward.app",
@@ -1092,6 +1137,202 @@ private struct SessionRow: View {
         .islandHoverRow()
         .contentShape(Rectangle())
         .onTapGesture(perform: open)
+        .contextMenu { SessionMenu(session: session) }
+    }
+}
+
+/// 세션 우클릭 메뉴 (아일랜드와 앱 창이 함께 씀)
+struct SessionMenu: View {
+    @EnvironmentObject private var agents: AgentStore
+    let session: AgentSession
+
+    var body: some View {
+        Button(agents.isPinned(session.id) ? String(localized: "Unpin") : String(localized: "Pin to top"),
+               systemImage: agents.isPinned(session.id) ? "pin.slash" : "pin") {
+            withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) { agents.togglePin(session.id) }
+        }
+        Divider()
+        let app = TerminalJumper.appName(for: session.context)
+        Button(app.map { String(localized: "Open in \($0)") } ?? String(localized: "Open terminal"), systemImage: "arrow.up.forward.app") {
+            TerminalJumper.jump(to: session)
+        }
+        Button(String(localized: "Show in Finder"), systemImage: "folder") {
+            NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: session.cwd)])
+        }
+        Button(String(localized: "Copy path"), systemImage: "doc.on.doc") {
+            NSPasteboard.general.clearContents()
+            NSPasteboard.general.setString(session.cwd, forType: .string)
+        }
+        if session.state == .ended {
+            Divider()
+            Button(String(localized: "Delete"), systemImage: "trash", role: .destructive) {
+                withAnimation { agents.deleteSession(session.id) }
+            }
+        }
+    }
+}
+
+/// "12분 3초 · 약 5분 남음"
+@MainActor
+enum WorkTiming {
+    static func left(_ seconds: Double) -> String {
+        let remaining = TaskBoard.duration(max(seconds, 60).rounded(.up))
+        return String(localized: "about \(remaining) left")
+    }
+
+    static func text(_ work: (elapsed: Double, remaining: Double?), overdue: Bool = false) -> String {
+        let note = work.remaining.map(left) ?? (overdue ? String(localized: "longer than usual") : nil)
+        return ([TaskBoard.duration(work.elapsed)] + [note].compactMap { $0 }).joined(separator: " · ")
+    }
+}
+
+/// 세션 요약 카드: 방금 끝난 차례에 한 일 (걸린 시간, 바꾼 파일, 명령, 마지막 답) + 요약 복사
+struct TurnSummaryCard: View {
+    @EnvironmentObject private var agents: AgentStore
+    let session: AgentSession
+    var large = false
+    @State private var copied = false
+    /// 마지막 답 전체를 마크다운으로 펼쳐 보기
+    @State private var full = false
+
+    var body: some View {
+        if let summary = agents.lastTurnSummary(of: session) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Label(String(localized: "Last turn"), systemImage: "checkmark.seal.fill")
+                        .font(.system(size: large ? 12.5 : 11, weight: .semibold))
+                        .foregroundStyle(KongiTheme.green)
+                    Spacer()
+                    IslandTextButton(title: copied ? String(localized: "Copied") : String(localized: "Copy summary"), symbol: "doc.on.doc") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(Self.text(summary, session: session), forType: .string)
+                        copied = true
+                    }
+                }
+                Text(verbatim: Self.line(summary))
+                    .font(.system(size: large ? 12.5 : 11.5))
+                    .monospacedDigit()
+                    .foregroundStyle(.white.opacity(0.75))
+                if let answer = summary.answer {
+                    if full {
+                        // 마크다운 그대로 (제목·목록·코드·표)
+                        ScrollView {
+                            MarkdownView(text: answer, fontSize: large ? 12.5 : 11.5, color: .white.opacity(0.85))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .textSelection(.enabled)
+                        }
+                        .frame(maxHeight: large ? 420 : 240)
+                    } else {
+                        Text(verbatim: Self.preview(answer))
+                            .font(.system(size: large ? 12 : 11))
+                            .foregroundStyle(.white.opacity(0.55))
+                            .lineLimit(large ? 4 : 2)
+                    }
+                    IslandTextButton(title: full ? String(localized: "Show less") : String(localized: "Show all"),
+                                     symbol: full ? "chevron.up" : "chevron.down") {
+                        withAnimation(.easeInOut(duration: 0.2)) { full.toggle() }
+                    }
+                }
+            }
+            .padding(large ? 12 : 9)
+            .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(KongiTheme.green.opacity(0.08)))
+            .onChange(of: summary) { _ in copied = false }
+        }
+    }
+
+    /// 접힌 카드의 미리보기: 마크다운 기호(제목 #, 굵게 **, 코드 `, 목록 -)를 걷어 낸 한 줄
+    static func preview(_ markdown: String) -> String {
+        markdown
+            .replacingOccurrences(of: #"```[\s\S]*?```"#, with: " ", options: .regularExpression)
+            .replacingOccurrences(of: #"(?m)^\s{0,3}(#{1,6}|[-*+]|\d+\.|>)\s+"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\*\*|__|`|\|"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"\[([^\]]+)\]\([^)]+\)"#, with: "$1", options: .regularExpression)
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespaces)
+    }
+
+    /// "3분 12초 · 14단계 · 파일 3개 +40 −12 · 명령 5개 (실패 1)"
+    static func line(_ summary: AgentStore.TurnSummary) -> String {
+        let steps = summary.steps
+        var parts = [TaskBoard.duration(summary.seconds), String(localized: "\(steps) steps")]
+        if summary.files > 0 {
+            let files = summary.files
+            parts.append(String(localized: "\(files) files") + " +\(summary.added) −\(summary.removed)")
+        }
+        if summary.commands > 0 {
+            let commands = summary.commands
+            let failed = summary.failed
+            parts.append(failed > 0 ? String(localized: "\(commands) commands (\(failed) failed)") : String(localized: "\(commands) commands"))
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    static func text(_ summary: AgentStore.TurnSummary, session: AgentSession) -> String {
+        var lines = [session.title, line(summary)]
+        if let answer = summary.answer { lines += ["", answer] }
+        return lines.joined(separator: "\n")
+    }
+}
+
+/// 기본 화면 맨 위: 여러 일이 돌 때 전체 (가장 오래 일한 시간, 모두 끝나기까지)
+private struct WorkSummary: View {
+    @EnvironmentObject private var agents: AgentStore
+
+    var body: some View {
+        if agents.allWork(now: Date()).count > 1 {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                let work = agents.allWork(now: context.date)
+                if let all = BackgroundWork.overall(work) {
+                    let count = work.count
+                    Label {
+                        Text(verbatim: String(localized: "\(count) running") + " · " + WorkTiming.text(all))
+                    } icon: {
+                        Image(systemName: "clock")
+                    }
+                    .font(.system(size: 11, weight: .medium))
+                    .monospacedDigit()
+                    .foregroundStyle(.white.opacity(0.7))
+                    .padding(.horizontal, 10)
+                }
+            }
+        }
+    }
+}
+
+/// 세션 화면: 대답이 끝난 뒤에도 뒤에서 도는 명령들
+private struct BackgroundJobsList: View {
+    @EnvironmentObject private var agents: AgentStore
+    let session: AgentSession
+
+    var body: some View {
+        let jobs = agents.background[session.id] ?? []
+        if !jobs.isEmpty {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Running in the background")
+                    .font(.system(size: 10.5, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.5))
+                TimelineView(.periodic(from: .now, by: 1)) { context in
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(jobs, id: \.pid) { job in
+                            HStack(spacing: 8) {
+                                PulsingDot(color: .orange, size: 6)
+                                Text(verbatim: job.label)
+                                    .font(.system(size: 11, design: .monospaced))
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                                Spacer(minLength: 6)
+                                Text(verbatim: WorkTiming.text((context.date.timeIntervalSince(job.startedAt), agents.remaining(of: job, now: context.date))))
+                                    .font(.system(size: 10))
+                                    .monospacedDigit()
+                                    .foregroundStyle(.white.opacity(0.6))
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(8)
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.05)))
+        }
     }
 }
 
@@ -1110,6 +1351,7 @@ struct ChangeCount: View {
 
 private struct SessionDetail: View {
     @ObservedObject var model: IslandModel
+    @EnvironmentObject private var agents: AgentStore
     let session: AgentSession
     @State private var tab: Tab?
     @Namespace private var segments
@@ -1128,12 +1370,19 @@ private struct SessionDetail: View {
                         Text(verbatim: session.title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                         if let branch = session.gitBranch { BranchChip(branch: branch) }
                     }
-                    Text(session.state.label)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.6))
-                        .lineLimit(1)
-                        .id(session.state.label)
-                        .transition(.opacity)
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        let timing = BackgroundWork.overall(agents.work(of: session, now: context.date))
+                            .map { WorkTiming.text($0, overdue: agents.turnOverdue(session, now: context.date)) }
+                        let inBackground = !session.state.isBusy && !(agents.background[session.id] ?? []).isEmpty
+                        let state = inBackground ? String(localized: "Running in the background") : session.state.label
+                        Text(verbatim: [state, timing].compactMap { $0 }.joined(separator: " · "))
+                            .font(.system(size: 11))
+                            .monospacedDigit()
+                            .foregroundStyle(.white.opacity(0.6))
+                            .lineLimit(1)
+                    }
+                    .id(session.state.label)
+                    .transition(.opacity)
                 }
                 .animation(.easeInOut(duration: 0.2), value: session.state.label)
                 Spacer()
@@ -1142,6 +1391,9 @@ private struct SessionDetail: View {
                     symbol: "arrow.up.forward.app"
                 ) { TerminalJumper.jump(to: session) }
             }
+
+            TurnSummaryCard(session: session)
+            BackgroundJobsList(session: session)
 
             HStack(spacing: 4) {
                 IslandSegment(title: String(localized: "Live"), selected: current == .live, namespace: segments) {
@@ -1238,7 +1490,8 @@ struct DiffView: View {
                 ) {
                     withAnimation(IslandModel.morph) {
                         model.enlarged.toggle()
-                        model.pinned = model.pinned || model.enlarged
+                        // 크게 보는 동안만 붙잡아 두고, 되돌리면 풉니다 (사용자 고정으로 남지 않게)
+                        if model.enlarged { model.holdOpen() } else { model.releaseAutoPin() }
                     }
                 }
             }

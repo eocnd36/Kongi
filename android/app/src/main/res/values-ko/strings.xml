@@ -86,4 +86,20 @@
     <string name="updated_title">Kongi를 %1$s(으)로 업데이트했어요</string>
     <string name="later">나중에</string>
     <string name="ok">확인</string>
+    <string name="live">실시간</string>
+    <string name="about_left">약 %1$s 남음</string>
+    <string name="longer_than_usual">평소보다 오래 걸리는 중</string>
+    <string name="running_in_background">뒤에서 실행 중</string>
+    <string name="extensions">확장</string>
+    <string name="no_extensions">Mac의 Kongi에 켜 둔 실행형 확장이 없어요.</string>
+    <string name="run">실행</string>
+    <string name="refresh">새로고침</string>
+    <string name="copy">복사</string>
+    <string name="send_to_conversation">대화에 보내기</string>
+    <string name="no_project">프로젝트 없음</string>
+    <string name="questions_title">더 잘 만들기 위한 몇 가지 질문</string>
+    <string name="your_answer">답</string>
+    <string name="continue_answers">계속</string>
+    <string name="skip">건너뛰기</string>
+    <string name="cancel">취소</string>
 </resources>

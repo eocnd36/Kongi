@@ -134,3 +134,45 @@ import Testing
         #expect(ToolActivity.editedFilePath(toolName: "apply_patch", input: input) == "src/a.swift")
     }
 }
+
+@Suite struct BackgroundWorkTests {
+    @Test func namesTheLastCommandOfAClaudeShell() {
+        let command = #"/bin/zsh -c source /Users/demo/.claude/shell-snapshots/snapshot-zsh-1.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB 2>/dev/null || true && eval 'cd "/Users/demo/my app"; cp a b; zsh tests/redo.sh bell 2>&1 | grep -v "warning"' < /dev/null && pwd -P >| /tmp/claude-49e6-cwd"#
+        #expect(BackgroundWork.label(fromShellCommand: command) == "zsh tests/redo.sh bell")
+        let quoted = #"/bin/zsh -c source /x/.claude/shell-snapshots/s.sh && eval 'npm run dev -- --name '\''web'\''' < /dev/null && pwd -P >| /tmp/c"#
+        #expect(BackgroundWork.label(fromShellCommand: quoted) == "npm run dev -- --name 'web'")
+        #expect(BackgroundWork.label(fromShellCommand: "node /opt/homebrew/bin/pyright-langserver --stdio") == nil)
+    }
+
+    @Test func estimatesFromPastRunsAndCombines() {
+        #expect(BackgroundWork.remaining(elapsed: 60, past: [300]) == 240)
+        #expect(BackgroundWork.remaining(elapsed: 60, past: []) == nil)
+        #expect(BackgroundWork.remaining(elapsed: 299, past: [300]) == nil)
+        let all = BackgroundWork.overall([(elapsed: 120, remaining: 60), (elapsed: 600, remaining: 30)])
+        #expect(all?.elapsed == 600 && all?.remaining == 60)
+        #expect(BackgroundWork.overall([(elapsed: 120, remaining: 60), (elapsed: 10, remaining: nil)])?.remaining == nil)
+        #expect(BackgroundWork.overall([]) == nil)
+    }
+
+    @Test func findsOnlyClaudeShellsUnderAProcess() {
+        // 이 테스트 프로세스 아래에는 Claude 셸이 없습니다 (프로세스 목록 읽기가 멈추거나 죽지 않는지).
+        #expect(BackgroundWork.jobs(under: getpid()).isEmpty)
+    }
+}
+
+@Suite struct BackgroundProgressTests {
+    @Test func readsProgressFromOutput() {
+        #expect(BackgroundWork.progress(ofOutput: "Compiling\n[12/40] Linking foo\n") == 0.3)
+        #expect(BackgroundWork.progress(ofOutput: "downloading 10%\rdownloading 25%\r") == 0.25)
+        // 날짜·경로·끝난 것은 진행률이 아님
+        #expect(BackgroundWork.progress(ofOutput: "saved to out/2026/11/report\n") == nil)
+        #expect(BackgroundWork.progress(ofOutput: "== train\n{\"version\": \"20261112-204054\"}\n") == nil)
+        #expect(BackgroundWork.progress(ofOutput: "[40/40] done\n") == nil)
+    }
+
+    @Test func estimatesFromProgressAndGroupsSimilarCommands() {
+        #expect(BackgroundWork.remaining(elapsed: 60, fraction: 0.25) == 180)
+        #expect(BackgroundWork.remaining(elapsed: 60, fraction: 0.01) == nil)
+        #expect(BackgroundWork.historyKey("zsh tests/out/chart_v32/redo.sh bell") == BackgroundWork.historyKey("zsh tests/out/chart_v33/redo.sh bell"))
+    }
+}

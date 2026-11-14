@@ -523,3 +523,72 @@
 "Send feedback" = "Отправить отзыв";
 "Updated." = "Обновлено.";
 "Update to %@" = "Обновить до %@";
+
+/* Background work */
+"%@: background work done" = "%@: фоновая работа завершена";
+"%lld in background" = "В фоне: %lld";
+"%lld running" = "Выполняется: %lld";
+"Running in the background" = "Выполняется в фоне";
+
+/* Pinned sessions */
+"Unpin" = "Открепить";
+"Pin to top" = "Закрепить сверху";
+"Show in Finder" = "Показать в Finder";
+"Copy path" = "Скопировать путь";
+"longer than usual" = "дольше обычного";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "Только когда я не у Mac";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "Пока вы пользуетесь этим Mac, телефон молчит. Он сообщит, если Mac заблокирован или не использовался 2 минуты, а также если на запрос или вопрос нет ответа 2 минуты.";
+
+/* Extension actions */
+"Run" = "Запустить";
+"Working…" = "Обработка…";
+"Send to a conversation" = "Отправить в разговор";
+"Continuing in the background" = "Продолжится в фоне";
+"Ready" = "Готово";
+"It took too long and was stopped." = "Заняло слишком много времени и было остановлено.";
+"Something went wrong. See the extension's log." = "Что-то пошло не так. Посмотрите журнал расширения.";
+
+/* Extension context */
+"No project" = "Без проекта";
+"Pick a project so the result fits what you're working on" = "Выберите проект, чтобы результат подходил к вашей работе";
+"Attach" = "Прикрепить";
+"A few questions to make it better" = "Несколько вопросов, чтобы сделать лучше";
+"Your answer" = "Ваш ответ";
+"Continue" = "Продолжить";
+"Skip" = "Пропустить";
+
+/* Extension context */
+"or drop files here" = "или перетащите файлы сюда";
+
+/* Marketplace */
+"Official" = "Официальное";
+"Needs Kongi %@" = "Нужен Kongi %@";
+"Use %@ for this Kongi" = "Использовать %@ для этого Kongi";
+
+/* Extension versions */
+"%@ %@ is available" = "Доступно %@ %@";
+"Update it in Settings → Extensions." = "Обновите в Настройки → Расширения.";
+"Versions" = "Версии";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "Закреплено на %@. Kongi не заменит её и не будет напоминать об обновлениях.";
+"(Recommended)" = "(Рекомендуется)";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code (расходует лимит)";
+"Reads files" = "Читает файлы";
+"Changes files" = "Изменяет файлы";
+"Internet" = "Интернет";
+"Other apps' info" = "Данные других приложений";
+"Other" = "Другое";
+"Uses: %@" = "Использует: %@";
+
+/* Session summary */
+"Last turn" = "Последний ход";
+"Copy summary" = "Скопировать сводку";
+"%lld commands" = "Команд: %lld";
+"%lld commands (%lld failed)" = "Команд: %lld (ошибок: %lld)";
+
+/* Session summary */
+"Show all" = "Показать всё";
+"Show less" = "Свернуть";

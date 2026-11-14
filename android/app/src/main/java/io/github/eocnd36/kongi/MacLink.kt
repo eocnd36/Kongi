@@ -212,7 +212,7 @@ object MacLink {
     // MARK: requests
 
     /** 요청 하나를 보내고 (상태 코드, 응답 JSON)을 돌려줍니다. 백그라운드 스레드에서 부르세요. */
-    fun rpcBlocking(method: String, path: String, body: JSONObject?): Pair<Int, String> {
+    fun rpcBlocking(method: String, path: String, body: JSONObject?, readTimeout: Int = 20_000): Pair<Int, String> {
         val pairing = pairing ?: return 401 to """{"error":"unpaired"}"""
         val cipher = PhoneCipher(pairing.key)
         // 요청 하나는 한 번만 봉인해 모든 주소에 같은 바이트를 보냅니다. Mac은 같은 nonce를 한 번만 받으므로,
@@ -223,7 +223,7 @@ object MacLink {
         // 앞 주소가 요청을 받아 갔으면 뒤의 403은 "이미 받은 요청"일 수 있어 연결 해제로 보지 않습니다.
         var delivered = false
         for (host in hosts(pairing)) {
-            val connection = open(host, pairing.port, "/rpc", sealed, readTimeout = 20_000) ?: continue
+            val connection = open(host, pairing.port, "/rpc", sealed, readTimeout = readTimeout) ?: continue
             try {
                 when (connection.responseCode) {
                     200 -> {
@@ -250,9 +250,9 @@ object MacLink {
         return if (forbidden) 401 to """{"error":"unpaired"}""" else 0 to """{"error":"offline"}"""
     }
 
-    fun rpc(method: String, path: String, body: JSONObject?, done: (Int, String) -> Unit) {
+    fun rpc(method: String, path: String, body: JSONObject?, readTimeout: Int = 20_000, done: (Int, String) -> Unit) {
         rpcPool.execute {
-            val (status, json) = rpcBlocking(method, path, body)
+            val (status, json) = rpcBlocking(method, path, body, readTimeout)
             post { done(status, json) }
         }
     }

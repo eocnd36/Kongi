@@ -56,9 +56,11 @@ enum AppSettings {
     static let mobileEnabled = "mobileEnabled"
     /// 안드로이드 앱으로도 알림 보내기
     static let mobileNotifications = "mobileNotifications"
+    /// Mac을 쓰는 중이면 휴대폰 알림을 미룸 (Presence)
+    static let mobileOnlyWhenAway = "mobileOnlyWhenAway"
 
     static var islandMode: IslandMode {
-        IslandMode(rawValue: UserDefaults.standard.string(forKey: islandModeKey) ?? "") ?? .claude
+        IslandMode(rawValue: UserDefaults.standard.string(forKey: islandModeKey) ?? "") ?? .dynamic
     }
     /// 세션 기록 보관 기간 (일, 0 = 남기지 않음)
     static let historyRetentionDaysKey = "historyRetentionDays"
@@ -96,10 +98,12 @@ enum AppSettings {
             approvalFallbackSeconds: 60,
             agentNotifications: true,
             historyRetentionDaysKey: 7,
-            islandModeKey: IslandMode.claude.rawValue,
+            // 기본은 다이나믹 아일랜드 (콩이는 설정 → 아일랜드에서 고름)
+            islandModeKey: IslandMode.dynamic.rawValue,
             showSystemStats: true,
             mobileEnabled: false,
             mobileNotifications: true,
+            mobileOnlyWhenAway: true,
             islandShowsDevices: true,
             islandShowsCharging: true,
             islandShowsPrivacy: true,
@@ -239,10 +243,10 @@ enum AppLanguage {
 }
 
 enum IslandMode: String, CaseIterable, Identifiable {
+    /// 아이폰 다이나믹 아일랜드처럼: 평소엔 작게, 음악·Claude 작업이 있을 때 넓어짐 (캐릭터 없음). 기본값이라 목록 맨 앞.
+    case dynamic
     /// Claude Code 전용: 콩이가 있고, 세션이 없으면 숨길 수 있음
     case claude
-    /// 아이폰 다이나믹 아일랜드처럼: 평소엔 작게, 음악·Claude 작업이 있을 때 넓어짐 (캐릭터 없음)
-    case dynamic
 
     var id: String { rawValue }
 

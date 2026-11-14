@@ -115,12 +115,6 @@ struct AgentSession: Codable, Identifiable, Equatable {
     /// 지난 요청들이 걸린 시간 (초, 최근 8개). 남은 시간 어림에 씁니다.
     var turnDurations: [Double]?
 
-    /// 일하는 중일 때 남은 시간 어림. 할 일 목록이 있으면 그 진행률로, 없으면 이 대화의 지난 요청들(가운데값)로.
-    /// 근거가 없으면 nil (지어내지 않음).
-    func estimatedRemaining(now: Date) -> TimeInterval? {
-        guard state.isBusy, let start = turnStartedAt else { return nil }
-        return TurnEstimate.remaining(elapsed: now.timeIntervalSince(start), done: todoDone, total: todoTotal, past: turnDurations ?? [])
-    }
 
     var agentName: String { agent.map { $0 == "codex" ? "Codex" : $0.capitalized } ?? "Claude" }
     /// 화면에 보일 이름 (다른 에이전트면 이름을 붙임)
@@ -178,6 +172,14 @@ final class AgentStore: ObservableObject {
     /// 멈춘 채 Kongi의 "이어서 하기"를 기다리는 대화들 (`--wait` 도우미가 연결돼 있음)
     @Published private(set) var resumable: Set<String> = []
 
+    /// 대답이 끝난 뒤에도 Claude가 뒤에서 돌리는 명령들 (세션 id별)
+    @Published private(set) var background: [String: [BackgroundWork.Job]] = [:]
+    /// 뒤에서 도는 명령의 출력에서 읽은 진행률 (pid별, 5초마다)
+    private var backgroundProgress: [Int32: Double] = [:]
+    private var backgroundTask: Task<Void, Never>?
+    /// 같은 명령이 예전에 걸린 시간 (남은 시간 어림용, 이 Mac에만 저장)
+    private static let backgroundDurationsKey = "backgroundDurations"
+
     private var waiters: [String: HookConnection] = [:]
     /// 대화가 바쁠 때 아일랜드·휴대폰에서 보낸 말. 대화가 멈추면(기다리는 도우미가 연결되면) 전달합니다.
     @Published private(set) var queued: [String: [String]] = [:]
@@ -225,6 +227,12 @@ final class AgentStore: ObservableObject {
                 try? await Task.sleep(nanoseconds: 30 * NSEC_PER_SEC)
             }
         }
+        backgroundTask = Task { [weak self] in
+            while !Task.isCancelled {
+                self?.scanBackground()
+                try? await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
+            }
+        }
         // 일하는 동안에는 Claude가 쓰는 글을 자주 읽어 실시간으로 보여 줍니다.
         transcriptTask = Task { [weak self] in
             while !Task.isCancelled {
@@ -237,6 +245,134 @@ final class AgentStore: ObservableObject {
         }
     }
 
+    // MARK: Background work (대답이 끝난 뒤에도 도는 명령)
+
+    /// 대답이 끝난 세션의 Claude 아래에서 도는 셸을 찾습니다. 일하는 중에 새로 생긴 셸은 지금 단계의 명령이라 세지 않고,
+    /// 쉴 때 이미 보던 것만 이어서 지켜봅니다 (끝나면 알림).
+    private func scanBackground() {
+        var next: [String: [BackgroundWork.Job]] = [:]
+        for session in sessions where session.state != .ended {
+            guard let pid = session.context.claudePid, pid > 0 else { continue }
+            let known = Set((background[session.id] ?? []).map(\.pid))
+            let jobs = BackgroundWork.jobs(under: pid).filter { !session.state.isBusy || known.contains($0.pid) }
+            if !jobs.isEmpty { next[session.id] = jobs }
+        }
+        let now = Date()
+        for (id, jobs) in background {
+            let alive = Set((next[id] ?? []).map(\.pid))
+            for job in jobs where !alive.contains(job.pid) { finishedBackground(job, sessionId: id, now: now) }
+        }
+        // 출력 파일 끝부분만 읽어 진행률을 봅니다 (5초에 한 번, 명령마다 16KB).
+        backgroundProgress = Dictionary(uniqueKeysWithValues: next.values.joined().compactMap { job in
+            job.outputPath.flatMap { BackgroundWork.progress(ofOutputAt: $0) }.map { (job.pid, $0) }
+        })
+        if next != background { background = next }
+    }
+
+    private func finishedBackground(_ job: BackgroundWork.Job, sessionId: String, now: Date) {
+        let seconds = now.timeIntervalSince(job.startedAt)
+        var durations = UserDefaults.standard.dictionary(forKey: Self.backgroundDurationsKey) as? [String: [Double]] ?? [:]
+        let key = BackgroundWork.historyKey(job.label)
+        durations[key] = Array(((durations[key] ?? []) + [seconds]).suffix(5))
+        // shortcut: 명령 종류가 200개를 넘으면 통째로 비웁니다. 자주 넘으면 마지막 사용 시각으로 오래된 것부터 지우게.
+        if durations.count > 200 { durations = [key: durations[key] ?? []] }
+        UserDefaults.standard.set(durations, forKey: Self.backgroundDurationsKey)
+        guard let session = session(sessionId), seconds > 10 else { return }
+        let took = TaskBoard.duration(seconds)
+        AppServices.shared.devices.post(.init(
+            key: "background-\(job.pid)", symbol: "checkmark.circle.fill", tint: KongiTheme.green,
+            title: String(localized: "\(session.projectName): background work done"),
+            detail: job.label, trailing: took, action: .openSession(sessionId)
+        ), for: 6)
+        if UserDefaults.standard.bool(forKey: AppSettings.agentNotifications) {
+            Notifier.post(title: String(localized: "\(session.projectName): background work done"), body: "\(job.label) · \(took)")
+        }
+    }
+
+    /// 뒤에서 도는 명령의 남은 시간: 출력에 진행률이 있으면 그것으로, 없으면 같은 명령이 예전에 걸린 시간으로 (둘 다 없으면 nil)
+    func remaining(of job: BackgroundWork.Job, now: Date) -> TimeInterval? {
+        let elapsed = now.timeIntervalSince(job.startedAt)
+        if let fraction = backgroundProgress[job.pid], let left = BackgroundWork.remaining(elapsed: elapsed, fraction: fraction) {
+            return left
+        }
+        let durations = UserDefaults.standard.dictionary(forKey: Self.backgroundDurationsKey) as? [String: [Double]]
+        return BackgroundWork.remaining(elapsed: elapsed, past: durations?[BackgroundWork.historyKey(job.label)] ?? [])
+    }
+
+    /// 한 세션에서 지금 하는 일들: 대답 중인 차례 + 뒤에서 도는 명령 (경과, 남은 시간)
+    func work(of session: AgentSession, now: Date) -> [(elapsed: Double, remaining: Double?)] {
+        var items: [(elapsed: Double, remaining: Double?)] = []
+        if session.state.isBusy, let start = session.turnStartedAt {
+            items.append((now.timeIntervalSince(start), turnRemaining(of: session, now: now)))
+        }
+        for job in background[session.id] ?? [] {
+            items.append((now.timeIntervalSince(job.startedAt), remaining(of: job, now: now)))
+        }
+        return items
+    }
+
+    /// 일하는 차례의 남은 시간. 할 일 목록이 있으면 그 진행률로, 없으면 지난 요청 기록으로:
+    /// 이 대화 기록이 3개 미만이면 최근 다른 대화들의 기록을 씁니다. 근거가 없으면 nil (지어내지 않음).
+    func turnRemaining(of session: AgentSession, now: Date) -> TimeInterval? {
+        guard session.state.isBusy, let start = session.turnStartedAt else { return nil }
+        let elapsed = now.timeIntervalSince(start)
+        let own = session.turnDurations ?? []
+        let everyone = recentTurnDurations
+        if let left = TurnEstimate.remaining(elapsed: elapsed, done: session.todoDone, total: session.todoTotal, past: own.count >= 3 ? own : everyone) {
+            return left
+        }
+        // 이 대화의 어떤 기록보다 오래 걸리면, 다른 대화들의 더 긴 기록으로 이어서 어림합니다.
+        return TurnEstimate.remaining(elapsed: elapsed, done: nil, total: nil, past: everyone)
+    }
+
+    /// 지난 어느 기록보다도 오래 걸리는 중 (남은 시간 대신 "평소보다 오래"를 보여 줌)
+    func turnOverdue(_ session: AgentSession, now: Date) -> Bool {
+        guard session.state.isBusy, let start = session.turnStartedAt, turnRemaining(of: session, now: now) == nil,
+              let longest = recentTurnDurations.max() else { return false }
+        return now.timeIntervalSince(start) > longest
+    }
+
+    /// 최근 대화들의 차례 시간 (최근 대화부터 100개)
+    private var recentTurnDurations: [Double] { Array(sessions.flatMap { $0.turnDurations ?? [] }.prefix(100)) }
+
+    /// 방금 끝난 차례 한 장 요약 (세션 요약 카드). 일하는 중이거나 이번 차례에 한 일이 없으면 nil.
+    struct TurnSummary: Equatable {
+        var seconds: Double
+        var steps: Int
+        var files: Int
+        var added: Int
+        var removed: Int
+        var commands: Int
+        var failed: Int
+        var answer: String?
+    }
+
+    func lastTurnSummary(of session: AgentSession) -> TurnSummary? {
+        guard !session.state.isBusy, let start = session.turnStartedAt else { return nil }
+        let steps = session.activities.filter { $0.date >= start }
+        guard !steps.isEmpty else { return nil }
+        let edits = steps.filter { $0.preview != nil }
+        let commands = steps.filter { $0.activity.kind == .run }
+        let end = max(steps.map(\.date).max() ?? start, session.messages.last?.date ?? start)
+        let answer = session.messages.last(where: { $0.role == .assistant && $0.date >= start })?.text
+        return TurnSummary(
+            seconds: max(end.timeIntervalSince(start), 1),
+            steps: steps.count,
+            files: Set(edits.map(\.detail)).count,
+            added: edits.reduce(0) { $0 + ($1.preview?.added ?? 0) },
+            removed: edits.reduce(0) { $0 + ($1.preview?.removed ?? 0) },
+            commands: commands.count,
+            failed: commands.filter { $0.status == .failed }.count,
+            // 전체 보기를 위해 답 전체를 (메시지는 이미 maxText로 잘려 있음)
+            answer: answer
+        )
+    }
+
+    /// 모든 세션의 일
+    func allWork(now: Date) -> [(elapsed: Double, remaining: Double?)] {
+        activeSessions.flatMap { work(of: $0, now: now) }
+    }
+
     // MARK: History (앱을 껐다 켜도 남는 세션 기록)
 
     private var saveTask: Task<Void, Never>?
@@ -246,7 +382,7 @@ final class AgentStore: ObservableObject {
     }
 
     /// 지난 세션 (끝났거나 Claude가 종료됨)
-    var pastSessions: [AgentSession] { sessions.filter { $0.state == .ended } }
+    var pastSessions: [AgentSession] { pinnedFirst(sessions.filter { $0.state == .ended }) }
 
     private func loadHistory() {
         guard AppSettings.historyRetentionDays > 0,
@@ -316,7 +452,7 @@ final class AgentStore: ObservableObject {
         let days = AppSettings.historyRetentionDays
         let cutoff = Date().addingTimeInterval(-Double(max(days, 0)) * 86400)
         let before = sessions.count
-        sessions.removeAll { $0.state == .ended && (days == 0 || $0.updatedAt < cutoff) }
+        sessions.removeAll { $0.state == .ended && !pinned.contains($0.id) && (days == 0 || $0.updatedAt < cutoff) }
         if sessions.count != before { scheduleSave() }
     }
 
@@ -347,7 +483,24 @@ final class AgentStore: ObservableObject {
 
     // MARK: Derived state
 
-    var activeSessions: [AgentSession] { sessions.filter { $0.state != .ended } }
+    /// 고정한 세션이 맨 앞 (그 안에서는 최근 순)
+    var activeSessions: [AgentSession] { pinnedFirst(sessions.filter { $0.state != .ended }) }
+
+    // MARK: Pinned (아일랜드·앱에서 고정한 세션: 맨 위에, 보관 기간이 지나도 지우지 않음)
+
+    private static let pinnedKey = "pinnedSessions"
+    @Published private(set) var pinned: Set<String> = Set(UserDefaults.standard.stringArray(forKey: AgentStore.pinnedKey) ?? [])
+
+    func isPinned(_ id: String) -> Bool { pinned.contains(id) }
+
+    func togglePin(_ id: String) {
+        if pinned.contains(id) { pinned.remove(id) } else { pinned.insert(id) }
+        UserDefaults.standard.set(Array(pinned), forKey: Self.pinnedKey)
+    }
+
+    private func pinnedFirst(_ list: [AgentSession]) -> [AgentSession] {
+        list.filter { pinned.contains($0.id) } + list.filter { !pinned.contains($0.id) }
+    }
 
     func session(_ id: String) -> AgentSession? { sessions.first { $0.id == id } }
 

@@ -63,6 +63,9 @@ object Notices {
             val id = request.optString("id")
             if (id.isEmpty()) continue
             now += id
+            // Mac을 쓰는 중이면 Mac이 alert=false로 보냅니다: 아직 띄우지 않고, 나중에 true가 되면 그때 띄움.
+            // (값이 없으면 예전 Mac 앱: 늘 띄움)
+            if (!request.optBoolean("alert", true) && id !in shown) continue
             // 이미 띄웠거나 화면을 보고 있는 중이면 새로 띄우지 않습니다.
             if (id in shown || foreground) {
                 shown += id

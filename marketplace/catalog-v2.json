@@ -4,11 +4,29 @@
     "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
     "source": "eocnd36/Kongi/extensions/prompt-upgrade",
     "author": "Kongi",
-    "version": "1.1",
+    "version": "1.2",
     "versions": [
       {
         "version": "1.1",
-        "minKongi": "2.2.3"
+        "minKongi": "2.2.3",
+        "ref": "0ba51de23d525e05e01d49fe5fb3194f14f2dc00"
+      },
+      {
+        "version": "1.2",
+        "minKongi": "2.2.3",
+        "notes": {
+          "en": "Shows which model was used (always the newest of each).",
+          "ko": "실제로 쓴 모델을 보여 줘요 (항상 그 계열의 최신).",
+          "ja": "実際に使ったモデルを表示します（常に最新）。",
+          "zh-Hans": "显示实际使用的模型（始终为最新）。",
+          "zh-Hant": "顯示實際使用的模型（一律最新）。",
+          "es": "Muestra qué modelo se usó (siempre el más nuevo).",
+          "fr": "Indique le modèle utilisé (toujours le plus récent).",
+          "de": "Zeigt, welches Modell genutzt wurde (immer das neueste).",
+          "it": "Mostra quale modello è stato usato (sempre il più recente).",
+          "pt-BR": "Mostra qual modelo foi usado (sempre o mais novo).",
+          "ru": "Показывает, какая модель использовалась (всегда новейшая)."
+        }
       }
     ],
     "localized": {
@@ -52,7 +70,11 @@
         "name": "Улучшение промптов",
         "description": "Claude Code превращает набросок запроса в чёткий промпт. Выберите проект, чтобы продолжить работу, прикрепите изображения или файлы и ответьте на пару вопросов, если чего-то не хватает. Скопируйте или сразу отправьте в разговор."
       }
-    }
+    },
+    "permissions": [
+      "claude",
+      "files-read"
+    ]
   },
   {
     "name": "Codex",
@@ -107,7 +129,12 @@
         "name": "Codex",
         "description": "Пользуйтесь Codex как Claude Code в Kongi: сеансы и разрешения на острове, лимиты Codex в строке меню."
       }
-    }
+    },
+    "permissions": [
+      "files-read",
+      "files-write",
+      "notifications"
+    ]
   },
   {
     "name": "Stretch reminder",
@@ -162,6 +189,9 @@
         "name": "Напоминание о разминке",
         "description": "Каждые 50 минут остров напомнит встать и размяться."
       }
-    }
+    },
+    "permissions": [
+      "notifications"
+    ]
   }
 ]

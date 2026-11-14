@@ -413,7 +413,8 @@ struct Composer: View {
         }
         .onChange(of: focused) { isFocused in
             // 쓰는 동안 마우스가 벗어나도 접히지 않게
-            if isFocused { model.pinned = true }
+            // 다 쓰고 입력 칸을 벗어나면 풉니다.
+            if isFocused { model.holdOpen() } else { model.releaseAutoPin() }
         }
         .onChange(of: agents.queued[session.id]?.count ?? 0) { count in
             if count == 0, feedback == .queued { feedback = .sent }
@@ -555,10 +556,41 @@ struct IslandPressStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
-                .brightness(hovering && isEnabled ? 0.1 : 0)
-                .scaleEffect(configuration.isPressed ? 0.93 : 1)
+                .brightness(hovering && isEnabled ? 0.12 : 0)
+                .scaleEffect(configuration.isPressed ? 0.93 : hovering && isEnabled ? 1.03 : 1)
+                .shadow(color: .black.opacity(hovering && isEnabled ? 0.25 : 0), radius: hovering ? 6 : 0, y: 2)
                 .animation(.spring(response: 0.22, dampingFraction: 0.65), value: configuration.isPressed)
-                .animation(.easeOut(duration: 0.14), value: hovering)
+                .animation(.spring(response: 0.28, dampingFraction: 0.75), value: hovering)
+                .onHover { hovering = $0 }
+        }
+    }
+}
+
+/// 테두리 없는 아이콘·글자 버튼: 마우스를 올리면 옅은 바탕이 깔리고 밝아지며, 누르면 쏙 들어갑니다 (자리는 차지하지 않음).
+struct KHoverStyle: ButtonStyle {
+    var radius: CGFloat = 7
+
+    func makeBody(configuration: Configuration) -> some View {
+        HoverBody(configuration: configuration, radius: radius)
+    }
+
+    private struct HoverBody: View {
+        let configuration: Configuration
+        let radius: CGFloat
+        @State private var hovering = false
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            configuration.label
+                .background(
+                    RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .fill(Color.white.opacity(hovering && isEnabled ? (configuration.isPressed ? 0.14 : 0.09) : 0))
+                        .padding(-5)
+                )
+                .brightness(hovering && isEnabled ? 0.1 : 0)
+                .scaleEffect(configuration.isPressed ? 0.94 : 1)
+                .animation(.spring(response: 0.22, dampingFraction: 0.7), value: configuration.isPressed)
+                .animation(.easeOut(duration: 0.15), value: hovering)
                 .onHover { hovering = $0 }
         }
     }

@@ -13,7 +13,7 @@ SOURCES = ROOT / "Sources" / "ClaudeUsageBar"
 RESOURCES = ROOT / "Resources"
 
 # Interpolated values that are integers (become %lld); everything else becomes %@.
-INT_INTERPOLATIONS = {"minutes", "code", "count", "days", "first", "files", "seconds", "status", "hours"}
+INT_INTERPOLATIONS = {"minutes", "code", "count", "days", "first", "files", "seconds", "status", "hours", "steps", "commands", "failed"}
 
 # Calls whose first string-literal argument is a localization key.
 CALL = re.compile(

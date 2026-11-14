@@ -8,3 +8,6 @@ DerivedData/
 __pycache__/
 .tools/
 CLAUDE.local.md
+
+# 만들고 있는(배포 대기) 확장: 공개 저장소에 올라가지 않게
+extensions/memory/

@@ -523,3 +523,72 @@
 "Send feedback" = "发送反馈";
 "Updated." = "已更新。";
 "Update to %@" = "更新到 %@";
+
+/* Background work */
+"%@: background work done" = "%@：后台任务已完成";
+"%lld in background" = "后台 %lld 个";
+"%lld running" = "%lld 个进行中";
+"Running in the background" = "正在后台运行";
+
+/* Pinned sessions */
+"Unpin" = "取消固定";
+"Pin to top" = "固定在顶部";
+"Show in Finder" = "在访达中显示";
+"Copy path" = "拷贝路径";
+"longer than usual" = "比平时更久";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "仅在我离开 Mac 时";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "使用这台 Mac 时手机保持安静。Mac 锁定或 2 分钟无操作时，以及批准或问题 2 分钟未回复时才会提醒。";
+
+/* Extension actions */
+"Run" = "运行";
+"Working…" = "处理中…";
+"Send to a conversation" = "发送到对话";
+"Continuing in the background" = "在后台继续";
+"Ready" = "就绪";
+"It took too long and was stopped." = "耗时过长，已停止。";
+"Something went wrong. See the extension's log." = "出现问题。请查看扩展的日志。";
+
+/* Extension context */
+"No project" = "无项目";
+"Pick a project so the result fits what you're working on" = "选择正在进行的项目，结果会更贴合你的工作";
+"Attach" = "附件";
+"A few questions to make it better" = "几个问题，让结果更好";
+"Your answer" = "你的回答";
+"Continue" = "继续";
+"Skip" = "跳过";
+
+/* Extension context */
+"or drop files here" = "或拖放到这里";
+
+/* Marketplace */
+"Official" = "官方";
+"Needs Kongi %@" = "需要 Kongi %@ 或更高版本";
+"Use %@ for this Kongi" = "使用适合此 Kongi 的 %@";
+
+/* Extension versions */
+"%@ %@ is available" = "%@ %@ 已推出";
+"Update it in Settings → Extensions." = "请在设置 → 扩展中更新。";
+"Versions" = "版本";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "已固定为 %@。Kongi 不会替换它，也不会提醒更新。";
+"(Recommended)" = "（推荐）";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code（消耗用量）";
+"Reads files" = "读取文件";
+"Changes files" = "更改文件";
+"Internet" = "互联网";
+"Other apps' info" = "其他 App 信息";
+"Other" = "其他";
+"Uses: %@" = "使用：%@";
+
+/* Session summary */
+"Last turn" = "上一轮";
+"Copy summary" = "拷贝摘要";
+"%lld commands" = "%lld 条命令";
+"%lld commands (%lld failed)" = "%lld 条命令（%lld 条失败）";
+
+/* Session summary */
+"Show all" = "查看全部";
+"Show less" = "收起";

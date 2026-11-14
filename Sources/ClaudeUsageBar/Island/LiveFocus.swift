@@ -47,6 +47,7 @@ extension View {
 /// 왼쪽에는 콩이와 진행 단계, 오른쪽에는 Claude가 지금 읽거나 고치는 코드를 편집기처럼 보여 줍니다.
 /// 고치는 줄은 한 글자씩 써지고, 읽는 곳은 훑는 빛이 지나갑니다.
 struct LiveFocusView: View {
+    @EnvironmentObject private var agents: AgentStore
     let session: AgentSession
     /// 아일랜드(작게) / 앱 창(크게)
     var large = false
@@ -80,9 +81,19 @@ struct LiveFocusView: View {
                 Text(verbatim: session.title)
                     .font(.system(size: large ? 15 : 12, weight: .semibold))
                     .lineLimit(1)
-                Text(verbatim: "Claude Code")
+                Text(verbatim: session.agent == nil ? "Claude Code" : session.agentName)
                     .font(.system(size: large ? 12 : 10.5))
                     .foregroundStyle(KongiTheme.secondary)
+                // 실시간에서도 이 차례가 얼마나 됐고 얼마나 남았는지
+                if session.state.isBusy, let start = session.turnStartedAt {
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        Text(verbatim: WorkTiming.text((context.date.timeIntervalSince(start), agents.turnRemaining(of: session, now: context.date)), overdue: agents.turnOverdue(session, now: context.date)))
+                            .font(.system(size: large ? 11.5 : 10))
+                            .monospacedDigit()
+                            .foregroundStyle(KongiTheme.secondary)
+                            .lineLimit(2)
+                    }
+                }
             }
             StepList(session: session, large: large)
         }

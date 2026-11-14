@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material.icons.outlined.WifiOff
@@ -101,6 +102,12 @@ fun HomeScreen(snackbar: SnackbarHostState) {
                     }
                 },
                 actions = {
+                    // Mac에 켜 둔 확장의 일이 있으면 (프롬프트 업그레이드 등)
+                    if ((state?.actions ?: 0) > 0) {
+                        IconButton(onClick = { AppModel.screen = Screen.Extensions }) {
+                            Icon(Icons.Outlined.Extension, stringResource(R.string.extensions))
+                        }
+                    }
                     IconButton(onClick = { AppModel.screen = Screen.Settings }) {
                         Icon(Icons.Outlined.Settings, stringResource(R.string.settings))
                     }

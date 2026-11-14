@@ -119,7 +119,107 @@ import Testing
         #expect(TurnEstimate.remaining(elapsed: 30, done: 0, total: 5, past: [60, 120, 600]) == 90)
         // 근거 부족 또는 이미 평소보다 오래 걸림 → 어림하지 않음
         #expect(TurnEstimate.remaining(elapsed: 30, done: nil, total: nil, past: [60, 120]) == nil)
-        #expect(TurnEstimate.remaining(elapsed: 200, done: nil, total: nil, past: [60, 120, 600]) == nil)
+        // 이미 대부분보다 오래 걸림 → 그보다 길었던 기록(600초)으로
+        #expect(TurnEstimate.remaining(elapsed: 200, done: nil, total: nil, past: [60, 120, 600]) == 400)
+        // 지난 어느 기록보다 오래 걸림 → 어림하지 않음
+        #expect(TurnEstimate.remaining(elapsed: 700, done: nil, total: nil, past: [60, 120, 600]) == nil)
         #expect(TurnEstimate.remaining(elapsed: 100, done: 5, total: 5, past: []) == nil)
+    }
+}
+
+@Suite struct ExtensionActionTests {
+    @Test func decodesActionsWithLocalizedText() throws {
+        let json = #"{"name":"P","actions":[{"id":"a","title":{"en":"Upgrade","ko":"업그레이드","pt-BR":"Melhorar"},"placeholder":"Paste…","run":"a.sh","choices":[{"id":"haiku","title":"Haiku"}]}]}"#
+        let manifest = try JSONDecoder().decode(ExtensionManifest.self, from: Data(json.utf8))
+        let action = try #require(manifest.actions?.first)
+        #expect(manifest.run == nil)
+        #expect(action.title.text("ko") == "업그레이드")
+        #expect(action.title.text("pt-BR") == "Melhorar")
+        #expect(action.title.text("pt") == "Melhorar" || action.title.text("pt") == "Upgrade")
+        #expect(action.title.text("ja") == "Upgrade")
+        #expect(action.placeholder?.text("de") == "Paste…")
+        #expect(action.choices?.first?.title.text("ko") == "Haiku")
+    }
+
+    @Test func actionFilesMustStayInsideTheFolder() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("ext-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try Data().write(to: root.appendingPathComponent("a.sh"))
+        func manifest(_ run: String) -> ExtensionManifest {
+            ExtensionManifest(name: "x", run: nil, actions: [.init(id: "a", title: .init("A"), run: run)])
+        }
+        #expect(manifest("a.sh").isRunnable(in: root))
+        #expect(!manifest("../a.sh").isRunnable(in: root))
+        #expect(!manifest("/bin/sh").isRunnable(in: root))
+        #expect(!ExtensionManifest(name: "x", run: nil).isRunnable(in: root))
+    }
+}
+
+@Suite struct ActionOutputTests {
+    @Test func tellsQuestionsFromAResult() {
+        #expect(ActionOutput.parse("Fix the login bug.") == .text("Fix the login bug."))
+        let json = #"{"questions":[{"question":"Which screen?","options":["Login","Signup"]},{"question":"Error?"}]}"#
+        #expect(ActionOutput.parse(json) == .questions([.init(question: "Which screen?", options: ["Login", "Signup"]), .init(question: "Error?", options: nil)]))
+        #expect(ActionOutput.parse("```json\n" + json + "\n```") == ActionOutput.parse(json))
+        // 질문이 비었거나 다른 JSON은 그냥 결과 글
+        #expect(ActionOutput.parse(#"{"questions":[]}"#) == .text(#"{"questions":[]}"#))
+        #expect(ActionOutput.parse(#"{"a":1}"#) == .text(#"{"a":1}"#))
+        // 결과 + 메모
+        #expect(ActionOutput.parse(#"{"result":"Do X.","note":"Model: Claude Haiku 5.5"}"#) == .result("Do X.", note: "Model: Claude Haiku 5.5"))
+        #expect(ActionOutput.parse(#"{"result":"Do X."}"#) == .text("Do X."))
+        // 메모와 함께 감싼 결과가 질문이면 질문으로
+        let wrapped = #"{"result":"{\"questions\":[{\"question\":\"Which file?\"}]}","note":"Model: X"}"#
+        #expect(ActionOutput.parse(wrapped) == .questions([.init(question: "Which file?", options: nil)]))
+        // 질문은 세 개까지
+        let many = #"{"questions":[{"question":"1"},{"question":"2"},{"question":"3"},{"question":"4"}]}"#
+        if case let .questions(list) = ActionOutput.parse(many) { #expect(list.count == 3) } else { Issue.record("expected questions") }
+    }
+}
+
+@Suite struct ExtensionCompatibilityTests {
+    let versions = [
+        CatalogVersion(version: "1.0", minKongi: "2.1.0", ref: "abc123"),
+        CatalogVersion(version: "1.1", minKongi: "2.2.3"),
+        CatalogVersion(version: "2.0", minKongi: "2.4.0"),
+    ]
+
+    @Test func picksTheNewestVersionThisKongiRuns() {
+        #expect(ExtensionCompatibility.best(versions, on: "2.2.2")?.version == "1.0")
+        #expect(ExtensionCompatibility.best(versions, on: "2.2.3")?.version == "1.1")
+        #expect(ExtensionCompatibility.best(versions, on: "2.5.0")?.version == "2.0")
+        #expect(ExtensionCompatibility.best(versions, on: "2.0.0") == nil)
+        // 버전을 모르는 개발 빌드는 최신
+        #expect(ExtensionCompatibility.best(versions, on: "0.0.0-dev")?.version == "2.0")
+        #expect(ExtensionCompatibility.runs(minKongi: nil, on: "1.0"))
+    }
+
+    @Test func listsVersionsNewestFirstWithNotes() throws {
+        #expect(ExtensionCompatibility.newestFirst(versions).map(\.version) == ["2.0", "1.1", "1.0"])
+        let json = #"{"version":"1.2","minKongi":"2.2.3","notes":{"en":"Faster","ko":"더 빨라짐"}}"#
+        let version = try JSONDecoder().decode(CatalogVersion.self, from: Data(json.utf8))
+        #expect(version.notes?.text("ko") == "더 빨라짐" && version.notes?.text("fr") == "Faster")
+    }
+
+    @Test func downloadsAPinnedCommitOnlyWhenTheRefIsSafe() throws {
+        let source = try #require(ExtensionSource("eocnd36/Kongi/extensions/codex"))
+        #expect(source.archiveURL(ref: "abc123").absoluteString.hasSuffix("/zip/abc123"))
+        #expect(source.archiveURL(ref: nil).absoluteString.hasSuffix("/zip/HEAD"))
+        #expect(source.archiveURL(ref: "../x?y").absoluteString.hasSuffix("/zip/HEAD"))
+    }
+}
+
+@Suite struct ExtensionPermissionTests {
+    @Test func listsKnownPermissionsInOrder() {
+        #expect(ExtensionManifest.knownPermissions(["network", "claude"]) == ["claude", "network"])
+        #expect(ExtensionManifest.knownPermissions(["camera", "claude"]) == ["claude", "other"])
+        #expect(ExtensionManifest.knownPermissions(nil).isEmpty)
+    }
+}
+
+@Suite struct MultiSelectQuestionTests {
+    @Test func keepsMultiSelectAndConfirm() {
+        let json = #"{"questions":[{"question":"Pick","options":["A · 1 GB","B · 2 GB"],"multiSelect":true,"confirm":"Delete"}]}"#
+        #expect(ActionOutput.parse(json) == .questions([.init(question: "Pick", options: ["A · 1 GB", "B · 2 GB"], multiSelect: true, confirm: "Delete")]))
     }
 }

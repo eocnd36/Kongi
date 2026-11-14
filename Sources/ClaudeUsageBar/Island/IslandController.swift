@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import ClaudeUsageCore
 import SwiftUI
+import os
 
 /// 아일랜드 모양. 세 가지를 만들어 비교한 뒤 기본값을 골랐습니다 (DebugSnapshot --render-island-designs).
 enum IslandStyle: String, CaseIterable {
@@ -138,16 +139,46 @@ final class IslandModel: ObservableObject {
         case sessions
         case session(String)
         case diff(sessionId: String, path: String)
+        /// 확장의 일 목록 / 하나 (ExtensionStore.ActionRef.id)
+        case actions
+        case action(String)
     }
 
     @Published var expanded = false
     @Published var pinned = false
+    /// 화면이 잠깐 붙잡은 고정 (입력 중, 확장 화면, 파일 끌어 놓기). 다른 화면으로 가거나 접으면 풀립니다.
+    /// 사용자가 핀 버튼으로 고정한 것은 그대로 둡니다.
+    @Published private(set) var autoPinned = false
+
+    func holdOpen() {
+        guard !pinned else { return }
+        pinned = true
+        autoPinned = true
+    }
+
+    /// 핀 단추: 고정돼 있으면(자동이든 직접이든) 풀고, 아니면 고정합니다. 숨은 고정이 남지 않게.
+    func togglePin() {
+        if pinned {
+            pinned = false
+            autoPinned = false
+        } else {
+            pinned = true
+        }
+    }
+
+    func releaseAutoPin() {
+        guard autoPinned else { return }
+        autoPinned = false
+        pinned = false
+    }
     @Published var route: Route = .sessions
     @Published var style: IslandStyle = .default
-    @Published var mode: IslandMode = .claude
+    @Published var mode: IslandMode = .dynamic
     @Published var activity: IslandActivity = .idle
     /// diff를 크게 보는 중 (아일랜드가 넓고 길어짐)
     @Published var enlarged = false
+    /// 확장의 일 화면에 첨부한 파일 (일마다). 섬 어디에 끌어 놓아도 지금 연 화면에 붙도록 여기에 둡니다.
+    @Published var actionFiles: [String: [URL]] = [:]
 
     var expandedWidth: CGFloat {
         enlarged ? metrics.enlargedWidth : metrics.expandedWidth(style: style)
@@ -208,7 +239,10 @@ final class IslandModel: ObservableObject {
             expanded = false
             pinned = false
             enlarged = false
+            autoPinned = false
         }
+        // 확장 화면에 붙여 둔 첨부는 섬을 닫으면 비웁니다 (어디에도 저장하지 않음).
+        actionFiles = [:]
         // 접히는 동안 화면이 바뀌어 보이지 않게, 다 접힌 뒤 목록으로 돌려 둡니다.
         routeResetTask?.cancel()
         routeResetTask = Task { [weak self] in
@@ -220,6 +254,8 @@ final class IslandModel: ObservableObject {
 
     /// 세션 목록 → 상세 → diff 화면 전환
     func navigate(to route: Route) {
+        // 화면을 옮기면 앞 화면이 붙잡아 둔 고정을 풉니다.
+        if route != self.route { releaseAutoPin() }
         forward = Self.depth(of: route) >= Self.depth(of: self.route)
         withAnimation(.spring(response: 0.34, dampingFraction: 0.86)) {
             self.route = route
@@ -230,8 +266,8 @@ final class IslandModel: ObservableObject {
     private static func depth(of route: Route) -> Int {
         switch route {
         case .sessions: return 0
-        case .session: return 1
-        case .diff: return 2
+        case .session, .actions: return 1
+        case .diff, .action: return 2
         }
     }
 
@@ -268,6 +304,9 @@ final class IslandController {
     private var shrinkTask: Task<Void, Never>?
     /// 다른 앱이 화면 전체를 덮고 있는지 (전체 화면 공간을 쓰지 않는 전체 화면 포함)
     private var coveredByFullScreen = false
+    /// 전체 화면에서 마우스를 맨 위로 올려 메뉴 막대가 내려올 때 섬도 함께 보이는 중
+    private var revealedOverFullScreen = false
+    private var revealTask: Task<Void, Never>?
     private var fullScreenTask: Task<Void, Never>?
     private var pendingWindowSize: CGSize?
     /// 지난번 확인 때 이미 떠 있던 시스템 확인 창들
@@ -335,6 +374,7 @@ final class IslandController {
         let recentlyDone = agents.lastCompletion.map { Date().timeIntervalSince($0) < 6 } ?? false
         let claude = !agents.requests.isEmpty
             || agents.activeSessions.contains { $0.state.isBusy || $0.state.needsAttention }
+            || !agents.background.isEmpty
             || recentlyDone
         // 음악이 없으면 집중 타이머가 같은 자리를 씁니다.
         let music = nowPlaying.track?.isPlaying == true || AppServices.shared.focus.isRunning
@@ -356,13 +396,76 @@ final class IslandController {
             if model.expanded, !dialogs.overlapping.isSubset(of: seenDialogs) { model.collapse() }
             seenDialogs = dialogs.all
         }
-        let covered = Self.otherAppCoversScreen(screen)
+        let coveringApp = Self.appCoveringScreen(screen)
+        let covered = coveringApp != nil
         guard covered != coveredByFullScreen else { return }
         coveredByFullScreen = covered
+        // 섬이 왜 숨었는지 나중에 알 수 있게 (log show --predicate 'subsystem == "io.github.claudeusagebar"')
+        Self.log.info("Island \(covered ? "hidden: full screen" : "shown again", privacy: .public) \(coveringApp ?? "", privacy: .public)")
         if covered {
             panel?.orderOut(nil)
+            watchTopEdge()
         } else {
+            revealTask?.cancel()
+            revealTask = nil
+            if revealedOverFullScreen { panel?.collectionBehavior.remove(.fullScreenAuxiliary) }
+            revealedOverFullScreen = false
             layout()
+        }
+    }
+
+    /// 전체 화면인 동안만 마우스가 화면 맨 위에 닿는지 봅니다 (메뉴 막대가 내려오는 순간 섬도 함께).
+    /// 위치만 읽어 권한이 필요 없고, 전체 화면이 아닐 때는 돌지 않습니다.
+    private func watchTopEdge() {
+        revealTask?.cancel()
+        revealTask = Task { [weak self] in
+            var atTopSince: Date?
+            var awaySince: Date?
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 120_000_000)
+                guard let self else { return }
+                guard self.coveredByFullScreen, let screen = self.screen, let panel = self.panel else { continue }
+                let mouse = NSEvent.mouseLocation
+                let onScreen = mouse.x >= screen.frame.minX && mouse.x <= screen.frame.maxX
+                if !self.revealedOverFullScreen {
+                    // 메뉴 막대처럼 맨 위에 잠깐 머물러야 나옵니다 (스치기만 하면 번쩍이지 않게).
+                    guard onScreen, mouse.y >= screen.frame.maxY - 2,
+                          UserDefaults.standard.bool(forKey: AppSettings.islandEnabled) else { atTopSince = nil; continue }
+                    if atTopSince == nil { atTopSince = Date(); continue }
+                    guard Date().timeIntervalSince(atTopSince!) >= 0.2 else { continue }
+                    atTopSince = nil
+                    awaySince = nil
+                    self.setRevealed(true)
+                    continue
+                }
+                // 메뉴 막대 줄, 섬, 그리고 그 사이(섬 위쪽 기둥)에 있으면 계속 보여 줍니다.
+                let inMenuBar = onScreen && mouse.y >= screen.frame.maxY - self.model.metrics.topHeight - 6
+                let column = NSRect(x: panel.frame.minX - 16, y: panel.frame.minY - 16,
+                                    width: panel.frame.width + 32, height: screen.frame.maxY - panel.frame.minY + 16)
+                let keep = inMenuBar || column.contains(mouse) || self.model.pinned || !self.agents.requests.isEmpty
+                if keep { awaySince = nil; continue }
+                if awaySince == nil { awaySince = Date() }
+                if let since = awaySince, Date().timeIntervalSince(since) > 0.8 {
+                    awaySince = nil
+                    self.setRevealed(false)
+                }
+            }
+        }
+    }
+
+    /// 전체 화면 위에 섬을 보이거나 숨깁니다. 전체 화면 공간에는 보일 때만 들어가게 해서,
+    /// 전체 화면 앱으로 넘어가는 순간 섬이 영상 위에 번쩍 보이지 않게 합니다.
+    private func setRevealed(_ revealed: Bool) {
+        guard let panel else { return }
+        revealedOverFullScreen = revealed
+        if revealed {
+            panel.collectionBehavior.insert(.fullScreenAuxiliary)
+            layout()
+            panel.orderFrontRegardless()
+        } else {
+            model.collapse()
+            panel.orderOut(nil)
+            panel.collectionBehavior.remove(.fullScreenAuxiliary)
         }
     }
 
@@ -387,16 +490,18 @@ final class IslandController {
         return (all, overlapping)
     }
 
-    /// 다른 앱의 일반 창이 메뉴 막대까지 포함해 화면 전체를 덮고 있으면 true
-    static func otherAppCoversScreen(_ screen: NSScreen) -> Bool {
+    private static let log = Logger(subsystem: "io.github.claudeusagebar", category: "island")
+
+    /// 다른 앱의 일반 창이 메뉴 막대까지 포함해 화면 전체를 덮고 있으면 그 앱 이름
+    static func appCoveringScreen(_ screen: NSScreen) -> String? {
         guard let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID)
-            as? [[String: Any]] else { return false }
+            as? [[String: Any]] else { return nil }
         let me = ProcessInfo.processInfo.processIdentifier
         // CGWindow 좌표는 주 화면의 왼쪽 위가 원점입니다.
         let mainHeight = NSScreen.screens.first?.frame.height ?? screen.frame.height
         let target = CGRect(x: screen.frame.minX, y: mainHeight - screen.frame.maxY,
                             width: screen.frame.width, height: screen.frame.height)
-        return list.contains { window in
+        let window = list.first { window in
             guard (window[kCGWindowLayer as String] as? Int) == 0,
                   (window[kCGWindowOwnerPID as String] as? Int32) != me,
                   let bounds = window[kCGWindowBounds as String] as? [String: CGFloat] else { return false }
@@ -404,6 +509,7 @@ final class IslandController {
             return abs(rect.minX - target.minX) < 1 && abs(rect.minY - target.minY) < 1
                 && abs(rect.width - target.width) < 1 && abs(rect.height - target.height) < 1
         }
+        return window.map { $0[kCGWindowOwnerName as String] as? String ?? "?" }
     }
 
     private func applySettings() {
@@ -423,7 +529,8 @@ final class IslandController {
         if count > lastRequestCount {
             // 승인·질문이 오면 저절로 펼칩니다.
             withAnimation(IslandModel.morph) { model.expanded = true }
-        } else if count == 0, lastRequestCount > 0, !model.pinned, !model.mouseInside() {
+        } else if count == 0, lastRequestCount > 0, !model.pinned || model.autoPinned, !model.mouseInside() {
+            // 답을 위해 잠깐 붙잡아 둔 것(앱 창의 "아일랜드에서 답하기" 등)이면 다 답한 뒤 접습니다.
             // 마우스가 섬 위에 있으면 그대로 두고, 나갈 때 hover가 접습니다.
             model.collapse()
         }
@@ -445,7 +552,8 @@ final class IslandController {
             panel.backgroundColor = .clear
             panel.hasShadow = false
             panel.level = .statusBar
-            // 전체 화면 앱(유튜브 전체 화면 등) 위에는 나타나지 않게 fullScreenAuxiliary는 넣지 않습니다.
+            // 전체 화면 공간에는 평소에 들어가지 않습니다 (fullScreenAuxiliary 없음). 마우스를 맨 위로 올려
+            // 메뉴 막대가 내려올 때만 잠깐 허용해 보여 줍니다 (watchTopEdge → setRevealed).
             panel.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
             panel.isMovable = false
             panel.hidesOnDeactivate = false
@@ -477,7 +585,7 @@ final class IslandController {
         layout()
         // 설정이 바뀔 때마다 불리므로, 전체 화면을 덮은 앱이 있으면 다시 꺼내지 않습니다
         // (예전에는 곡이 바뀌는 등으로 설정이 저장되면 전체 화면 위에 섬이 다시 나타났음).
-        if !coveredByFullScreen { panel?.orderFrontRegardless() }
+        if !coveredByFullScreen || revealedOverFullScreen { panel?.orderFrontRegardless() }
     }
 
     private func layout() {
@@ -524,7 +632,7 @@ final class IslandController {
             target.width += 16
         }
 
-        if coveredByFullScreen { return }
+        if coveredByFullScreen && !revealedOverFullScreen { return }
         if !panel.isVisible, !hides, UserDefaults.standard.bool(forKey: AppSettings.islandEnabled) {
             // 처음 나타날 때는 애니메이션 없이 제자리에
             model.displaySize = target

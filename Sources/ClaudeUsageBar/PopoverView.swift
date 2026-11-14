@@ -117,7 +117,7 @@ struct UsageView: View {
                         Spacer()
                         if tasks.tasks.contains(where: { $0.state != .running }) {
                             Button(String(localized: "Clear")) { tasks.clearFinished() }
-                                .buttonStyle(.plain).font(.caption).foregroundStyle(Color.accentColor)
+                                .buttonStyle(KHoverStyle()).font(.caption).foregroundStyle(Color.accentColor)
                         }
                     }
                     ForEach(tasks.tasks) { TaskRow(task: $0) }
@@ -231,7 +231,7 @@ private struct UpdateCard: View {
                     .foregroundStyle(KongiTheme.green)
                 Spacer()
                 Button { updater.dismissCard() } label: { Image(systemName: "xmark").font(.caption.weight(.semibold)) }
-                    .buttonStyle(.plain).foregroundStyle(.secondary).help(Text(card.installed ? "Close" : "Later"))
+                    .buttonStyle(KHoverStyle()).foregroundStyle(.secondary).help(Text(card.installed ? "Close" : "Later"))
             }
             // 심각한 버그 수정은 따로 눈에 띄게 (릴리스 노트에서 🚨로 표시한 것만)
             let critical = card.changes.filter { $0.hasPrefix(AppUpdate.criticalMark) }
@@ -270,7 +270,7 @@ private struct UpdateCard: View {
                             Task { await updater.install() }
                         }
                         Button(String(localized: "Later")) { updater.dismissCard() }
-                            .buttonStyle(.plain).font(.caption).foregroundStyle(.secondary)
+                            .buttonStyle(KHoverStyle()).font(.caption).foregroundStyle(.secondary)
                     }
                 }
             }
@@ -539,10 +539,23 @@ private struct ErrorBanner: View {
 /// 순수 SwiftUI 아이콘 버튼 (AppKit 컨트롤이 아니라서 스냅샷 렌더링에도 그대로 나옵니다)
 private struct IconButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundStyle(.secondary)
-            .frame(width: 28, height: 28)
-            .contentShape(Circle())
-            .opacity(configuration.isPressed ? 0.5 : 1)
+        HoverBody(configuration: configuration)
+    }
+
+    private struct HoverBody: View {
+        let configuration: Configuration
+        @State private var hovering = false
+
+        var body: some View {
+            configuration.label
+                .foregroundStyle(hovering ? .primary : .secondary)
+                .frame(width: 28, height: 28)
+                .background(Circle().fill(Color.primary.opacity(hovering ? (configuration.isPressed ? 0.16 : 0.1) : 0)))
+                .contentShape(Circle())
+                .scaleEffect(configuration.isPressed ? 0.9 : 1)
+                .animation(.easeOut(duration: 0.15), value: hovering)
+                .animation(.spring(response: 0.22, dampingFraction: 0.7), value: configuration.isPressed)
+                .onHover { hovering = $0 }
+        }
     }
 }

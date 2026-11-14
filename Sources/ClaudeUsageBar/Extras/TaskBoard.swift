@@ -251,7 +251,7 @@ struct WidgetRow: View {
     var body: some View {
         if let url = widget.url {
             Button { NSWorkspace.shared.open(url) } label: { content.contentShape(Rectangle()) }
-                .buttonStyle(.plain)
+                .buttonStyle(KHoverStyle())
         } else {
             content
         }

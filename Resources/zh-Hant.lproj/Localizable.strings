@@ -523,3 +523,72 @@
 "Send feedback" = "傳送意見回饋";
 "Updated." = "已更新。";
 "Update to %@" = "更新至 %@";
+
+/* Background work */
+"%@: background work done" = "%@：背景工作已完成";
+"%lld in background" = "背景 %lld 個";
+"%lld running" = "%lld 個進行中";
+"Running in the background" = "正在背景執行";
+
+/* Pinned sessions */
+"Unpin" = "取消釘選";
+"Pin to top" = "釘選在最上方";
+"Show in Finder" = "在 Finder 中顯示";
+"Copy path" = "拷貝路徑";
+"longer than usual" = "比平常更久";
+
+/* Phone presence */
+"Only when I'm away from the Mac" = "僅在我離開 Mac 時";
+"While you're using this Mac, the phone stays quiet. It rings when the Mac is locked or untouched for 2 minutes, and for approvals or questions left unanswered for 2 minutes." = "使用這台 Mac 時手機保持安靜。Mac 鎖定或 2 分鐘沒有操作時，以及核准或問題 2 分鐘沒有回覆時才會提醒。";
+
+/* Extension actions */
+"Run" = "執行";
+"Working…" = "處理中…";
+"Send to a conversation" = "傳送到對話";
+"Continuing in the background" = "在背景繼續";
+"Ready" = "就緒";
+"It took too long and was stopped." = "耗時過長，已停止。";
+"Something went wrong. See the extension's log." = "發生問題。請查看延伸功能的紀錄。";
+
+/* Extension context */
+"No project" = "無專案";
+"Pick a project so the result fits what you're working on" = "選擇正在進行的專案，結果會更貼合你的工作";
+"Attach" = "附加";
+"A few questions to make it better" = "幾個問題，讓結果更好";
+"Your answer" = "你的回答";
+"Continue" = "繼續";
+"Skip" = "略過";
+
+/* Extension context */
+"or drop files here" = "或拖放到這裡";
+
+/* Marketplace */
+"Official" = "官方";
+"Needs Kongi %@" = "需要 Kongi %@ 或更新版本";
+"Use %@ for this Kongi" = "使用適合此 Kongi 的 %@";
+
+/* Extension versions */
+"%@ %@ is available" = "%@ %@ 已推出";
+"Update it in Settings → Extensions." = "請在設定 → 延伸功能中更新。";
+"Versions" = "版本";
+"Kept at %@. Kongi won't replace it or remind you about updates." = "已固定為 %@。Kongi 不會取代它，也不會提醒更新。";
+"(Recommended)" = "（推薦）";
+
+/* Extension permissions */
+"Claude Code (uses your usage)" = "Claude Code（消耗用量）";
+"Reads files" = "讀取檔案";
+"Changes files" = "更改檔案";
+"Internet" = "網際網路";
+"Other apps' info" = "其他 App 資訊";
+"Other" = "其他";
+"Uses: %@" = "使用：%@";
+
+/* Session summary */
+"Last turn" = "上一輪";
+"Copy summary" = "拷貝摘要";
+"%lld commands" = "%lld 個指令";
+"%lld commands (%lld failed)" = "%lld 個指令（%lld 個失敗）";
+
+/* Session summary */
+"Show all" = "顯示全部";
+"Show less" = "收合";
