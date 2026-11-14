@@ -1,0 +1,33 @@
+{
+  "name": "Memory",
+  "description": "See how your Mac's unified memory is used: app memory, compressed memory, swap on your storage, the GPU's share, and which apps use the most. Warns you when memory runs low.",
+  "version": "1.0",
+  "minKongi": "2.2.3",
+  "run": "main.sh",
+  "actions": [
+    {
+      "id": "details",
+      "input": false,
+      "output": "monospaced",
+      "timeout": 30,
+      "run": "details.sh",
+      "title": {
+        "en": "Memory details",
+        "ko": "메모리 자세히",
+        "ja": "メモリの詳細",
+        "zh-Hans": "内存详情",
+        "zh-Hant": "記憶體詳情",
+        "es": "Detalles de memoria",
+        "fr": "Détails de la mémoire",
+        "de": "Speicherdetails",
+        "it": "Dettagli memoria",
+        "pt-BR": "Detalhes da memória",
+        "ru": "Подробно о памяти"
+      }
+    }
+  ],
+  "permissions": [
+    "processes",
+    "notifications"
+  ]
+}

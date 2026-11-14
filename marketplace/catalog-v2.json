@@ -77,6 +77,65 @@
     ]
   },
   {
+    "name": "Memory",
+    "description": "See how your Mac's unified memory is used: app memory, compressed memory, swap on your storage, the GPU's share, and which apps use the most. Warns you when memory runs low.",
+    "source": "eocnd36/Kongi/extensions/memory",
+    "author": "Kongi",
+    "version": "1.0",
+    "versions": [
+      {
+        "version": "1.0",
+        "minKongi": "2.2.3"
+      }
+    ],
+    "permissions": [
+      "processes",
+      "notifications"
+    ],
+    "localized": {
+      "ko": {
+        "name": "메모리",
+        "description": "Mac의 통합 메모리를 어떻게 쓰는지 보여 줘요: 앱 메모리, 압축, 저장공간을 쓰는 스왑, GPU 몫, 많이 쓰는 앱. 메모리가 부족하면 알려 줘요."
+      },
+      "ja": {
+        "name": "メモリ",
+        "description": "Macのユニファイドメモリの使われ方を表示：アプリメモリ、圧縮、ストレージを使うスワップ、GPUの分、使用量の多いアプリ。不足すると通知します。"
+      },
+      "zh-Hans": {
+        "name": "内存",
+        "description": "查看 Mac 统一内存的使用情况：App 内存、压缩、占用存储空间的交换、GPU 占用，以及用量最多的 App。内存不足时提醒你。"
+      },
+      "zh-Hant": {
+        "name": "記憶體",
+        "description": "查看 Mac 統一記憶體的使用情況：App 記憶體、壓縮、佔用儲存空間的交換、GPU 佔用，以及用量最多的 App。記憶體不足時提醒你。"
+      },
+      "es": {
+        "name": "Memoria",
+        "description": "Mira cómo se usa la memoria unificada del Mac: memoria de apps, comprimida, intercambio en el disco, la parte de la GPU y las apps que más usan. Te avisa cuando queda poca."
+      },
+      "fr": {
+        "name": "Mémoire",
+        "description": "Voyez comment la mémoire unifiée du Mac est utilisée : mémoire des apps, compressée, swap sur le disque, part du GPU et apps les plus gourmandes. Vous avertit quand elle manque."
+      },
+      "de": {
+        "name": "Speicher",
+        "description": "Sieh, wie der gemeinsame Speicher deines Macs genutzt wird: App-Speicher, komprimiert, Swap auf dem Speicher, GPU-Anteil und die größten Verbraucher. Warnt, wenn er knapp wird."
+      },
+      "it": {
+        "name": "Memoria",
+        "description": "Guarda come viene usata la memoria unificata del Mac: memoria delle app, compressa, swap su disco, quota della GPU e app che usano di più. Ti avvisa quando sta finendo."
+      },
+      "pt-BR": {
+        "name": "Memória",
+        "description": "Veja como a memória unificada do Mac é usada: memória de apps, comprimida, swap no armazenamento, parte da GPU e os apps que mais usam. Avisa quando está acabando."
+      },
+      "ru": {
+        "name": "Память",
+        "description": "Смотрите, как используется общая память Mac: память приложений, сжатая, своп на диске, доля GPU и самые прожорливые приложения. Предупредит, если памяти мало."
+      }
+    }
+  },
+  {
     "name": "Codex",
     "description": "Use Codex like Claude Code in Kongi: sessions and approvals in the island, and your Codex limits in the menu bar.",
     "source": "eocnd36/Kongi/extensions/codex",
