@@ -2,5 +2,6 @@
   "name": "Stretch reminder",
   "description": "Every 50 minutes the island reminds you to get up and stretch.",
   "version": "1.0",
-  "run": "main.sh"
+  "run": "main.sh",
+  "minKongi": "2.1.0"
 }

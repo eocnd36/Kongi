@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Prompt upgrade",
+    "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
+    "source": "eocnd36/Kongi/extensions/prompt-upgrade",
+    "author": "Kongi",
+    "version": "1.1",
+    "versions": [
+      {
+        "version": "1.1",
+        "minKongi": "2.2.3"
+      }
+    ],
+    "localized": {
+      "ko": {
+        "name": "프롬프트 업그레이드",
+        "description": "대충 적은 요청을 Claude Code가 명확한 프롬프트로 다듬어요. 프로젝트를 고르면 이어서 할 작업에 맞추고, 사진·파일을 첨부하거나 부족한 정보는 질문으로 채워요. 복사하거나 대화에 바로 보낼 수 있어요."
+      },
+      "ja": {
+        "name": "プロンプト改善",
+        "description": "ざっくりした依頼をClaude Codeが明確なプロンプトに整えます。プロジェクトを選ぶと続きの作業に合わせ、画像やファイルを添付でき、足りない情報は質問で補います。コピーするか会話にそのまま送れます。"
+      },
+      "zh-Hans": {
+        "name": "提示词优化",
+        "description": "让 Claude Code 把粗略的需求整理成清晰的提示词。选择项目即可衔接后续工作，可附加图片或文件，信息不足时会提问补全。可复制或直接发送到对话。"
+      },
+      "zh-Hant": {
+        "name": "提示詞優化",
+        "description": "讓 Claude Code 把粗略的需求整理成清楚的提示詞。選擇專案即可銜接後續工作，可附加圖片或檔案，資訊不足時會提問補齊。可拷貝或直接傳送到對話。"
+      },
+      "es": {
+        "name": "Mejorar prompts",
+        "description": "Claude Code convierte una petición rápida en un prompt claro. Elige un proyecto para continuar su trabajo, adjunta imágenes o archivos y responde unas preguntas si falta algo. Cópialo o envíalo directamente a una conversación."
+      },
+      "fr": {
+        "name": "Améliorer les prompts",
+        "description": "Claude Code transforme une demande rapide en prompt clair. Choisissez un projet pour poursuivre son travail, joignez des images ou des fichiers et répondez à quelques questions s’il manque des informations. Copiez-le ou envoyez-le directement à une conversation."
+      },
+      "de": {
+        "name": "Prompt-Verbesserung",
+        "description": "Claude Code macht aus einer groben Anfrage einen klaren Prompt. Wähle ein Projekt, um an der Arbeit weiterzumachen, hänge Bilder oder Dateien an und beantworte ein paar Fragen, wenn etwas fehlt. Kopiere ihn oder sende ihn direkt an eine Unterhaltung."
+      },
+      "it": {
+        "name": "Migliora prompt",
+        "description": "Claude Code trasforma una richiesta veloce in un prompt chiaro. Scegli un progetto per continuare il lavoro, allega immagini o file e rispondi a qualche domanda se manca qualcosa. Copialo o invialo direttamente a una conversazione."
+      },
+      "pt-BR": {
+        "name": "Melhorar prompts",
+        "description": "O Claude Code transforma um pedido rápido em um prompt claro. Escolha um projeto para continuar o trabalho, anexe imagens ou arquivos e responda algumas perguntas quando faltar algo. Copie ou envie direto para uma conversa."
+      },
+      "ru": {
+        "name": "Улучшение промптов",
+        "description": "Claude Code превращает набросок запроса в чёткий промпт. Выберите проект, чтобы продолжить работу, прикрепите изображения или файлы и ответьте на пару вопросов, если чего-то не хватает. Скопируйте или сразу отправьте в разговор."
+      }
+    }
+  },
+  {
+    "name": "Codex",
+    "description": "Use Codex like Claude Code in Kongi: sessions and approvals in the island, and your Codex limits in the menu bar.",
+    "source": "eocnd36/Kongi/extensions/codex",
+    "author": "Kongi",
+    "version": "2.1",
+    "versions": [
+      {
+        "version": "2.1",
+        "minKongi": "2.1.0"
+      }
+    ],
+    "localized": {
+      "ko": {
+        "name": "Codex",
+        "description": "Kongi에서 Codex를 Claude Code처럼: 세션과 승인 요청은 아일랜드에, Codex 사용 한도는 메뉴 막대에."
+      },
+      "ja": {
+        "name": "Codex",
+        "description": "KongiでCodexをClaude Codeのように：セッションと承認はアイランドに、Codexの上限はメニューバーに。"
+      },
+      "zh-Hans": {
+        "name": "Codex",
+        "description": "在 Kongi 中像 Claude Code 一样使用 Codex：会话和批准显示在灵动岛，Codex 限额显示在菜单栏。"
+      },
+      "zh-Hant": {
+        "name": "Codex",
+        "description": "在 Kongi 中像 Claude Code 一樣使用 Codex：工作階段和核准顯示在動態島，Codex 限額顯示在選單列。"
+      },
+      "es": {
+        "name": "Codex",
+        "description": "Usa Codex como Claude Code en Kongi: sesiones y aprobaciones en la isla, y tus límites de Codex en la barra de menús."
+      },
+      "fr": {
+        "name": "Codex",
+        "description": "Utilisez Codex comme Claude Code dans Kongi : sessions et autorisations dans l’île, et vos limites Codex dans la barre des menus."
+      },
+      "de": {
+        "name": "Codex",
+        "description": "Nutze Codex wie Claude Code in Kongi: Sitzungen und Freigaben in der Insel, deine Codex-Limits in der Menüleiste."
+      },
+      "it": {
+        "name": "Codex",
+        "description": "Usa Codex come Claude Code in Kongi: sessioni e approvazioni nell’isola, limiti di Codex nella barra dei menu."
+      },
+      "pt-BR": {
+        "name": "Codex",
+        "description": "Use o Codex como o Claude Code no Kongi: sessões e aprovações na ilha, e seus limites do Codex na barra de menus."
+      },
+      "ru": {
+        "name": "Codex",
+        "description": "Пользуйтесь Codex как Claude Code в Kongi: сеансы и разрешения на острове, лимиты Codex в строке меню."
+      }
+    }
+  },
+  {
+    "name": "Stretch reminder",
+    "description": "Every 50 minutes the island reminds you to get up and stretch.",
+    "source": "eocnd36/Kongi/extensions/stretch",
+    "author": "Kongi",
+    "version": "1.0",
+    "versions": [
+      {
+        "version": "1.0",
+        "minKongi": "2.1.0"
+      }
+    ],
+    "localized": {
+      "ko": {
+        "name": "스트레칭 알림",
+        "description": "50분마다 아일랜드가 일어나서 스트레칭하라고 알려 줘요."
+      },
+      "ja": {
+        "name": "ストレッチの通知",
+        "description": "50分ごとにアイランドが立ってストレッチするよう知らせます。"
+      },
+      "zh-Hans": {
+        "name": "伸展提醒",
+        "description": "每 50 分钟，灵动岛提醒你起身伸展一下。"
+      },
+      "zh-Hant": {
+        "name": "伸展提醒",
+        "description": "每 50 分鐘，動態島提醒你起身伸展一下。"
+      },
+      "es": {
+        "name": "Recordatorio de estiramiento",
+        "description": "Cada 50 minutos la isla te recuerda levantarte y estirarte."
+      },
+      "fr": {
+        "name": "Rappel d’étirement",
+        "description": "Toutes les 50 minutes, l’île vous rappelle de vous lever et de vous étirer."
+      },
+      "de": {
+        "name": "Dehn-Erinnerung",
+        "description": "Alle 50 Minuten erinnert dich die Insel daran, aufzustehen und dich zu dehnen."
+      },
+      "it": {
+        "name": "Promemoria stretching",
+        "description": "Ogni 50 minuti l’isola ti ricorda di alzarti e fare stretching."
+      },
+      "pt-BR": {
+        "name": "Lembrete de alongamento",
+        "description": "A cada 50 minutos, a ilha lembra você de levantar e se alongar."
+      },
+      "ru": {
+        "name": "Напоминание о разминке",
+        "description": "Каждые 50 минут остров напомнит встать и размяться."
+      }
+    }
+  }
+]

@@ -1,5 +1,12 @@
 [
   {
+    "name": "Codex",
+    "description": "Use Codex like Claude Code in Kongi: sessions and approvals in the island, and your Codex limits in the menu bar.",
+    "source": "eocnd36/Kongi/extensions/codex",
+    "author": "Kongi",
+    "version": "2.1"
+  },
+  {
     "name": "Stretch reminder",
     "description": "Every 50 minutes the island reminds you to get up and stretch.",
     "source": "eocnd36/Kongi/extensions/stretch",

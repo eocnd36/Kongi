@@ -1,0 +1,8 @@
+{
+  "name": "Codex",
+  "description": "Use Codex like Claude Code in Kongi: sessions and approvals in the island, and your Codex limits in the menu bar window.",
+  "version": "2.1",
+  "run": "main.sh",
+  "uninstall": "uninstall.sh",
+  "minKongi": "2.1.0"
+}

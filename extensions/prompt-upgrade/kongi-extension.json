@@ -1,0 +1,86 @@
+{
+  "name": "Prompt upgrade",
+  "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
+  "version": "1.1",
+  "actions": [
+    {
+      "id": "upgrade",
+      "title": {
+        "en": "Upgrade a prompt",
+        "ko": "프롬프트 업그레이드",
+        "ja": "プロンプトを改善",
+        "zh-Hans": "优化提示词",
+        "zh-Hant": "優化提示詞",
+        "es": "Mejorar un prompt",
+        "fr": "Améliorer un prompt",
+        "de": "Prompt verbessern",
+        "it": "Migliora un prompt",
+        "pt-BR": "Melhorar um prompt",
+        "ru": "Улучшить промпт"
+      },
+      "placeholder": {
+        "en": "What do you want Claude to do? Pick a project to continue its work…",
+        "ko": "Claude에게 시킬 일을 적어 주세요. 프로젝트를 고르면 이어서 할 일에 맞춰 짜 드려요…",
+        "ja": "Claudeにしてほしいことを書いてください。プロジェクトを選ぶと続きの作業に合わせます…",
+        "zh-Hans": "写下你想让 Claude 做什么。选择项目后会按后续工作来写…",
+        "zh-Hant": "寫下你想讓 Claude 做什麼。選擇專案後會依後續工作來寫…",
+        "es": "¿Qué quieres que haga Claude? Elige un proyecto para continuar su trabajo…",
+        "fr": "Que voulez-vous que Claude fasse ? Choisissez un projet pour poursuivre son travail…",
+        "de": "Was soll Claude tun? Wähle ein Projekt, um an der Arbeit weiterzumachen …",
+        "it": "Cosa vuoi che faccia Claude? Scegli un progetto per continuare il lavoro…",
+        "pt-BR": "O que você quer que o Claude faça? Escolha um projeto para continuar o trabalho…",
+        "ru": "Что должен сделать Claude? Выберите проект, чтобы продолжить работу…"
+      },
+      "run": "upgrade.sh",
+      "choiceTitle": {
+        "en": "Model",
+        "ko": "모델",
+        "ja": "モデル",
+        "zh-Hans": "模型",
+        "zh-Hant": "模型",
+        "es": "Modelo",
+        "fr": "Modèle",
+        "de": "Modell",
+        "it": "Modello",
+        "pt-BR": "Modelo",
+        "ru": "Модель"
+      },
+      "choices": [
+        {
+          "id": "haiku",
+          "title": "Haiku"
+        },
+        {
+          "id": "sonnet",
+          "title": "Sonnet"
+        },
+        {
+          "id": "opus",
+          "title": "Opus"
+        },
+        {
+          "id": "default",
+          "title": {
+            "en": "Default",
+            "ko": "기본",
+            "ja": "デフォルト",
+            "zh-Hans": "默认",
+            "zh-Hant": "預設",
+            "es": "Predeterminado",
+            "fr": "Par défaut",
+            "de": "Standard",
+            "it": "Predefinito",
+            "pt-BR": "Padrão",
+            "ru": "По умолчанию"
+          }
+        }
+      ],
+      "timeout": 300,
+      "context": [
+        "project",
+        "files"
+      ]
+    }
+  ],
+  "minKongi": "2.2.3"
+}
