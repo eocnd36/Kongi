@@ -112,10 +112,20 @@ object Updates {
         return json.optString("tag_name").removePrefix("v") to json.optString("body")
     }
 
+    /** 휴대폰 언어 → 릴리스 노트의 언어 코드 (Mac 앱과 같은 코드: ko, ja, zh-Hans, zh-Hant, pt-BR …) */
+    fun noteLanguage(locale: java.util.Locale = java.util.Locale.getDefault()): String = when (locale.language) {
+        "zh" -> if (locale.script == "Hant" || locale.country in setOf("TW", "HK", "MO")) "zh-Hant" else "zh-Hans"
+        "pt" -> "pt-BR"
+        else -> locale.language
+    }
+
     /** 릴리스 노트에서 바뀐 것 몇 줄: "What's new" 아래 목록의 굵은 제목 (Mac의 AppUpdate.highlights와 같은 규칙) */
-    fun highlights(notes: String, limit: Int = 6): List<String> {
+    fun highlights(notes: String, limit: Int = 6, language: String? = noteLanguage()): List<String> {
         var lines = notes.lines()
-        val start = lines.indexOfFirst { it.startsWith("#") && it.lowercase().contains("new") }
+        // 휴대폰 언어의 "### [ko] …" 목록이 있으면 그것, 없으면 영어 "What's new" (Mac과 같은 규칙)
+        val tag = language?.let { "[${it.lowercase()}]" }
+        val localized = tag?.let { t -> lines.indexOfFirst { it.startsWith("#") && it.lowercase().contains(t) } }?.takeIf { it >= 0 }
+        val start = localized ?: lines.indexOfFirst { it.startsWith("#") && it.lowercase().contains("new") }
         if (start >= 0) {
             lines = lines.drop(start + 1)
             val end = lines.indexOfFirst { it.startsWith("#") }

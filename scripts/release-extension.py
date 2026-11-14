@@ -93,7 +93,7 @@ def publish(message):
         # 마켓플레이스 목록에 오른 확장만 올립니다 (만들고 있는·대기 중인 확장은 공개되지 않게).
         listed = [e["source"].split("/")[-1] for e in json.loads((ROOT / "marketplace/catalog-v2.json").read_text())]
         paths = ["extensions/README.md", "marketplace"] + [f"extensions/{name}" for name in listed]
-        git("rm", "-r", "-q", "--cached", "--ignore-unmatch", "extensions", "marketplace", env=env)
+        git("rm", "-r", "-q", "-f", "--cached", "--ignore-unmatch", "extensions", "marketplace", env=env)  # 임시 색인이라 강제로 빼도 안전
         git("add", *paths, env=env)
         tree = git("write-tree", env=env)
     changed = git("diff", "--name-only", "kongi-public", tree).splitlines()
