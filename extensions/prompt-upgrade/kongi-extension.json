@@ -1,7 +1,7 @@
 {
   "name": "Prompt upgrade",
   "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
-  "version": "1.2",
+  "version": "1.3",
   "actions": [
     {
       "id": "upgrade",
@@ -19,66 +19,86 @@
         "ru": "Улучшить промпт"
       },
       "placeholder": {
-        "en": "What do you want Claude to do? Pick a project to continue its work…",
-        "ko": "Claude에게 시킬 일을 적어 주세요. 프로젝트를 고르면 이어서 할 일에 맞춰 짜 드려요…",
-        "ja": "Claudeにしてほしいことを書いてください。プロジェクトを選ぶと続きの作業に合わせます…",
-        "zh-Hans": "写下你想让 Claude 做什么。选择项目后会按后续工作来写…",
-        "zh-Hant": "寫下你想讓 Claude 做什麼。選擇專案後會依後續工作來寫…",
-        "es": "¿Qué quieres que haga Claude? Elige un proyecto para continuar su trabajo…",
-        "fr": "Que voulez-vous que Claude fasse ? Choisissez un projet pour poursuivre son travail…",
-        "de": "Was soll Claude tun? Wähle ein Projekt, um an der Arbeit weiterzumachen …",
-        "it": "Cosa vuoi che faccia Claude? Scegli un progetto per continuare il lavoro…",
-        "pt-BR": "O que você quer que o Claude faça? Escolha um projeto para continuar o trabalho…",
-        "ru": "Что должен сделать Claude? Выберите проект, чтобы продолжить работу…"
+        "en": "Paste a prompt, or describe what you want to do or what's going wrong…",
+        "ko": "프롬프트를 붙여 넣거나, 하고 싶은 일이나 안 되는 상황을 그냥 설명해 주세요…",
+        "ja": "プロンプトを貼り付けるか、したいことや困っている状況をそのまま書いてください…",
+        "zh-Hans": "粘贴提示词，或直接描述你想做的事、遇到的问题…",
+        "zh-Hant": "貼上提示詞，或直接描述你想做的事、遇到的問題…",
+        "es": "Pega un prompt o describe qué quieres hacer o qué falla…",
+        "fr": "Collez un prompt, ou décrivez ce que vous voulez faire ou ce qui ne va pas…",
+        "de": "Prompt einfügen oder beschreiben, was du tun willst oder was schiefgeht …",
+        "it": "Incolla un prompt o descrivi cosa vuoi fare o cosa non funziona…",
+        "pt-BR": "Cole um prompt ou descreva o que você quer fazer ou o que está dando errado…",
+        "ru": "Вставьте промпт или опишите, что хотите сделать или что не работает…"
       },
       "run": "upgrade.sh",
       "choiceTitle": {
-        "en": "Model (always the newest)",
-        "ko": "모델 (항상 최신)",
-        "ja": "モデル（常に最新）",
-        "zh-Hans": "模型（始终最新）",
-        "zh-Hant": "模型（一律最新）",
-        "es": "Modelo (siempre el más nuevo)",
-        "fr": "Modèle (toujours le plus récent)",
-        "de": "Modell (immer das neueste)",
-        "it": "Modello (sempre il più recente)",
-        "pt-BR": "Modelo (sempre o mais novo)",
-        "ru": "Модель (всегда новейшая)"
+        "en": "Write with",
+        "ko": "만드는 모델",
+        "ja": "作成するモデル",
+        "zh-Hans": "生成模型",
+        "zh-Hant": "產生模型",
+        "es": "Escribir con",
+        "fr": "Écrire avec",
+        "de": "Schreiben mit",
+        "it": "Scrivi con",
+        "pt-BR": "Escrever com",
+        "ru": "Писать с помощью"
       },
       "choices": [
         {
           "id": "haiku",
-          "title": "Haiku"
+          "title": "Haiku 5.5"
         },
         {
           "id": "sonnet",
-          "title": "Sonnet"
+          "title": "Sonnet 5.5"
         },
         {
           "id": "opus",
-          "title": "Opus"
-        },
-        {
-          "id": "default",
-          "title": {
-            "en": "My Claude Code default",
-            "ko": "내 Claude Code 기본값",
-            "ja": "Claude Codeの既定",
-            "zh-Hans": "我的 Claude Code 默认",
-            "zh-Hant": "我的 Claude Code 預設",
-            "es": "Mi predeterminado de Claude Code",
-            "fr": "Mon réglage Claude Code",
-            "de": "Mein Claude-Code-Standard",
-            "it": "Il mio predefinito di Claude Code",
-            "pt-BR": "Meu padrão do Claude Code",
-            "ru": "Моя модель Claude Code"
-          }
+          "title": "Opus 5.5"
         }
       ],
       "timeout": 300,
       "context": [
         "project",
         "files"
+      ],
+      "choiceGroups": [
+        {
+          "id": "target",
+          "title": {
+            "en": "Run with",
+            "ko": "사용할 모델",
+            "ja": "使うモデル",
+            "zh-Hans": "使用的模型",
+            "zh-Hant": "使用的模型",
+            "es": "Ejecutar con",
+            "fr": "Exécuter avec",
+            "de": "Ausführen mit",
+            "it": "Esegui con",
+            "pt-BR": "Usar com",
+            "ru": "Выполнять на"
+          },
+          "choices": [
+            {
+              "id": "haiku",
+              "title": "Haiku 5.5"
+            },
+            {
+              "id": "sonnet",
+              "title": "Sonnet 5.5"
+            },
+            {
+              "id": "opus",
+              "title": "Opus 5.5"
+            },
+            {
+              "id": "fable",
+              "title": "Fable 5.2"
+            }
+          ]
+        }
       ]
     }
   ],

@@ -4,7 +4,7 @@
     "description": "Turn a rough request into a clear prompt with Claude Code. Pick a project to continue its work, attach images or files, and answer a few questions when something's missing. Copy it or send it straight to a conversation.",
     "source": "eocnd36/Kongi/extensions/prompt-upgrade",
     "author": "Kongi",
-    "version": "1.2",
+    "version": "1.3",
     "versions": [
       {
         "version": "1.1",
@@ -26,6 +26,24 @@
           "it": "Mostra quale modello è stato usato (sempre il più recente).",
           "pt-BR": "Mostra qual modelo foi usado (sempre o mais novo).",
           "ru": "Показывает, какая модель использовалась (всегда новейшая)."
+        },
+        "ref": "b7ebc68c1f81aa5d249487f64412865aedaedfb4"
+      },
+      {
+        "version": "1.3",
+        "minKongi": "2.2.3",
+        "notes": {
+          "en": "Writes for the model you'll use (Haiku, Sonnet, Opus or Fable) following Anthropic's guides, turns a plain description of your situation into a prompt, shows the model that actually wrote it, and reuses a short project brief so repeat requests are faster.",
+          "ko": "사용할 모델(Haiku·Sonnet·Opus·Fable)의 공식 가이드대로 쓰고, 상황 설명도 프롬프트로 바꿔요. 실제로 쓴 모델을 정확히 보여 주고, 프로젝트 요약을 다시 써서 같은 프로젝트에서는 더 빨라요.",
+          "ja": "使うモデル（Haiku・Sonnet・Opus・Fable）の公式ガイドに沿って書き、状況の説明もプロンプトにします。実際に書いたモデルを表示し、プロジェクトの要約を再利用して同じプロジェクトでは速くなります。",
+          "zh-Hans": "按要使用的模型（Haiku、Sonnet、Opus、Fable）的官方指南编写，也能把情况描述变成提示词；显示实际编写的模型，并复用项目摘要，同一项目再次使用更快。",
+          "zh-Hant": "依要使用的模型（Haiku、Sonnet、Opus、Fable）的官方指南撰寫，也能把情況描述變成提示詞；顯示實際撰寫的模型，並重複使用專案摘要，同一專案再次使用更快。",
+          "es": "Escribe para el modelo que usarás (Haiku, Sonnet, Opus o Fable) según las guías de Anthropic, convierte una descripción de tu situación en un prompt, muestra el modelo que realmente lo escribió y reutiliza un resumen del proyecto para ir más rápido.",
+          "fr": "Rédige pour le modèle que vous utiliserez (Haiku, Sonnet, Opus ou Fable) selon les guides d’Anthropic, transforme une simple description de votre situation en prompt, affiche le modèle qui l’a vraiment écrit et réutilise un résumé du projet pour aller plus vite.",
+          "de": "Schreibt nach den Leitfäden von Anthropic für das Modell, das du nutzt (Haiku, Sonnet, Opus oder Fable), macht aus einer Beschreibung deiner Lage einen Prompt, zeigt das Modell, das ihn wirklich geschrieben hat, und nutzt eine Projektübersicht erneut für schnellere Wiederholungen.",
+          "it": "Scrive per il modello che userai (Haiku, Sonnet, Opus o Fable) secondo le guide di Anthropic, trasforma una descrizione della tua situazione in un prompt, mostra il modello che l’ha davvero scritto e riusa un riepilogo del progetto per andare più veloce.",
+          "pt-BR": "Escreve para o modelo que você vai usar (Haiku, Sonnet, Opus ou Fable) seguindo os guias da Anthropic, transforma uma descrição da sua situação em prompt, mostra o modelo que realmente escreveu e reutiliza um resumo do projeto para ficar mais rápido.",
+          "ru": "Пишет для модели, которую вы будете использовать (Haiku, Sonnet, Opus или Fable), по руководствам Anthropic, превращает описание ситуации в промпт, показывает модель, которая действительно писала, и повторно использует краткое описание проекта, чтобы было быстрее."
         }
       }
     ],
